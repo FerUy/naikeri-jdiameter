@@ -16,18 +16,20 @@ Identity Register (EIR), etc. Featuring an extensible architecture to provide su
   * Diameter Base (IETF RFC 3588/6733)
   * Credit-Control Application (CCA, IETF RFC 4006)
   * Ro/Rf (3GPP TS 32.260/32.299), between AS and OCS, online charging in IMS & LTE.
+  * Rx (3GPP TS 29.212 & TS 23.203), between AF (Application Function) and the PCRF (QoS and Policy).
   * Sh Client/Server (3GPP TS 29.328/29.329), between AS and HSS, Subscription and Authentication Data – IMS.
   * Cx/Dx (3GPP TS 29.228/29.229), between CSCF and HSS, subscription and authentication data – IMS / between CSCF and SLF.
+  * Gx/Gxc (3GPP TS 29.212 & TS 23.203), between PCEF/PGW and the PCRF (QoS and Policy).
+  * Gq (3GPP TS 29.209), between AF and RACS (Resource and Admission Control). 
   * S6a/S6d (3GPP TS 29.272), between MME/SGSN and HSS for subscription and authentication data, location update, UE purge, etc.
+  * S6b (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the PGW.
+  * S6c and SGd (3GPP TS 29.338, 3GPP TS 24.341 3GPP TS 23.204), between the SMSC and the HSS and MME/IP-SM-GW respectively. 
   * S13/S13’ (3GPP TS 29.272), between EIR and MME/SGSN.
   * SLh and SLg for LTE Location Services (3GPP TS 29.273/272), between GMLC and HSS and MME respectively.
-  * Gq (3GPP TS 29.209), between AF and RACS. 
-  * Rx (3GPP TS 29.212 & TS 23.203), between PCEF and the PCRF, QoS and Policy.
-  * S6b (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the PGW.
   * SWm (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the ePDG.
   * SWx (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the HSS.
-  * S6c and SGd (3GPP TS 29.338, 3GPP TS 24.341 3GPP TS 23.204), between the SMSC and the HSS and MME/IP-SM-GW respectively.
-  Diameter Stack is the core component of Naikeri jDiameter solution. It is responsible for establishing and maintaining connections to other Diameter agents, routing of messages to other realms and peers and also control state of Diameter applications by implementing their state machines. It also provides means for validation of Diameter messages and AVPs (Attribute Value Pairs), capability of load balancing between peers and overload monitoring. Statistics are also provided by the stack.
+
+Diameter Stack is the core component of Naikeri jDiameter solution. It is responsible for establishing and maintaining connections to other Diameter agents, routing of messages to other realms and peers and also control state of Diameter applications by implementing their state machines. It also provides means for validation of Diameter messages and AVPs (Attribute Value Pairs), capability of load balancing between peers and overload monitoring. Statistics are also provided by the stack.
 
 ![jdiameter_basic_architecture.png](readme_files/jdiameter_basic_architecture.png)
 
