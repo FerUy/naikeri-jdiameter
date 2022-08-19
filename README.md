@@ -10,24 +10,31 @@ standard for Authentication, Authorization, and Accounting (AAA). Implementing t
 applications, Naikeri jDiameter allows a fast development of IMS and 4G LTE EPC network nodes and interfaces, such as Home Subscriber Server (HSS), 
 Subscriber Location Function (SLF), Mobility Management Entity (MME), Policy and Charging Rules Function (PCRF), Online Charging System (OCS), 3GPP AAA 
 Server, Application Server (AS), Call Session Control Function (CSCF), Short Message Service Center (SMSC), Gateway Mobile Location Center (GMLC), Equipment 
-Identity Register (EIR), etc. Featuring an extensible architecture to provide support for new applications, as well as to adapt the core functionalities of the stack to a fully customized solution.It comprises following main characteristics:
+Identity Register (EIR), etc. Featuring an extensible architecture to provide support for new applications, as well as to adapt the core functionalities of the stack to a fully customized solution.
 
-* Diameter Stack supporting several Diameter interfaces/reference points/protocols like
-  * Diameter Base (IETF RFC 3588/6733)
-  * Credit-Control Application (CCA, IETF RFC 4006)
-  * Ro/Rf (3GPP TS 32.260/32.299), between AS and OCS, online charging in IMS & LTE.
-  * Rx (3GPP TS 29.212 & TS 23.203), between AF (Application Function) and the PCRF (QoS and Policy).
-  * Sh Client/Server (3GPP TS 29.328/29.329), between AS and HSS, Subscription and Authentication Data – IMS.
-  * Cx/Dx (3GPP TS 29.228/29.229), between CSCF and HSS, subscription and authentication data – IMS / between CSCF and SLF.
-  * Gx/Gxc (3GPP TS 29.212 & TS 23.203), between PCEF/PGW and the PCRF (QoS and Policy).
-  * Gq (3GPP TS 29.209), between AF and RACS (Resource and Admission Control). 
-  * S6a/S6d (3GPP TS 29.272), between MME/SGSN and HSS for subscription and authentication data, location update, UE purge, etc.
-  * S6b (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the PGW.
-  * S6c and SGd (3GPP TS 29.338, 3GPP TS 24.341 3GPP TS 23.204), between the SMSC and the HSS and MME/IP-SM-GW respectively. 
-  * S13/S13’ (3GPP TS 29.272), between EIR and MME/SGSN.
-  * SLh and SLg for LTE Location Services (3GPP TS 29.273/272), between GMLC and HSS and MME respectively.
-  * SWm (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the ePDG.
-  * SWx (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the HSS.
+## Supported Applications
+
+Diameter Stack supports several Diameter applications and/or IMS/4G LTE interfaces/reference points, namely:
+ - Diameter Base (IETF RFC 3588/6733)
+ - Credit-Control Application (CCA, IETF RFC 4006)
+ - Ro/Rf (3GPP TS 32.260/32.299), between AS and OCS, online charging in IMS & LTE. 
+ - Rx (3GPP TS 29.212 & TS 23.203), between AF (Application Function) and the PCRF (QoS and Policy). 
+ - Sh Client/Server (3GPP TS 29.328/29.329), between AS and HSS, Subscription and Authentication Data – IMS.
+ - Cx/Dx (3GPP TS 29.228/29.229), between CSCF 
+and HSS, subscription and authentication data – IMS / between CSCF and SLF.
+ - Gx/Gxc (3GPP TS 29.212 & TS 23.203), between PCEF/PGW and the PCRF (QoS and Policy).
+ - Gq (3GPP TS 29.209), between AF and RACS (Resource and Admission Control).
+ - S6a/S6d (3GPP TS 29.272), between MME/SGSN and HSS for subscription and authentication data, location update, UE purge, etc.
+ - S6b (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the PGW.
+ - S6c and SGd (3GPP TS 29.338, 3GPP TS 24.341 3GPP TS 23.204), between the SMSC and the HSS and MME/IP-SM-GW respectively.
+ - S13/S13’ (3GPP TS 29.272), between EIR and MME/SGSN.
+ - SLh and SLg for LTE Location Services (3GPP TS 29.273/272), between GMLC and HSS and MME respectively.
+ - SWm (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the ePDG.
+ - SWx (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the HSS.
+
+- It also features an extensible architecture that allows additional Diameter application modules to be plugged in.
+
+## Advanced Features
 
 Diameter Stack is the core component of Naikeri jDiameter solution. It is responsible for establishing and maintaining connections to other Diameter agents, routing of messages to other realms and peers and also control state of Diameter applications by implementing their state machines. It also provides means for validation of Diameter messages and AVPs (Attribute Value Pairs), capability of load balancing between peers and overload monitoring. Statistics are also provided by the stack.
 
@@ -38,7 +45,7 @@ Diameter Stack is the core component of Naikeri jDiameter solution. It is respon
 ![jDiameter Stack SLh SLg application session control by Session Factory.png](readme_files/jDiameter Stack SLh SLg application session control by Session Factory.png)
 
 * Naikeri-jDiameter stack provides two useful functionalities for an easier and faster application development:
-  * Dictionary: provides unified access to information regarding AVP structure, content and definition. Useful for retrieving AVP information by its name and/or code. All the information regarding an AVP (name, code, vendor-id, flags, etc.) can be retrieved with the dictionary. Dictionary is configured via an XML file named «dictionary.xml». 
+  * Dictionary: provides unified access to information regarding AVP structure, content and definition. Useful for retrieving AVP information by its name and/or code. All the information regarding an AVP (name, code, vendor-id, flags, etc.) can be retrieved with the dictionary. Dictionary is configured via an XML file named «dictionary.xml».
   * Validator: provides stack with the ability to validate messages. Useful for faster error detection, by validating both outgoing and incoming messages and AVPs. Validator uses the dictionary to verify the compliance.
 
 * Naikeri jDiameter Stack Multiplexer (MUX) provides the ability of sharing the stack between multiple applications. Entities interested in receiving messages for a certain Diameter application may register in the MUX. Upon registration, the entity passes the set of Application-Ids of its interest. Based on message content and registered listeners, MUX either drops message or passes it to a proper listener. MUX checks Application-Ids present in the message to match the target listener.
@@ -47,30 +54,7 @@ Diameter Stack is the core component of Naikeri jDiameter solution. It is respon
 
 * JAIN SLEE 1.0 and 1.1 compatible Resource Adaptors for all of the above applications. JAIN SLEE (Java API for Integrated Networks Service Logic Execution Environment) specification constitutes the JAVA community framework for the high standards in terms of performance, availability, portability, scalability, robustness, event oriented execution logic, etc., suitable for services/applications inter-working within telecommunication networks.
 
-
-
-## Supported Applications
-
-The supported applications includes:
- - Diameter Base (IETF RFC 3588/6733)
- - Credit-Control Application (CCA, IETF RFC 4006)
- - Ro/Rf (3GPP TS 32.260/32.299), between AS and OCS, online charging in IMS & LTE.
- - Sh Client/Server (3GPP TS 29.328/29.329), between AS and HSS, Subscription and Authentication Data – IMS.
- - Cx/Dx (3GPP TS 29.228/29.229), between CSCF and HSS, subscription and authentication data – IMS / between CSCF and SLF.
- - S6a (3GPP TS 29.272), between MME and HSS for subscription and authentication data, location update, UE purge, etc.
- - S13/S13’ (3GPP TS 29.272), between EIR and MME/SGSN.
- - SLh and SLg for LTE Location Services (3GPP TS 29.273/272), between GMLC and HSS and MME respectively.
- - Gq (3GPP TS 29.209), between AF and RACS. 
- - Rx (3GPP TS 29.212 & TS 23.203), between PCEF and the PCRF, QoS and Policy. 
- - S6b (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the PGW. 
- - SWm (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the ePDG. 
- - SWx (3GPP TS 23.402), between the 3GPP AAA Server/Proxy and the HSS. 
- - S6c and SGd (3GPP TS 29.338, 3GPP TS 24.341 3GPP TS 23.204), between the SMSC and the HSS and MME/IP-SM-GW respectively.
-It also features an extensible architecture that allows additional Diameter application modules to be plugged in.
-
-## Advanced Features
-
-Naikeri Diameter features several advanced features such as High-Availability and Fault-Tolerance support at stack level (and at Naikeri JAIN SLEE Resource 
+Naikeri jDiameter features several advanced features such as High-Availability and Fault-Tolerance support at stack level (and at Naikeri JAIN SLEE Resource 
 Adaptors), statistics gathering for monitoring the stack health, overload monitor to avoid congestion, several management and monitoring options, and many more to assist the development experience.
 
 ## Integration
