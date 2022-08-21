@@ -3,7 +3,7 @@ pipeline {
 
 	tools {
 	    jdk 'JDK 11'
-		maven 'Maven_3.6.3'
+		maven 'Maven_3.8.5'
 	}
 
 	options {
@@ -55,14 +55,15 @@ pipeline {
     	stage('Push Artifacts') {
             when{ anyOf { branch 'master'; branch 'release' }}
             steps {
-                script {
+                /*script {
                     ROOT_PATH = "/var/www/html/RestComm/restcomm_jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
-                }
-                sshagent(['ssh_grafana']) {
+                }*/
+                sh "cp release/Naikeri-jDiameter-${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}.zip /var/www/html/NAIKERI/jdiameter/"
+                /*sshagent(['ssh_grafana']) {
                     sh "cp release/Naikeri-jDiameter-${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}.zip /var/www/html/NAIKERI/jdiameter/"
                     sh "ssh root@127.0.0.1 \"mkdir -p ${ROOT_PATH}\""
                     sh "scp -r release/*.zip root@127.0.0.1:${ROOT_PATH}"
-                }
+                }*/
             }
     	}
 
