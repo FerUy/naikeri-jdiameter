@@ -31,14 +31,24 @@
     <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
     <checkstyle.failOnError>true</checkstyle.failOnError>
     <version.com.puppycrawl.tools.checkstyle>6.18</version.com.puppycrawl.tools.checkstyle>
-    <compiler.plugin.version>3.8.1</compiler.plugin.version>
-    <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
     <mobicents.tools.mavenplugin.eclipse.version>1.0.1.FINAL</mobicents.tools.mavenplugin.eclipse.version>
+    <!-- maven compiler/plugin versions -->
+    <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <compile.source>11</compile.source>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
+    <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
+    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
+    <!--maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version-->
+    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
+    <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
-    <sctp.version>2.1.0-14</sctp.version>
+    <sctp.version>2.1.0-15</sctp.version>
     <netty.version>4.1.42.Final</netty.version>
 
     <!--<version.cluster>1.15.0-SNAPSHOT</version.cluster>-->
