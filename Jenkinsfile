@@ -34,7 +34,7 @@ pipeline {
 		stage("Release") {
 			steps {
 				echo "Building a release version of #${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
-        		withAnt(installation: 'Ant1.10') {
+        		withAnt(installation: 'Ant_1.10.12') {
           			dir('release') {
           			    sh "rm -rf restcomm-diameter*.zip"
             			sh "ant -f build.xml -Ddiameter.release.version=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
