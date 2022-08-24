@@ -12,11 +12,11 @@
 
   <properties>
     <checkout.basedir>${basedir}/diameter</checkout.basedir>
-    <checkout.username>mobicents-read-only</checkout.username>
-    <checkout.password>donthaveone</checkout.password>
+    <checkout.username>fer</checkout.username>
+    <checkout.password>J3nk!ns@Ub</checkout.password>
 
     <diameter.core.jdiameter.connectionURL>scm:git:https://github.com/RestComm/jdiameter.git</diameter.core.jdiameter.connectionURL>
-    <diameter.tools.rhq-plugin.connectionURL>scm:git:https://github.com/RestComm/jdiameter.rhq-plugin.git</diameter.tools.rhq-plugin.connectionURL>
+    <!--diameter.tools.rhq-plugin.connectionURL>scm:git:https://github.com/RestComm/jdiameter.rhq-plugin.git</diameter.tools.rhq-plugin.connectionURL-->
     <slee.diameter.package.connectionURL>scm:git:https://github.com/RestComm/jain-slee.diameter.git</slee.diameter.package.connectionURL>
     <diameter.example.connectionURL>scm:svn:http://mobicents.googlecode.com/svn/tags/servers/jain-slee/2.x.y/examples/diameter-</diameter.example.connectionURL>
   </properties>
@@ -119,36 +119,36 @@
       </build>
     </profile>
 
-     <profile>
-      <id>checkout-rhq-plugin</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-scm-plugin</artifactId>
-            <inherited>false</inherited>
-            <executions>
-              <execution>
-                <id>diameter-rhq-plugin-checkout</id>
-                <goals>
-                  <goal>checkout</goal>
-                </goals>
-                <phase>validate</phase>
-                <configuration>
-                  <connectionUrl>${diameter.tools.rhq-plugin.connectionURL}</connectionUrl>
-                  <username>${checkout.username}</username>
-                  <password>${checkout.password}</password>
-                  <scmVersionType>tag</scmVersionType>
-                  <scmVersion>${diameter.tools.rhq-plugin.tag}</scmVersion>
-                  <checkoutDirectory>${checkout.basedir}/diameter-rhq-plugin/</checkoutDirectory>
-                  <skipCheckoutIfExists>false</skipCheckoutIfExists>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+    <!-- profile>
+     <id>checkout-rhq-plugin</id>
+     <build>
+       <plugins>
+         <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-scm-plugin</artifactId>
+           <inherited>false</inherited>
+           <executions>
+             <execution>
+               <id>diameter-rhq-plugin-checkout</id>
+               <goals>
+                 <goal>checkout</goal>
+               </goals>
+               <phase>validate</phase>
+               <configuration>
+                 <connectionUrl>${diameter.tools.rhq-plugin.connectionURL}</connectionUrl>
+                 <username>${checkout.username}</username>
+                 <password>${checkout.password}</password>
+                 <scmVersionType>tag</scmVersionType>
+                 <scmVersion>${diameter.tools.rhq-plugin.tag}</scmVersion>
+                 <checkoutDirectory>${checkout.basedir}/diameter-rhq-plugin/</checkoutDirectory>
+                 <skipCheckoutIfExists>false</skipCheckoutIfExists>
+               </configuration>
+             </execution>
+           </executions>
+         </plugin>
+       </plugins>
+     </build>
+   </profile -->
   </profiles>
 
 </project>
