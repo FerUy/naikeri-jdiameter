@@ -60,7 +60,7 @@
       <name>Alexandre Mendonça</name>
       <email>brainslog@gmail.com</email>
       <organization>TeleStax</organization>
-      <organizationUrl>http://www.telestax.com/</organizationUrl>
+      <organizationUrl>https://www.telestax.com/</organizationUrl>
       <roles>
         <role>Project Lead</role>
       </roles>
@@ -71,7 +71,6 @@
       <name>Bartosz Baranowski</name>
       <email>baranowb@gmail.com</email>
       <organization>TeleStax</organization>
-      <organizationUrl>http://www.telestax.com/</organizationUrl>
       <roles>
         <role>Developer</role>
       </roles>
@@ -81,6 +80,7 @@
       <id>FerUy</id>
       <name>Fernando Mendioroz</name>
       <email>fernando.mendioroz@gmail.com</email>
+      <organizationUrl>https://naikeri.com/</organizationUrl>
       <roles>
         <role>Active Developer</role>
       </roles>

@@ -1,7 +1,5 @@
 # Naikeri jDiameter
-> Naikeri jDiameter is cloned from [RestComm jSS7](https://github.com/RestComm/jdiameter) from which we have added a set of improvements and new features listed in a later section of this file.
-
-RestComm jDiameter Stack and Services
+> Naikeri jDiameter is cloned from [RestComm jDiameter](https://github.com/RestComm/jdiameter) from which we have added a set of improvements and new features listed in a later section of this file.
 
 ## Introduction
 
