@@ -20,7 +20,7 @@ pipeline {
 				echo "Building application..."
 				script {
                     currentBuild.displayName = "#${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
-                    currentBuild.description = "RestComm-jDiameter"
+                    currentBuild.description = "Naikeri-jDiameter"
                 }
 				sh "mvn clean install -DskipTests"
 				echo "Maven build completed."
