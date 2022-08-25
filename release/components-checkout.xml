@@ -11,10 +11,10 @@
   <name>Restcomm :: Diameter :: ${pom.artifactId}</name>
 
   <properties>
+    <xmlproperty file="/usr/local/ant/password.xml"/>
     <checkout.basedir>${basedir}/diameter</checkout.basedir>
-    <checkout.username>fer</checkout.username>
-    <checkout.password>J3nk!ns@Ub</checkout.password>
-
+    <checkout.username>${server.username}</checkout.username>
+    <checkout.password>${server.password}</checkout.password>
     <diameter.core.jdiameter.connectionURL>scm:git:https://github.com/FerUy/naikeri-jdiameter</diameter.core.jdiameter.connectionURL>
     <!--diameter.tools.rhq-plugin.connectionURL>scm:git:https://github.com/RestComm/jdiameter.rhq-plugin.git</diameter.tools.rhq-plugin.connectionURL-->
     <slee.diameter.package.connectionURL>scm:git:https://github.com/RestComm/jain-slee.diameter.git</slee.diameter.package.connectionURL>
