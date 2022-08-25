@@ -159,7 +159,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <condition property="jboss.dir" value="${jboss.home}" else="${env.JBOSS_HOME}">
                   <isset property="jboss.home" />
                 </condition>
@@ -248,7 +248,7 @@
                 <!-- Copy to JBOSS: DIAMETER, MUX and EXTENSION -->
                 <!-- Update JBOSS configuration for EXTENSION -->
                 <!-- Add dependencies on DIAMETER and MUX in the ORG.JBOSS.AS.SERVER module.xml -->
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
@@ -258,11 +258,11 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <!-- Remove from JBOSS: DIAMETER, MUX and EXTENSION -->
                 <!-- Update JBOSS configuration without EXTENSION -->
                 <!-- Remove dependencies on DIAMETER and MUX in the ORG.JBOSS.AS.SERVER module.xml -->
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>

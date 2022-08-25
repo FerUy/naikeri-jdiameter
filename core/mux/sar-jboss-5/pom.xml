@@ -164,7 +164,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <condition property="jboss.dir" value="${jboss.home}" else="${env.JBOSS_HOME}">
                   <isset property="jboss.home" />
                 </condition>
@@ -180,7 +180,7 @@
                     <include name="**" />
                   </fileset>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
@@ -190,9 +190,9 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <delete dir="${env.JBOSS_HOME}/server/${node}/deploy/${project.build.finalName}.sar" />
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>
