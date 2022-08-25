@@ -153,7 +153,9 @@
 
       <!-- Deploy SAR to JBOSS -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-plugin.version}</version>
         <executions>
           <execution>
             <id>deploy</id>

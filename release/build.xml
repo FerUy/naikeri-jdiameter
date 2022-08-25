@@ -8,7 +8,7 @@
     <format property="time.stamp" pattern="yyyyMMddHHmmss"/>
   </tstamp>
 
-  <property name="diameter.release.version" value="0.0.0-SNAPSHOT-${time.stamp}" />
+  <property name="diameter.release.version" value="1.7.4-SNAPSHOT-${time.stamp}" />
   <property name="release.build.goals" value="clean install dependency:tree"/>
 
   <property name="SLEE_RAS_MASTER_VERSION" value="2.7.1.FINAL" />
@@ -525,6 +525,12 @@
 
   <target name="clean" unless="skip.clean" description="Remove everything that we created.">
     <delete dir="${checkout_base_dir}" verbose="false" />
+    <delete dir="${basedir}/diameter" failonerror="false"/>
+    <delete>
+      <fileset dir="${basedir}">
+        <include name="restcomm-diameter-*.*" />
+      </fileset>
+    </delete>
   </target>
 
 </project>

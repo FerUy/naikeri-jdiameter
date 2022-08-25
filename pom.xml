@@ -43,10 +43,13 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
     <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
-    <!--maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version-->
+    <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
     <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
+    <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
     <sctp.version>2.1.0-15</sctp.version>
     <netty.version>4.1.42.Final</netty.version>
@@ -123,15 +126,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>${maven-javadoc-plugin.version}</version>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <!--additionalparam>-Xdoclint:none</additionalparam-->
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>${nexus-staging-maven-plugin.version}</version>
         <extensions>true</extensions>
         <configuration combine.self="override" />
         <!--configuration>
@@ -155,7 +158,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.17</version>
+        <version>${maven-checkstyle-plugin.version}</version>
 
         <executions>
           <execution>
