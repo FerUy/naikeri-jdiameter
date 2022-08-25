@@ -15,9 +15,9 @@
     <checkout.basedir>${basedir}/diameter</checkout.basedir>
     <checkout.username>${server.username}</checkout.username>
     <checkout.password>${server.password}</checkout.password>
-    <diameter.core.jdiameter.connectionURL>scm:git:https://github.com/FerUy/naikeri-jdiameter</diameter.core.jdiameter.connectionURL>
+    <diameter.core.jdiameter.connectionURL>scm:git:https://github.com/FerUy/naikeri-jdiameter.git</diameter.core.jdiameter.connectionURL>
     <!--diameter.tools.rhq-plugin.connectionURL>scm:git:https://github.com/RestComm/jdiameter.rhq-plugin.git</diameter.tools.rhq-plugin.connectionURL-->
-    <slee.diameter.package.connectionURL>scm:git:https://github.com/RestComm/jain-slee.diameter.git</slee.diameter.package.connectionURL>
+    <slee.diameter.package.connectionURL>scm:git:https://github.com/FerUy/jain-slee.diameter.git</slee.diameter.package.connectionURL>
     <diameter.example.connectionURL>scm:svn:http://mobicents.googlecode.com/svn/tags/servers/jain-slee/2.x.y/examples/diameter-</diameter.example.connectionURL>
   </properties>
 
@@ -105,8 +105,8 @@
                 <phase>validate</phase>
                 <configuration>
                   <connectionUrl>${diameter.example.connectionURL}${example_name}/${example_version}</connectionUrl>
-                  <username>${checkout.username}</username>
-                  <password>${checkout.password}</password>
+                  <username>mobicents-read-only</username>
+                  <password>donthaveone</password>
                   <scmVersionType>revision</scmVersionType>
                   <scmVersion>HEAD</scmVersion>
                   <checkoutDirectory>${checkout.basedir}/slee-diameter/examples/${example_name}</checkoutDirectory>
