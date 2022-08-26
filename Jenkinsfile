@@ -36,7 +36,7 @@ pipeline {
 				echo "Building a release version of #${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
         		withAnt(installation: 'Ant_1.10.12') {
           			dir('release') {
-          			    sh "rm -rf restcomm-diameter*.zip"
+          			    //sh "rm -rf restcomm-diameter*.zip"
             			sh "ant -f build.xml -Ddiameter.release.version=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
  					}
 				}
@@ -84,6 +84,7 @@ pipeline {
 		}
 		always {
 			echo "This will be called always. After testing do clean up."
+			sh 'rm -rf release/diameter'
 			sh 'rm -rf release/checkout'
       	    sh 'rm -rf release/target'
 		}
