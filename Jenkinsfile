@@ -87,6 +87,8 @@ pipeline {
 			sh 'rm -rf release/diameter'
 			sh 'rm -rf release/checkout'
       	    sh 'rm -rf release/target'
+      	    sh 'rm -rf release/*.zip'
+      	    sh 'rm -rf release/*.zip*'
 		}
 	}
 }

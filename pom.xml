@@ -58,6 +58,19 @@
     <!--<version.cluster>1.15.0-SNAPSHOT</version.cluster>-->
   </properties>
 
+  <distributionManagement>
+    <repository>
+      <id>admin</id>
+      <name>localhost-releases</name>
+      <url>http://127.0.0.1:8082/artifactory/libs-release-local</url>
+    </repository>
+    <snapshotRepository>
+      <id>admin</id>
+      <name>localhost-snapshots</name>
+      <url>http://127.0.0.1:8082/artifactory/libs-release-local</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <developers>
     <developer>
       <id>ammendonca</id>
