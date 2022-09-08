@@ -58,6 +58,7 @@ pipeline {
                 /*script {
                     ROOT_PATH = "/var/www/html/RestComm/restcomm_jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
                 }*/
+                sh "mkdir -p /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
                 sh "cp release/*.zip /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
                 /*sshagent(['ssh_grafana']) {
                     sh "cp release/Naikeri-jDiameter-${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}.zip /var/www/html/NAIKERI/jdiameter/"
