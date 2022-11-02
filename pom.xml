@@ -52,7 +52,7 @@
     <maven-scm-plugin.version>2.0.0-M2</maven-scm-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
-    <sctp.version>2.1.0-15</sctp.version>
+    <sctp.version>2.1.0-16</sctp.version>
     <netty.version>4.1.42.Final</netty.version>
 
     <!--<version.cluster>1.15.0-SNAPSHOT</version.cluster>-->

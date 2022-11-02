@@ -1,45 +1,3 @@
-/*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2014, TeleStax Inc. and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- * This file incorporates work covered by the following copyright and
- * permission notice:
- *
- *   JBoss, Home of Professional Open Source
- *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
- *   by the @authors tag. See the copyright.txt in the distribution for a
- *   full listing of individual contributors.
- *
- *   This is free software; you can redistribute it and/or modify it
- *   under the terms of the GNU Lesser General Public License as
- *   published by the Free Software Foundation; either version 2.1 of
- *   the License, or (at your option) any later version.
- *
- *   This software is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *   Lesser General Public License for more details.
- *
- *   You should have received a copy of the GNU Lesser General Public
- *   License along with this software; if not, write to the Free
- *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
 package org.jdiameter.server.impl;
 
 import static org.jdiameter.client.impl.helpers.Parameters.PeerName;
@@ -119,6 +77,7 @@ import org.slf4j.LoggerFactory;
  * @author erick.svenson@yahoo.com
  * @author <a href="mailto:brainslog@gmail.com"> Alexandre Mendonca </a>
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
+ * @author <a href="mailto:enmanuelcalero61@gmail.com"> Enmanuel Calero </a>
  */
 public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerTable, ConfigurationListener {
 
@@ -190,9 +149,9 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
   }
 
   public MutablePeerTableImpl(Configuration config, MetaData metaData, IContainer stack, org.jdiameter.server.api.IRouter router,
-      ISessionFactory sessionFactory, IFsmFactory fsmFactory, ITransportLayerFactory trFactory,
-      IMessageParser parser, INetwork network, IOverloadManager ovrManager,
-      IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory) {
+                              ISessionFactory sessionFactory, IFsmFactory fsmFactory, ITransportLayerFactory trFactory,
+                              IMessageParser parser, INetwork network, IOverloadManager ovrManager,
+                              IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory) {
     logger.debug("MutablePeerTableImpl is being created");
     this.metaData = metaData;
     this.config = config;
@@ -229,17 +188,18 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
 
   @Override
   protected Peer createPeer(int rating, String uri, String ip, String portRange, MetaData metaData, Configuration globalConfig,
-      Configuration peerConfig, org.jdiameter.client.api.fsm.IFsmFactory fsmFactory,
-      org.jdiameter.client.api.io.ITransportLayerFactory transportFactory,
-      IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory,
-      IMessageParser parser) throws InternalException, TransportException, URISyntaxException, UnknownServiceException {
+                            Configuration peerConfig, org.jdiameter.client.api.fsm.IFsmFactory fsmFactory,
+                            org.jdiameter.client.api.io.ITransportLayerFactory transportFactory,
+                            IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory,
+                            IMessageParser parser) throws InternalException, TransportException, URISyntaxException, UnknownServiceException {
     logger.debug("Creating Peer for URI [{}]", uri);
+    String fqdn = new URI(uri).getFQDN();
     if (predefinedPeerTable == null) {
       logger.debug("Creating new empty predefined peer table");
       predefinedPeerTable = new CopyOnWriteArraySet<String>();
     }
     logger.debug("Adding URI [{}] to predefinedPeerTable", uri);
-    predefinedPeerTable.add(new URI(uri).getFQDN());
+    predefinedPeerTable.add(fqdn);
     if (peerConfig.getBooleanValue(PeerAttemptConnection.ordinal(), false)) {
       logger.debug("Peer at URI [{}] is configured to attempt a connection (acting as a client) and a new peer instance will be created and returned", uri);
       return newPeerInstance(rating, new URI(uri), ip, portRange, true, null,
@@ -253,10 +213,10 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
   }
 
   protected IPeer newPeerInstance(int rating, URI uri, String ip, String portRange, boolean attCnn, IConnection connection,
-      MetaData metaData, Configuration globalConfig, Configuration peerConfig, IFsmFactory fsmFactory,
-      ITransportLayerFactory transportFactory, IMessageParser parser,
-      IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory)
-          throws URISyntaxException, UnknownServiceException, InternalException, TransportException {
+                                  MetaData metaData, Configuration globalConfig, Configuration peerConfig, IFsmFactory fsmFactory,
+                                  ITransportLayerFactory transportFactory, IMessageParser parser,
+                                  IStatisticManager statisticFactory, IConcurrentFactory concurrentFactory)
+      throws URISyntaxException, UnknownServiceException, InternalException, TransportException {
     logger.debug("Creating and returning a new Peer Instance for URI [{}].", uri);
     return new org.jdiameter.server.impl.PeerImpl(
             rating, uri, ip, portRange, attCnn, connection,
@@ -372,7 +332,7 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
         ips += " " + ip.getHostAddress() + ":" + p.getUri().getPort();
       }
       logger.error("Unable to create server socket for LocalPeer '{}' at{} ({}).", new Object[]{p.getUri().getFQDN(), ips, t.getMessage()});
-      logger.debug("Unable to create server socket", e);
+      logger.error("Unable to create server socket", e);
     }
     // Connect to predefined peers
     for (Peer p : peerTable.values()) {
@@ -584,7 +544,7 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
             }
           }
         }
-        );
+    );
   }
 
   private void appendPeerToPeerTable(IPeer peer) {
@@ -655,8 +615,7 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
 
   }
 
-  @Override
-  public Peer addPeer(URI peerURI, String realm, boolean connecting) {
+  private Peer addPeerAction(URI peerURI, String realm, boolean connecting, String ip) {
     //TODO: add sKey here, now it adds peer to all realms.
     //TODO: better, separate addPeer from realm!
     try {
@@ -672,7 +631,7 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
       if (peerConfig == null) {
         peerConfig = new EmptyConfiguration(false).add(PeerAttemptConnection, connecting);
       }
-      IPeer peer = (IPeer) createPeer(0, peerURI.toString(), null, null, metaData, config, peerConfig, fsmFactory,
+      IPeer peer = (IPeer) createPeer(0, peerURI.toString(), ip, null, metaData, config, peerConfig, fsmFactory,
           transportFactory, statisticFactory, concurrentFactory, parser);
       if (peer == null) {
         return null;
@@ -703,18 +662,41 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
     }
   }
 
+  @Override
+  public Peer addPeer(URI peerURI, String realm, boolean connecting, String ip) {
+    return addPeerAction(peerURI, realm, connecting, ip);
+  }
+
+  @Override
+  public Peer addPeer(URI peerURI, String realm, boolean connecting) {
+    return addPeerAction(peerURI, realm, connecting, null);
+  }
+
+
   public Set<Realm> getAllRealms() {
     return new HashSet<Realm>(router.getRealmTable().getRealms());
   }
 
   @Override
   public Peer removePeer(String host) {
+    return removePeerAction(host, DisconnectCause.BUSY, false);
+  }
+
+  @Override
+  public Peer removePeer(String peerHost, int disconnectCause, boolean connecting) {
+    return removePeerAction(peerHost, disconnectCause, connecting);
+  }
+
+  public Peer removePeerAction(String host, int disconnectCause, boolean isPeerAttemptConnect) {
     try {
+      IPeer peerToDisconnect = null;
+      host = new URI(host).getFQDN();
       String fqdn = null;
       for (String f : peerTable.keySet()) {
         if (f.equals(host)) {
           fqdn = f;
-          peerTable.get(fqdn).disconnect(DisconnectCause.BUSY);
+          peerToDisconnect = (IPeer) peerTable.get(fqdn);
+          peerTable.get(fqdn).disconnect(disconnectCause);
         }
       }
       if (fqdn != null) {
@@ -723,14 +705,22 @@ public class MutablePeerTableImpl extends PeerTableImpl implements IMutablePeerT
         if (peerTableListener != null) {
           peerTableListener.peerRemoved(removedPeer);
         }
-
+        if (isPeerAttemptConnect) {
+          if (peerToDisconnect != null) {
+            try {
+              if (peerToDisconnect.getConnection() != null) {
+                peerToDisconnect.getConnection().disconnect();
+              }
+            } catch (Exception ex) {
+              logger.warn("Trying to disconnect peer " + host + " " + ex.getMessage());
+            }
+          }
+        }
         return removedPeer;
-      }
-      else {
+      } else {
         return null;
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       logger.debug("Unable to remove peer", e);
       return null;
     }

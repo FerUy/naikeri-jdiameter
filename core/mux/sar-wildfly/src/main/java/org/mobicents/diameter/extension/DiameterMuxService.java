@@ -1,16 +1,17 @@
 package org.mobicents.diameter.extension;
 
-//import org.jboss.logging.Logger;
+import org.jboss.logging.Logger;
 import org.jboss.msc.service.*;
 import org.jboss.msc.value.InjectedValue;
 import org.mobicents.diameter.stack.DiameterStackMultiplexer;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 
 public class DiameterMuxService implements Service<DiameterMuxService> {
 
-    //private final Logger log = Logger.getLogger(DiameterMuxService.class);
+    private final Logger log = Logger.getLogger(DiameterMuxService.class);
 
     public static ServiceName getServiceName() {
         return ServiceName.of("restcomm","diameter-mux");
@@ -30,8 +31,7 @@ public class DiameterMuxService implements Service<DiameterMuxService> {
 
     @Override
     public void start(StartContext context) throws StartException {
-        //log.info("Starting DiameterMuxService");
-
+        log.info("Starting DiameterMuxService");
         diameterMuxBean = new DiameterStackMultiplexer();
         try {
             registerMBean(diameterMuxBean, DiameterStackMultiplexer.OBJECT_NAME);
@@ -44,15 +44,16 @@ public class DiameterMuxService implements Service<DiameterMuxService> {
 
     @Override
     public void stop(StopContext context) {
-        //log.info("Stopping DiameterMuxService");
-
+        log.info("Stopping DiameterMuxService");
         diameterMuxBean.stop();
         unregisterMBean(DiameterStackMultiplexer.OBJECT_NAME);
     }
 
     private void registerMBean(Object mBean, String name) throws StartException {
         try {
-            getMbeanServer().getValue().registerMBean(mBean, new ObjectName(name));
+            ObjectName mbeanName = new ObjectName(name);
+            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+            server.registerMBean(mBean, mbeanName);
         } catch (Throwable e) {
             throw new StartException(e);
         }
@@ -62,7 +63,7 @@ public class DiameterMuxService implements Service<DiameterMuxService> {
         try {
             getMbeanServer().getValue().unregisterMBean(new ObjectName(name));
         } catch (Throwable e) {
-            //log.error("failed to unregister mbean", e);
+            log.error("failed to unregister mbean", e);
         }
     }
 }
