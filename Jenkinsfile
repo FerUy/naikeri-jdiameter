@@ -11,7 +11,7 @@ pipeline {
   	}
 
 
-	parameters { string(name: 'JDIAMETER_MAJOR_VERSION_NUMBER', defaultValue: '1.8.0', description: 'The major version for Naikeri-jDiameter') }
+	parameters { string(name: 'JDIAMETER_MAJOR_VERSION_NUMBER', defaultValue: '2.0.0', description: 'The major version for Naikeri-jDiameter') }
 
 	stages {
 
