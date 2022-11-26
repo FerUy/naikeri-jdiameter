@@ -51,7 +51,7 @@ package org.jdiameter.api;
  */
 public class AvpDataException extends Exception {
 
-  private static final long serialVersionUID = -5898449417016355792L;
+  private static final long serialVersionUID = 1L;
 
   protected Avp avp;
 

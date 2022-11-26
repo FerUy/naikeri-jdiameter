@@ -55,7 +55,7 @@ import org.restcomm.timers.TimerTaskData;
  */
 final class DiameterTimerTaskData extends TimerTaskData {
 
-  private static final long serialVersionUID = 8774218122384404225L;
+  private static final long serialVersionUID = 1L;
 
   // data we need to recreate timer task
   private String sessionId;
