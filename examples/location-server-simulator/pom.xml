@@ -17,11 +17,11 @@
 
   <properties>
     <!-- Restcomm properties -->
-    <jss7.restcomm.version>7.4.0-102</jss7.restcomm.version>
+    <jss7.restcomm.version>8.5.0-334</jss7.restcomm.version>
     <!-- Mobicents Diameter Components Versions -->
-    <restcomm.diameter.jdiameter.version>1.8.0-SNAPSHOT</restcomm.diameter.jdiameter.version>
-    <restcomm.diameter.mux.version>1.8.0-SNAPSHOT</restcomm.diameter.mux.version>
-    <!-- Thirdparty Dependencies Versions -->
+    <restcomm.diameter.jdiameter.version>2.0.0-SNAPSHOT</restcomm.diameter.jdiameter.version>
+    <restcomm.diameter.mux.version>2.0.0-SNAPSHOT</restcomm.diameter.mux.version>
+    <!-- Third party Dependencies Versions -->
     <slf4j.version>1.7.13</slf4j.version>
     <jbosscache.version>3.2.5.GA</jbosscache.version>
     <commons-pool.version>1.5.5</commons-pool.version>
@@ -101,11 +101,11 @@
       </dependency>
     <dependency>
       <artifactId>map-api</artifactId>
-      <groupId>org.mobicents.protocols.ss7.map</groupId>
+      <groupId>org.restcomm.protocols.ss7.map</groupId>
       <version>${jss7.restcomm.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.mobicents.protocols.ss7.map</groupId>
+      <groupId>org.restcomm.protocols.ss7.map</groupId>
       <artifactId>map-impl</artifactId>
       <version>${jss7.restcomm.version}</version>
     </dependency>
@@ -172,8 +172,8 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>11</source>
+                <target>11</target>
             </configuration>
         </plugin>
       <plugin>
@@ -200,7 +200,7 @@
     <url>https://code.google.com/p/jdiameter/</url>
   </scm>
 
-  <!-- dupe info from parent, but it's only way to retrieve the parent without checkout -->
+  <!-- dupe info from parent, but it's the only way to retrieve the parent without checkout -->
 
   <repositories>
     <repository>

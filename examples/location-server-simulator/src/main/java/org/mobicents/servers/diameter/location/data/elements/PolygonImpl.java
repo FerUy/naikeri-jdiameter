@@ -2,9 +2,9 @@ package org.mobicents.servers.diameter.location.data.elements;
 
 import javolution.xml.XMLFormat;
 import javolution.xml.stream.XMLStreamException;
-import org.mobicents.protocols.ss7.map.api.MAPException;
-import org.mobicents.protocols.ss7.map.primitives.OctetStringBase;
-import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.primitives.OctetStringBase;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
 
 import javax.xml.bind.DatatypeConverter;
 

@@ -1,9 +1,9 @@
 package org.mobicents.servers.diameter.utils;
 
-import org.mobicents.protocols.ss7.map.api.MAPException;
-import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
+import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
 
 import static org.mobicents.servers.diameter.utils.byteUtils.bytesToHex;
 
