@@ -19,46 +19,41 @@ public interface MutablePeerTable extends PeerTable {
 
   /**
    * Append peer table listener
-   *
    * @param listener listener instance
    */
   void setPeerTableListener(PeerTableListener listener);
 
   /**
-   * Add new peer to the peer table
-   *
-   * @param peer      URI of peer (host, port and other connection information)
-   *                  for example: aaa://host.example.com:6666;transport=tcp;protocol=diameter
-   * @param realmName   name of the realm
-   * @param connecting  attempt connect
-   * @param ip          the IP address of the peer
+   * Add new peer to peer table
+   * @param peer URI of peer (host, port and other connection information)
+   * for example: aaa://host.example.com:6666;transport=tcp;protocol=diameter
+   * @param realmName name of realm
+   * @param connecting attempt connect
+   * @param ip The direction IP of the Peer
    * @return peer instance
    */
   Peer addPeer(URI peer, String realmName, boolean connecting, String ip);
 
   /**
-   * Add new peer to the peer table
+   * Add new peer to peer table
    *
-   * @param peer        URI of peer (host, port and other connection information)
-   *                    for example: aaa://host.example.com:6666;transport=tcp;protocol=diameter
-   * @param realmName   name of the realm
-   * @param connecting  attempt connect
+   * @param peer       URI of peer (host, port and other connection information)
+   *                   for example: aaa://host.example.com:6666;transport=tcp;protocol=diameter
+   * @param realmName  name of realm
+   * @param connecting attempt connect
    * @return peer instance
    */
   Peer addPeer(URI peer, String realmName, boolean connecting);
-
   /**
-   * Remove peer from the peer table
-   *
-   * @param peerHost    host of peer
+   * Remove peer from peer table
+   * @param peerHost host of peer
    * @return removed peer instance
    */
   Peer removePeer(String peerHost);
 
   /**
-   * Remove peer from the peer table
-   *
-   * @param peerHost        host of the peer
+   * Remove peer from peer table
+   * @param peerHost host of peer
    * @param disconnectCause the disconnect cause (REBOOTING, BUSY, DO_NOT_WANT_TO_TALK_TO_YOU)
    * @return removed peer instance
    */

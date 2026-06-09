@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.client.impl.controller;
 
 import static org.jdiameter.client.impl.helpers.Parameters.PeerIp;
@@ -176,6 +134,17 @@ public class PeerTableImpl implements IPeerTable {
 
   @Override
   public void sendMessage(IMessage message) throws IllegalDiameterStateException, RouteException, AvpDataException, IOException {
+    sendMessageAction(message, true);
+  }
+
+  @Override
+  public void sendMessage(IMessage message, Boolean useRealm) throws IllegalDiameterStateException, RouteException, AvpDataException, IOException {
+    sendMessageAction(message, useRealm);
+  }
+
+
+  protected void sendMessageAction(IMessage message, Boolean useRealmToRoute) throws IllegalDiameterStateException,
+          RouteException, AvpDataException, IOException {
     if (!isStarted) {
       throw new IllegalDiameterStateException("Stack is down");
     }
@@ -185,7 +154,7 @@ public class PeerTableImpl implements IPeerTable {
     if (message.isRequest()) {
       if (logger.isDebugEnabled()) {
         logger.debug("Send request {} [destHost={}; destRealm={}]", new Object[] {message,
-            message.getAvps().getAvp(Avp.DESTINATION_HOST) != null ? message.getAvps().getAvp(Avp.DESTINATION_HOST).getOctetString() : "",
+                message.getAvps().getAvp(Avp.DESTINATION_HOST) != null ? message.getAvps().getAvp(Avp.DESTINATION_HOST).getOctetString() : "",
                 message.getAvps().getAvp(Avp.DESTINATION_REALM) != null ? message.getAvps().getAvp(Avp.DESTINATION_REALM).getOctetString() : ""});
       }
 
@@ -193,11 +162,11 @@ public class PeerTableImpl implements IPeerTable {
       if (router.updateRoute(message)) {
         if (logger.isDebugEnabled()) {
           logger.debug("Updated route on message {} [destHost={}; destRealm={}]", new Object[] {message,
-              message.getAvps().getAvp(Avp.DESTINATION_HOST) != null ? message.getAvps().getAvp(Avp.DESTINATION_HOST).getOctetString() : "",
+                  message.getAvps().getAvp(Avp.DESTINATION_HOST) != null ? message.getAvps().getAvp(Avp.DESTINATION_HOST).getOctetString() : "",
                   message.getAvps().getAvp(Avp.DESTINATION_REALM) != null ? message.getAvps().getAvp(Avp.DESTINATION_REALM).getOctetString() : ""});
         }
       }
-      peer = router.getPeer(message, this);
+      peer = router.getPeer(message, this, useRealmToRoute);
       logger.debug("Selected peer [{}] for sending message [{}]", peer, message);
       if (peer == metaData.getLocalPeer()) {
         logger.debug("Request [{}] will be processed by local service", message);
@@ -213,7 +182,7 @@ public class PeerTableImpl implements IPeerTable {
       peer = message.getPeer();
       if (peer == null || !peer.hasValidConnection()) {
         logger.debug("Peer is null [{}] or with invalid connection so we will use router.getPeer to find a peer", peer == null);
-        peer = router.getPeer(message, this);
+        peer = router.getPeer(message, this, useRealmToRoute);
         if (peer == null) {
           throw new RouteException( "Cannot found remote context for sending message" );
         }

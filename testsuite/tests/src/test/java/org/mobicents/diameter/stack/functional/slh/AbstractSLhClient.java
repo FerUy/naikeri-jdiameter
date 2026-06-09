@@ -1,24 +1,3 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.mobicents.diameter.stack.functional.slh;
 
 import java.io.InputStream;
@@ -40,7 +19,6 @@ import org.jdiameter.api.slh.ClientSLhSessionListener;
 import org.jdiameter.api.slh.ServerSLhSession;
 import org.jdiameter.api.slh.events.LCSRoutingInfoRequest;
 import org.jdiameter.api.slh.events.LCSRoutingInfoAnswer;
-import org.jdiameter.client.api.ISessionFactory;
 import org.jdiameter.common.impl.app.slh.LCSRoutingInfoRequestImpl;
 import org.jdiameter.common.impl.app.slh.SLhSessionFactoryImpl;
 import org.mobicents.diameter.stack.functional.TBase;
@@ -52,8 +30,7 @@ import org.mobicents.diameter.stack.functional.TBase;
  */
 public abstract class AbstractSLhClient extends TBase implements ClientSLhSessionListener {
 
-  // NOTE: implementing NetworkReqListener since its required for stack to
-  // know we support it... ech.
+  // NOTE: implementing NetworkReqListener since it's required for stack to know we support it... ech.
 
   protected ClientSLhSession clientSLhSession;
 
@@ -66,8 +43,8 @@ public abstract class AbstractSLhClient extends TBase implements ClientSLhSessio
 
       slhSessionFactory.setClientSessionListener(this);
 
-      this.clientSLhSession = ((ISessionFactory) this.sessionFactory).getNewAppSession(this.sessionFactory.getSessionId("xx-SLh-TESTxx"), getApplicationId(),
-          ClientSLhSession.class, null);
+      this.clientSLhSession = (this.sessionFactory).getNewAppSession(this.sessionFactory.getSessionId("xx-SLh-TESTxx"), getApplicationId(),
+          ClientSLhSession.class, (Object) null);
     } finally {
       try {
         configStream.close();
@@ -117,48 +94,87 @@ public abstract class AbstractSLhClient extends TBase implements ClientSLhSessio
         return this.clientSLhSession;
     }
 
-  // ----------- 3GPP TS 29.173 v14.0.0 points ----------- //
-/*
-  5.2.1	Send Routing Information for LCS
-  5.2.1.1	General
-  This procedure is used between the GMLC and the HSS.  The procedure is invoked by the GMLC and is used:
-    -	To retrieve routing information for LCS for a specified user from the HSS.
-*/
+  /*
+   3GPP TS 29.173 v18.0.0 § 5.2.1
 
+   5.2.1	Send Routing Information for LCS
+   5.2.1.1	General
+   This procedure is used between the GMLC and the HSS.  The procedure is invoked by the GMLC and is used:
+     - To retrieve routing information for LCS for a specified user from the HSS.
+
+   5.2.1.2 Detailed Behaviour of the HSS
+   Upon reception of the Send Routing Info for LCS request, the HSS shall, in the following order:
+    1. Check whether the requesting GMLC belongs to a network authorized to request UE location information. If not, Experimental-Result shall be set to DIAMETER_ERROR_UNAUTHORIZED_REQUESTING_NETWORK in the Send Routing Information for LCS Response.
+    2. Check that the User Identity for whom data is asked exists in HSS. If not, Experimental-Result shall be set to DIAMETER_ERROR_USER_UNKNOWN in the Send Routing Information for LCS Response.
+     2a. If both IMSI and MSISDN are present in the request, check whether they identify the same User. If not, the HSS Result-Code shall be set to DIAMETER_CONTRADICTING_AVPS in the Send Routing Information for LCS Response.
+    3. Check that there is at least one serving node associated with the targeted user. If not, Experimental-Result shall be set to DIAMETER_ERROR_ABSENT_USER in the Send Routing Information for LCS Response.
+
+   If there is an error in any of the above steps then the HSS shall stop processing and shall return the error code specified
+   in the respective step (see 3GPP TS 29.329 and 3GPP TS 29.229 [8] for an explanation of the error codes).
+   If the HSS cannot fulfil the received request for reasons not stated in the above steps, e.g. due to a database error or empty mandatory data elements,
+   it shall stop processing the request and set Result-Code to DIAMETER_UNABLE_TO_COMPLY.
+   Otherwise, the requested operation shall take place and the HSS shall return the Result-Code AVP set to DIAMETER_SUCCESS.
+   The HSS returns one or several of the network addresses of the current MME, SGSN, 3GPP AAA server and/or VMSC/MSC server,
+   the LCS capabilities of the serving nodes if available, the V-GMLC address associated with the serving nodes,
+   if available, and whichever of the IMSI and MSISDN that was not provided in the Send Routing Info for LCS request.
+   If MSISDN was not provided in the Send Routing Info for LCS request and the subscription is MSISDN-less,
+   the HSS shall return the dummy MSISDN value (see 3GPP TS 23.003 [10]). If both MSISDN and IMSI were provided
+   in the Send Routing Info for LCS request, the HSS returns either MSISDN or IMSI or both. The HSS returns the address of the H-GMLC.
+   The HSS also provides the address of the PPR, if available.
+
+   The HSS shall include the Diameter Identity of the SGSN (i.e. SGSN-Name and SGSN-Realm), within the Serving-Node AVP
+   or within an Additional-Serving-Node AVP, if and only if the HSS has received an indication that the Lgd interface
+   is supported by the SGSN (see 3GPP TS 29.272).
+
+   The HSS shall include the SGSN Number, within the Serving-Node AVP or Additional Serving-Node AVP,
+   except if the HSS has received an indication that the Lg interface is not supported by the SGSN (see 3GPP TS 29.272).
+
+   If the UE is served by the MME and SGSN parts of the same combined MME/SGSN
+   (see 3GPP TS 29.272 subclause 5.2.2.1.1 for how the HSS determines if the UE is served by the combined MME/SGSN)
+   and if this combined MME/SGSN has indicated the support for optimized LCS procedure
+   (via the Supported-Feature AVP as defined in 3GPP TS 29.272 subclause 7.3.10)
+   and if HSS supports this optimized LCS procedure,
+   then the HSS shall set the "Combined-MME/SGSN-Supporting-Optimized-LCS-Proc" bit of the RIA-Flags.
+
+   Regarding the LCS capabilities of the serving nodes, if the HSS registered an SGSN via the S6d reference point
+   (i.e., the registered serving node is an S4-SGSN), the HSS shall set the LCS-Capabilities-Set value to indicate
+   support of Capability Set 5 (i.e., LCS release 7 or later version).
+   If the HSS registered an MME, the HSS shall not indicate any LCS capability value to the GMLC
+   (i.e., the LCS-Capabilities-Set AVP shall be absent over SLh when the serving node is an MME);
+   in this case, the GMLC shall assume that the MME supports LCS Capability Set 5.
+  */
+
+  /** Attributes for LCS-Routing-Info-Request (RIR) **/
   protected abstract String getUserName();
   protected abstract byte[] getMSISDN();
   protected abstract byte[] getGMLCNumber();
 
-  protected LCSRoutingInfoRequest createRIR(ClientSLhSession slhSession) throws Exception {
   /*
-  3GPP TS 29.173 v14.0.0 points
-  6.2.3	LCS-Routing-Info-Request (RIR) Command
-  The LCS-Routing-Info-Request (RIR) command, indicated by the Command-Code field set to 8388622
-  and the "R" bit set in the Command Flags field, is sent from GMLC to HSS.
-  Message Format:
+   3GPP TS 29.173 v18.0.0 § 6.2.3
 
-   < LCS-Routing-Info-Request> ::=	< Diameter Header: 8388622, REQ, PXY, 16777291 >
-
-	< Session-Id >
-	[ Vendor-Specific-Application-Id ]
-	{ Auth-Session-State }
-	{ Origin-Host }
-	{ Origin-Realm }
-	[ Destination-Host ]
-	{ Destination-Realm }
-	[ User-Name ]
-	[ MSISDN ]
-	[ GMLC-Number ]
-	*[ Supported-Features ]
-	*[ Proxy-Info ]
-	*[ Route-Record ]
-	*[ AVP ]
-
+   The LCS-Routing-Info-Request (RIR) command, indicated by the Command-Code field set to 8388622
+   and the "R" bit set in the Command Flags field, is sent from GMLC to HSS.
+   Message Format:
+   < LCS-Routing-Info-Request > ::= < Diameter Header: 8388622, REQ, PXY, 16777291 >
+                             < Session-Id >
+                             [ Vendor-Specific-Application-Id ]
+                             { Auth-Session-State }
+                             { Origin-Host }
+                             { Origin-Realm }
+                             [ Destination-Host ]
+                             { Destination-Realm }
+                             [ User-Name ]
+                             [ MSISDN ]
+                             [ GMLC-Number ]
+                            *[ Supported-Features ]
+                            *[ Proxy-Info ]
+                            *[ Route-Record ]
+                            *[ AVP ]
   */
-    // Create LCSRoutingInfoRequest
-    LCSRoutingInfoRequest rir = new LCSRoutingInfoRequestImpl(slhSession.getSessions().get(0).createRequest(LCSRoutingInfoRequest.code, getApplicationId(),
-        getServerRealmName()));
-    // < LCS-Routing-Info-Request> ::=	< Diameter Header: 8388622, REQ, PXY, 16777291 >
+  protected LCSRoutingInfoRequest createRIR(ClientSLhSession slhSession) throws Exception {
+    // < LCS-Routing-Info-Request > ::= < Diameter Header: 8388622, REQ, PXY, 16777291 >
+    LCSRoutingInfoRequest rir = new LCSRoutingInfoRequestImpl(slhSession.getSessions().get(0).
+        createRequest(LCSRoutingInfoRequest.code, getApplicationId(), getServerRealmName()));
 
     AvpSet reqSet = rir.getMessage().getAvps();
 
@@ -180,22 +196,16 @@ public abstract class AbstractSLhClient extends TBase implements ClientSLhSessio
     reqSet.addAvp(Avp.ORIGIN_HOST, getClientURI(), true);
 
     // [ User-Name ]
-    String userName = getUserName();
-    if (userName != null) {
-      reqSet.addAvp(Avp.USER_NAME, userName, 10415, true, false, false);
-    }
+    if (getUserName() != null)
+      reqSet.addAvp(Avp.USER_NAME, getUserName(), 10415, true, false, false);
 
     // [ MSISDN ]
-    byte[] msisdn = getMSISDN();
-    if (msisdn != null){
-      reqSet.addAvp(Avp.MSISDN, msisdn, 10415, true, false);
-    }
+    if (getMSISDN() != null)
+      reqSet.addAvp(Avp.MSISDN, getMSISDN(), 10415, true, false);
 
     // [ GMLC-Number ]
-    byte[] gmlcNumber = getGMLCNumber();
-    if (gmlcNumber != null){
-      reqSet.addAvp(Avp.GMLC_NUMBER, gmlcNumber, 10415, false, false);
-    }
+    if (getGMLCNumber() != null)
+      reqSet.addAvp(Avp.GMLC_NUMBER, getGMLCNumber(), 10415, false, false);
 
     return rir;
   }

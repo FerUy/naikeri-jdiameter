@@ -1,26 +1,7 @@
-/*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2016, TeleStax Inc. and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package org.jdiameter.client.impl.transport.tcp.netty;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 import org.jdiameter.client.api.IMessage;
 import org.jdiameter.client.api.parser.IMessageParser;
@@ -51,7 +32,7 @@ public class TCPTransportClient {
   protected InetSocketAddress destAddress;
   protected InetSocketAddress sourceAddress; // TODO: what?
   protected String socketDescription;
-  protected static final Logger logger = LoggerFactory.getLogger(TCPClientConnection.class);
+  protected static final Logger logger = LoggerFactory.getLogger(TCPTransportClient.class);
   protected IMessageParser parser;
 
   protected static final int CONNECT_TIMEOUT = 500; // mills
@@ -110,24 +91,31 @@ public class TCPTransportClient {
       logger.debug("TCP Transport already started, [{}]", socketDescription);
       return;
     }
-
     this.workerGroup = new NioEventLoopGroup();
-    Bootstrap bootstrap = new Bootstrap().group(workerGroup).channel(NioSocketChannel.class)
-        .option(ChannelOption.SO_KEEPALIVE, true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
-        .handler(new ChannelInitializer<SocketChannel>() {
-          @Override
-          public void initChannel(SocketChannel ch) throws Exception {
-            ChannelPipeline pipeline = ch.pipeline();
-            pipeline.addLast("decoder", new DiameterMessageDecoder(parentConnection, parser));
-            pipeline.addLast("encoder", new DiameterMessageEncoder(parser));
-            pipeline.addLast(eventExecutorGroup, "msgHandler", new DiameterMessageHandler(parentConnection));
-          }
-        });
+    try {
+      Bootstrap bootstrap = new Bootstrap().group(workerGroup).channel(NioSocketChannel.class)
+              .option(ChannelOption.SO_KEEPALIVE, true).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
+              .handler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                public void initChannel(SocketChannel ch) throws Exception {
+                  ChannelPipeline pipeline = ch.pipeline();
+                  pipeline.addLast("decoder", new DiameterMessageDecoder(parentConnection, parser));
+                  pipeline.addLast("encoder", new DiameterMessageEncoder(parser));
+                  pipeline.addLast(eventExecutorGroup, "msgHandler", new DiameterMessageHandler(parentConnection));
+                }
+              });
 
-    this.channel = bootstrap.remoteAddress(destAddress).connect().sync().channel();
-    logger.debug("TCP Transport connected successfully, [{}]", socketDescription);
-
-    parentConnection.onConnected();
+      this.channel = bootstrap.localAddress(sourceAddress).remoteAddress(destAddress).connect().sync().channel();
+      logger.debug("TCP Transport connected successfully, [{}]", socketDescription);
+      parentConnection.onConnected();
+    } catch (Exception e) {
+      logger.error("Error while starting TCP Transport on [{}]", socketDescription);
+      if (this.channel != null && this.channel.isOpen()) {
+        this.channel.close();
+      }
+      workerGroup.shutdownGracefully();
+      throw e;
+    }
   }
 
   public void stop() {
@@ -144,38 +132,40 @@ public class TCPTransportClient {
 
   private void closeEventExecutorGroup() {
     if (eventExecutorGroup != null) {
-      try {
-        eventExecutorGroup.shutdownGracefully().sync();
-      } catch (InterruptedException e) {
-        logger.error("Error stopping socket " + socketDescription, e);
-      }
+      eventExecutorGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS)
+              .addListener(future -> {
+                if (!future.isSuccess()) {
+                  logger.warn("Error shutting down eventExecutorGroup", future.cause());
+                }
+              });
       eventExecutorGroup = null;
     }
   }
 
   private void closeWorkerGroup() {
     if (workerGroup != null) {
-      try {
-        workerGroup.shutdownGracefully().sync();
-      } catch (InterruptedException e) {
-        logger.error("Error stopping socket " + socketDescription, e);
-      }
+      workerGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS)
+              .addListener(future -> {
+                if (!future.isSuccess()) {
+                  logger.warn("Error shutting down workerGroup", future.cause());
+                }
+              });
       workerGroup = null;
     }
   }
 
   private void closeChannel() {
     if (channel != null) {
-      try {
-        channel.closeFuture().sync();
-      } catch (InterruptedException e) {
-        logger.error("Error stopping socket " + socketDescription, e);
-      }
+      channel.close().addListener(future -> {
+        if (!future.isSuccess()) {
+          logger.warn("Error closing channel for [{}]", socketDescription, future.cause());
+        }
+      });
       channel = null;
     }
   }
 
-  public void release() throws InterruptedException, IOException {
+  public void release() {
     logger.debug("Releasing TCP Transport, [{}]", socketDescription);
     stop();
     destAddress = null;
@@ -190,7 +180,7 @@ public class TCPTransportClient {
   }
 
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append("Transport to ");
     if (this.destAddress != null) {
       buffer.append(this.destAddress.getHostName());

@@ -1,29 +1,6 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
- * contributors as indicated by the @authors tag. All rights reserved.
- * See the copyright.txt in the distribution for a full listing
- * of individual contributors.
- *
- * This copyrighted material is made available to anyone wishing to use,
- * modify, copy, or redistribute it subject to the terms and conditions
- * of the GNU General Public License, v. 2.0.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License,
- * v. 2.0 along with this distribution; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
 package org.mobicents.diameter.stack.functional.sh.base;
 
 import org.jdiameter.api.Answer;
-import org.jdiameter.api.Avp;
-import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.IllegalDiameterStateException;
 import org.jdiameter.api.InternalException;
 import org.jdiameter.api.NetworkReqListener;
@@ -42,12 +19,16 @@ import org.jdiameter.api.sh.events.SubscribeNotificationsAnswer;
 import org.jdiameter.api.sh.events.SubscribeNotificationsRequest;
 import org.jdiameter.api.sh.events.UserDataAnswer;
 import org.jdiameter.api.sh.events.UserDataRequest;
-import org.jdiameter.common.impl.app.sh.ProfileUpdateRequestImpl;
-import org.jdiameter.common.impl.app.sh.PushNotificationAnswerImpl;
-import org.jdiameter.common.impl.app.sh.SubscribeNotificationsRequestImpl;
-import org.jdiameter.common.impl.app.sh.UserDataRequestImpl;
 import org.mobicents.diameter.stack.functional.Utils;
 import org.mobicents.diameter.stack.functional.sh.AbstractShClient;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Time;
+
+import static org.mobicents.diameter.stack.TBCDUtil.parseTBCD;
 
 /**
  * Base implementation of Client
@@ -58,221 +39,133 @@ import org.mobicents.diameter.stack.functional.sh.AbstractShClient;
  */
 public class ClientSh extends AbstractShClient {
 
-  protected boolean sentSubscribeNotifications;
-  protected boolean sentProfileUpdate;
-  protected boolean sentUserDataRequest;
-  protected boolean sentPushNotification;
-  protected boolean receiveSubscribeNotifications;
-  protected boolean receiveProfileUpdate;
-  protected boolean receiveUserData;
-  protected boolean receivePushNotification;
+  protected boolean sentUDR;
+  protected boolean sentPUR;
+  protected boolean sentSNR;
+  protected boolean sentPNA;
+  protected boolean receivedUDA;
+  protected boolean receivedPUA;
 
-  protected PushNotificationRequest request;
+  protected boolean receivedSNA;
+  protected boolean receivedPNR;
 
-  /**
-   *
-   */
+  protected PushNotificationRequest pushNotificationRequest;
+
   public ClientSh() {
   }
 
-  public void sendSubscribeNotifications() throws Exception {
-    SubscribeNotificationsRequest request = new SubscribeNotificationsRequestImpl(super.clientShSession.getSessions().get(0)
-        .createRequest(SubscribeNotificationsRequest.code, getApplicationId(), getServerRealmName()));
-
-    AvpSet avpSet = request.getMessage().getAvps();
-    // < Subscribe-Notifications-Request > ::= < Diameter Header: 308, REQ, PXY, 16777217 >
-    // < Session-Id >
-    // { Vendor-Specific-Application-Id }
-    // { Auth-Session-State }
-    avpSet.addAvp(Avp.AUTH_SESSION_STATE, 1);
-    // { Origin-Host }
-    avpSet.removeAvp(Avp.ORIGIN_HOST);
-    avpSet.addAvp(Avp.ORIGIN_HOST, getClientURI(), true);
-    // { Origin-Realm }
-    // [ Destination-Host ]
-    // { Destination-Realm }
-    // *[ Supported-Features ]
-    // { User-Identity }
-    AvpSet userIdentity = avpSet.addGroupedAvp(Avp.USER_IDENTITY, getApplicationId().getVendorId(), true, false);
-    // User-Identity ::= <AVP header: 700 10415>
-    // [Public-Identity]
-    userIdentity.addAvp(Avp.PUBLIC_IDENTITY, "tralalalal user", getApplicationId().getVendorId(), true, false, false);
-    // [ Wildcarded-PSI ]
-    // [ Wildcarded-IMPU ]
-    // *[ Service-Indication ]
-    // [ Send-Data-Indication ]
-    // [ Server-Name ]
-    // { Subs-Req-Type }
-    avpSet.addAvp(Avp.SUBS_REQ_TYPE, 0, getApplicationId().getVendorId(), true, false, true);
-    // *{ Data-Reference }
-    avpSet.addAvp(Avp.DATA_REFERENCE, 0, getApplicationId().getVendorId(), true, false, true);
-    // *[ Identity-Set ]
-    // [ Expiry-Time ]
-    // *[ DSAI-Tag ]
-    // *[ AVP ]
-    // *[ Proxy-Info ]
-    // *[ Route-Record ]
-
-    Utils.printMessage(log, super.stack.getDictionary(), request.getMessage(), true);
-    super.clientShSession.sendSubscribeNotificationsRequest(request);
-    this.sentSubscribeNotifications = true;
+  public boolean isSentUDR() {
+    return sentUDR;
   }
 
-  public void sendProfileUpdate() throws Exception {
-    ProfileUpdateRequest request = new ProfileUpdateRequestImpl(super.clientShSession.getSessions().get(0)
-        .createRequest(ProfileUpdateRequest.code, getApplicationId(), getServerRealmName()));
-
-    AvpSet avpSet = request.getMessage().getAvps();
-    // < Profile-Update-Request > ::= < Diameter Header: 307, REQ, PXY, 16777217 >
-    // < Session-Id >
-    // { Auth-Session-State }
-    avpSet.addAvp(Avp.AUTH_SESSION_STATE, 1);
-    // { Origin-Host }
-    avpSet.removeAvp(Avp.ORIGIN_HOST);
-    avpSet.addAvp(Avp.ORIGIN_HOST, getClientURI(), true);
-    // { Origin-Realm }
-    // [ Destination-Host ]
-    // { Destination-Realm }
-    // *[ Supported-Features ]
-    // { User-Identity }
-    AvpSet userIdentity = avpSet.addGroupedAvp(Avp.USER_IDENTITY, getApplicationId().getVendorId(), true, false);
-    // User-Identity ::= <AVP header: 700 10415>
-    // [Public-Identity]
-    userIdentity.addAvp(Avp.PUBLIC_IDENTITY, "tralalalal user", getApplicationId().getVendorId(), true, false, false);
-    // [MSISDN]
-    // *[AVP]
-
-    // [ Wildcarded-PSI ]
-    // [ Wildcarded-IMPU ]
-    // { Data-Reference }
-    avpSet.addAvp(Avp.DATA_REFERENCE, 0, getApplicationId().getVendorId(), true, false, true);
-    // { User-Data }
-    avpSet.addAvp(Avp.USER_DATA_SH, "<xml><morexml></morexml></xml>", getApplicationId().getVendorId(), true, false, false);
-
-    // *[ AVP ]
-    super.clientShSession.sendProfileUpdateRequest(request);
-    Utils.printMessage(log, super.stack.getDictionary(), request.getMessage(), true);
-    this.sentProfileUpdate = true;
+  public boolean isSentPUR() {
+    return sentPUR;
   }
 
-  public void sendUserData() throws Exception {
-    UserDataRequest request =
-        new UserDataRequestImpl(super.clientShSession.getSessions().get(0).createRequest(UserDataRequest.code, getApplicationId(), getServerRealmName()));
+  public boolean isSentSNR() {
+    return sentSNR;
+  }
 
-    AvpSet avpSet = request.getMessage().getAvps();
-    // < User-Data -Request> ::= < Diameter Header: 306, REQ, PXY, 16777217 >
-    // < Session-Id >
-    // { Auth-Session-State }
-    avpSet.addAvp(Avp.AUTH_SESSION_STATE, 1);
-    // { Origin-Host }
-    avpSet.removeAvp(Avp.ORIGIN_HOST);
-    avpSet.addAvp(Avp.ORIGIN_HOST, getClientURI(), true);
-    // { Origin-Realm }
-    // [ Destination-Host ]
-    // { Destination-Realm }
-    // *[ Supported-Features ]
-    // { User-Identity }
-    AvpSet userIdentity = avpSet.addGroupedAvp(Avp.USER_IDENTITY, getApplicationId().getVendorId(), true, false);
-    // User-Identity ::= <AVP header: 700 10415>
-    // [Public-Identity]
-    userIdentity.addAvp(Avp.PUBLIC_IDENTITY, "tralalalal user", getApplicationId().getVendorId(), true, false, false);
-    // [MSISDN]
-    // *[AVP]
+  public boolean isSentPNA() {
+    return sentPNA;
+  }
 
-    // [ Wildcarded-PSI ]
-    // [ Wildcarded-IMPU ]
-    // [ Server-Name ]
-    // *[ Service-Indication ]
-    // *{ Data-Reference }
-    avpSet.addAvp(Avp.DATA_REFERENCE, 0, getApplicationId().getVendorId(), true, false, true);
-    // *[ Identity-Set ]
-    // [ Requested-Domain ]
-    // [ Current-Location ]
-    // *[ DSAI-Tag ]
-    // *[ AVP ]
-    // *[ Proxy-Info ]
-    // *[ Route-Record ]
+  public boolean isReceivedUDA() {
+    return receivedUDA;
+  }
 
-    Utils.printMessage(log, super.stack.getDictionary(), request.getMessage(), true);
-    super.clientShSession.sendUserDataRequest(request);
-    this.sentUserDataRequest = true;
+  public boolean isReceivedPUA() {
+    return receivedPUA;
+  }
+
+  public boolean isReceivedSNA() {
+    return receivedSNA;
+  }
+
+  public boolean isReceivedPNR() {
+    return receivedPNR;
   }
 
   public void sendUserDataRequest() throws Exception {
     UserDataRequest udr = super.createUDR(super.clientShSession);
     super.clientShSession.sendUserDataRequest(udr);
-    this.sentUserDataRequest = true;
-    Utils.printMessage(log, super.stack.getDictionary(), udr.getMessage(), isSentUserData());
+    this.sentUDR = true;
+    Utils.printMessage(log, super.stack.getDictionary(), udr.getMessage(), isSentUDR());
   }
 
-  public void sendPushNotification() throws Exception {
-    if (!this.receivePushNotification || this.request == null) {
-      fail("Did not receive NOTIFICATION or answer already sent.", null);
-      throw new Exception("Did not receive NOTIFICATION or answer already sent. Request: " + this.request);
+  public void sendSubscribeNotificationsRequest() throws Exception {
+    SubscribeNotificationsRequest snr = super.createSNR(super.clientShSession);
+    super.clientShSession.sendSubscribeNotificationsRequest(snr);
+    this.sentSNR = true;
+    Utils.printMessage(log, super.stack.getDictionary(), snr.getMessage(), isSentSNR());
+  }
+
+  public void sendProfileUpdateRequest() throws Exception {
+    ProfileUpdateRequest pur = super.createPUR(super.clientShSession);
+    super.clientShSession.sendProfileUpdateRequest(pur);
+    this.sentPUR = true;
+    Utils.printMessage(log, super.stack.getDictionary(), pur.getMessage(), isSentPUR());
+  }
+
+  public void sendPushNotificationAnswer() throws Exception {
+    if (!this.receivedPNR || this.pushNotificationRequest == null) {
+      fail("Did not receive PNR or answer already sent.", null);
+      throw new Exception("Did not receive PNR or answer already sent. Request: " + this.pushNotificationRequest);
     }
-    PushNotificationAnswer answer = new PushNotificationAnswerImpl((Request) request.getMessage(), 2001);
 
-    AvpSet reqSet = request.getMessage().getAvps();
+    PushNotificationAnswer pna = super.createPNA(pushNotificationRequest, 2001);
 
-    AvpSet set = answer.getMessage().getAvps();
-    set.removeAvp(Avp.DESTINATION_HOST);
-    set.removeAvp(Avp.DESTINATION_REALM);
-    set.addAvp(reqSet.getAvp(Avp.CC_REQUEST_TYPE), reqSet.getAvp(Avp.CC_REQUEST_NUMBER), reqSet.getAvp(Avp.AUTH_APPLICATION_ID));
+    this.clientShSession.sendPushNotificationAnswer(pna);
 
-    request = null;
-    Utils.printMessage(log, super.stack.getDictionary(), answer.getMessage(), true);
-    // < Push-Notification-Answer > ::=< Diameter Header: 309, PXY, 16777217 >
-    // < Session-Id >
-    // { Vendor-Specific-Application-Id }
-    if (set.getAvp(Avp.VENDOR_SPECIFIC_APPLICATION_ID) == null) {
-      AvpSet vendorSpecificApplicationId = set.addGroupedAvp(Avp.VENDOR_SPECIFIC_APPLICATION_ID, 0, false, false);
-      // 1* [ Vendor-Id ]
-      vendorSpecificApplicationId.addAvp(Avp.VENDOR_ID, getApplicationId().getVendorId(), true);
-      // 0*1{ Auth-Application-Id }
-      vendorSpecificApplicationId.addAvp(Avp.AUTH_APPLICATION_ID, getApplicationId().getAuthAppId(), true);
-    }
-    // [ Result-Code ]
-    // [ Experimental-Result ]
-    // { Auth-Session-State }
-    set.addAvp(Avp.AUTH_SESSION_STATE, 1);
-    // { Origin-Host }
-    // { Origin-Realm }
-    // *[ Supported-Features ]
-    // *[ AVP ]
-    // *[ Failed-AVP ]
-    // *[ Proxy-Info ]
-    // *[ Route-Record ]
-
-    Utils.printMessage(log, super.stack.getDictionary(), answer.getMessage(), true);
-    super.clientShSession.sendPushNotificationAnswer(answer);
-    this.sentPushNotification = true;
+    this.sentPNA = true;
+    pushNotificationRequest = null;
+    Utils.printMessage(log, super.stack.getDictionary(), pna.getMessage(), isSentPNA());
   }
 
   // ------------ event handlers;
 
   @Override
-  public void doSubscribeNotificationsAnswerEvent(ClientShSession session, SubscribeNotificationsRequest request, SubscribeNotificationsAnswer answer)
+  public void doUserDataAnswerEvent(ClientShSession session, UserDataRequest udr, UserDataAnswer uda)
       throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
-    receiveSubscribeNotifications = true;
+    Utils.printMessage(log, super.stack.getDictionary(), uda.getMessage(), isReceivedUDA());
+    if (this.receivedUDA) {
+      fail("Received UDA more than once", null);
+      return;
+    }
+    this.receivedUDA = true;
   }
 
   @Override
-  public void doProfileUpdateAnswerEvent(ClientShSession session, ProfileUpdateRequest request, ProfileUpdateAnswer answer) throws InternalException,
-  IllegalDiameterStateException, RouteException, OverloadException {
-    receiveProfileUpdate = true;
+  public void doProfileUpdateAnswerEvent(ClientShSession session, ProfileUpdateRequest pur, ProfileUpdateAnswer pua) throws InternalException,
+      IllegalDiameterStateException, RouteException, OverloadException {
+    Utils.printMessage(log, super.stack.getDictionary(), pua.getMessage(), isReceivedPUA());
+    if (this.receivedPUA) {
+      fail("Received PUA more than once", null);
+      return;
+    }
+    this.receivedPUA = true;
   }
 
   @Override
-  public void doPushNotificationRequestEvent(ClientShSession session, PushNotificationRequest request)
+  public void doSubscribeNotificationsAnswerEvent(ClientShSession session, SubscribeNotificationsRequest snr, SubscribeNotificationsAnswer sna)
       throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
-    receivePushNotification = true;
-    this.request = request;
+    Utils.printMessage(log, super.stack.getDictionary(), sna.getMessage(), isReceivedSNA());
+    if (this.receivedSNA) {
+      fail("Received SNA more than once", null);
+      return;
+    }
+    this.receivedSNA = true;
   }
 
   @Override
-  public void doUserDataAnswerEvent(ClientShSession session, UserDataRequest request, UserDataAnswer answer)
+  public void doPushNotificationRequestEvent(ClientShSession session, PushNotificationRequest pnr)
       throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
-    receiveUserData = true;
+    if (this.receivedPNR) {
+      fail("Received PNR more than once", null);
+      return;
+    }
+    this.receivedPNR = true;
+    this.pushNotificationRequest = pnr;
   }
 
   @Override
@@ -296,14 +189,12 @@ public class ClientSh extends AbstractShClient {
     if (super.clientShSession.getSessionId().equals(request.getSessionId())) {
       // do fail?
       fail("Received Request in base listener, not in app specific!" + code, null);
-    }
-    else {
+    } else {
       super.clientShSession.release();
       try {
         super.clientShSession = this.sessionFactory.getNewAppSession(request.getSessionId(), getApplicationId(), ClientShSession.class, (Object) null);
         ((NetworkReqListener) this.clientShSession).processRequest(request);
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
         fail(null, e);
       }
@@ -311,88 +202,42 @@ public class ClientSh extends AbstractShClient {
     return null;
   }
 
-  @Override
-  protected String getClientURI() {
-    return clientURI;
-  }
-
-  public boolean isSentSubscribeNotifications() {
-    return sentSubscribeNotifications;
-  }
-
-  public boolean isSentProfileUpdate() {
-    return sentProfileUpdate;
-  }
-
-  public boolean isSentUserData() {
-    return sentUserDataRequest;
-  }
-
-  public boolean isSentPushNotification() {
-    return sentPushNotification;
-  }
-
-  public boolean isReceiveSubscribeNotifications() {
-    return receiveSubscribeNotifications;
-  }
-
-  public boolean isReceiveProfileUpdate() {
-    return receiveProfileUpdate;
-  }
-
-  public boolean isReceiveUserData() {
-    return receiveUserData;
-  }
-
-  public boolean isReceivePushNotification() {
-    return receivePushNotification;
-  }
-
-  //*********************************************************//
-  //***************** UDR methods ***************************//
-  //*********************************************************//
+  /** Attributes for User-Data-Request (UDR), Profile-Update-Request (PUR),
+   Subscribe-Notifications-Request (SNR) and Push-Notifications-Answer (PNA) **/
 
   @Override
   protected String getPublicIdentity() {
     // 3GPP TS 29.172 v15.1.0 section 6.3.15
-    String pi = "sip:fer@be-connect.us";
-    return pi;
+    return "sip:fer@restcomm.org";
   }
 
   @Override
   protected byte[] getMSISDN() {
-    String msisdnString = "59899077937";
-    byte[] msisdn = msisdnString.getBytes();
-    return msisdn;
+    return parseTBCD("59899077937");
   }
 
   @Override
   protected String getWildcardedPublicIdentity() {
     // 3GPP TS 29.172 v15.1.0 section 6.3.19
-    String wpi = "sip:*@be-connect.us";
-    return wpi;
+    return "sip:*@restcomm.org";
   }
 
   @Override
   protected String getWildcardedIMPU() {
     // 3GPP TS 29.172 v15.1.0 section 6.3.20
-    String wimpu = "tel:+598*";
-    return wimpu;
+    return "tel:+598*";
   }
 
   @Override
   protected String getServerName() {
     // 3GPP TS 29.172 v15.1.0 section 6.3.9
-    String serverName = "mme732@o2.com";
-    return serverName;
+    return "mme732@o2.com";
   }
 
   @Override
   protected byte[] getServiceIndication() {
-    // 3GPP TS 29.172 v15.1.0 section 6.3.5
-    String siString = "MMTEL-PSTN-ISDN-CS-BINARY";
-    byte[] serviceIndication = siString.getBytes();
-    return serviceIndication;
+    // 3GPP TS 29.172 v18.0.0 section 6.3.5
+    return "MMTEL-PSTN-ISDN-CS-BINARY".getBytes(StandardCharsets.UTF_8);
   }
 
   @Override
@@ -427,8 +272,7 @@ public class ClientSh extends AbstractShClient {
         IMSI (32)
         IMSPrivateUserIdentity (33)
      */
-    int dataReference = 14;
-    return dataReference;
+    return 14;
   }
 
   @Override
@@ -441,8 +285,7 @@ public class ClientSh extends AbstractShClient {
         IMPLICIT_IDENTITIES (2)
         ALIAS_IDENTITIES (3)
      */
-    int identitySet = 0;
-    return identitySet;
+    return 0;
   }
 
   @Override
@@ -456,8 +299,7 @@ public class ClientSh extends AbstractShClient {
         PS-Domain (1)
         The requested data apply to the PS domain.
      */
-    int requestedDomain = 1;
-    return requestedDomain;
+    return 1;
   }
 
   @Override
@@ -470,18 +312,16 @@ public class ClientSh extends AbstractShClient {
         InitiateActiveLocationRetrieval (1)
           It is requested that an active location retrieval is initiated.
      */
-    int currentLocation = 0;
-    return currentLocation;
+    return 0;
   }
 
   @Override
   protected byte[] getDSAITag() {
     // 3GPP TS 29.172 v15.1.0 section 6.3.18
     // The DSAI-Tag AVP is of type OctetString.
-    // This AVP contains the DSAI-Tag identifying the instance of the Dynamic Service Activation Information being accessed for the Public Identity.
-    String dsaiTagString = "19";
-    byte[] dsaiTag = dsaiTagString.getBytes();
-    return dsaiTag;
+    // This AVP contains the DSAI-Tag identifying
+    // the instance of the Dynamic Service Activation Information being accessed for the Public Identity.
+    return new byte[] {0x01, 0x11};
   }
 
   @Override
@@ -498,22 +338,20 @@ public class ClientSh extends AbstractShClient {
 
         PRIORITY-0 is the highest priority.
      */
-    int sessionPriority = 2;
-    return sessionPriority;
+    return 2;
   }
 
   @Override
   protected String getUserName() {
     // Information Element IMSI Mapped to AVP User-Name
-    String imsi = "748039876543210";
-    return imsi;
+    return "748039876543210";
   }
 
   @Override
   protected long getRequestedNodes() {
     /*
     3GPP TS 29.172 v15.1.0 section 6.3.7A
-        The Requested-Nodes AVP is of type Unsigned32 and it shall contain a bit mask. The meaning of the bits shall be as defined in table 6.3.7A/1:
+        The Requested-Nodes AVP is of type Unsigned32, and it shall contain a bit mask. The meaning of the bits shall be as defined in table 6.3.7A/1:
         Table 6.3.7A/1: Requested-Nodes
         Bit	Name	                Description
         0	MME	                    The requested data apply to the MME
@@ -521,8 +359,7 @@ public class ClientSh extends AbstractShClient {
         2	3GPP-AAA-SERVER-TWAN	The requested data apply to the 3GPP AAA Server for TWAN
         3	AMF	                    The requested data apply to the AMF (for 3GPP access)
      */
-    long requestedNodes = 2L;
-    return requestedNodes;
+    return 2L;
   }
 
   @Override
@@ -535,8 +372,7 @@ public class ClientSh extends AbstractShClient {
       The following values are defined:
       ONLY_SERVING_NODES_REQUIRED (0)
      */
-    int servingNodeIndication = 2;
-    return servingNodeIndication;
+    return 2;
   }
 
   @Override
@@ -547,8 +383,7 @@ public class ClientSh extends AbstractShClient {
       PREPAGING_NOT_SUPPORTED (0)
       PREPAGING_SUPPORTED (1)
      */
-    int prePagingSupported = 1;
-    return prePagingSupported;
+    return 1;
   }
 
   @Override
@@ -559,23 +394,21 @@ public class ClientSh extends AbstractShClient {
           ONLY_LOCAL_TIME_ZONE_REQUESTED (0)
           LOCAL_TIME_ZONE_WITH_LOCATION_INFO_REQUESTED (1)
      */
-    int localTimeZoneIndication = 0;
-    return localTimeZoneIndication;
+    return 0;
   }
 
   @Override
   protected long getUDRFlags() {
     /*
     3GPP TS 29.172 v15.1.0 section 6.3.28
-        The UDR-Flags AVP is of type Unsigned32 and it shall contain a bit mask. The meaning of the bits shall be as defined in 3GPP TS 29.328 [1].
+        The UDR-Flags AVP is of type Unsigned32, and it shall contain a bit mask. The meaning of the bits shall be as defined in 3GPP TS 29.328 [1].
           Table 6.3.28/1: UDR-Flags
           Bit	Name
           0	Location-Information-EPS-Supported
           1	RAT-Type-Requested
       NOTE:	Bits not defined in this table shall be cleared by the sender of the request and discarded by the receiver of the request.
      */
-    long udrFlags = 0L;
-    return udrFlags;
+    return 0L;
   }
 
   @Override
@@ -589,9 +422,7 @@ public class ClientSh extends AbstractShClient {
 
     CallReferenceNumber ::= OCTET STRING (SIZE (1..8))
   */
-    String callReferenceNumberString = "4143";
-    byte[] callReferenceNumber = callReferenceNumberString.getBytes();
-    return callReferenceNumber;
+    return new byte[] {0x10, 0x2f};
   }
 
   @Override
@@ -600,15 +431,148 @@ public class ClientSh extends AbstractShClient {
     3GPP TS 29.172 v15.1.0 section 6.3.31
       The AS-Number AVP is of type OctetString. The exact content and format of this AVP corresponds to the gmsc-address parameter described in 3GPP TS 29.002.
   */
-    String asNumberString = "49";
-    byte[] asNumber = asNumberString.getBytes();
-    return asNumber;
+    return new byte[] {0x49};
   }
 
   @Override
-  protected long getOcFeatureVector() {
-    long ocFeatureVector = 2L;
-    return ocFeatureVector;
+  protected long getOCFeatureVector() {
+    // The OC-Feature-Vector AVP (AVP Code 622) is of type Unsigned64 and
+    // contains a 64-bit flags field of announced capabilities of a
+    // Diameter Overload Indication Conveyance (DOIC) node
+    // From RFC 8581
+    // The Peer-Report feature defines a new feature bit for the OC-Feature-Vector AVP.
+    // OC_PEER_REPORT (0x0000000000000010)
+    // When this flag is set by a DOIC node, it indicates that the DOIC node supports the Peer Overload report type.
+    return 2;
   }
 
+  @Override
+  protected String getSourceID() {
+    // The SourceID AVP (AVP code 649) is of type DiameterIdentity and is
+    // inserted by a Diameter node to indicate the source of the AVP in which it is a part.
+    return "mmec03.mmegi3000.mme.epc.mnc002.mcc748.3gppnetwork.org";
+  }
+
+  @Override
+  protected long getOCPeerAlgo() {
+    // The OC-Peer-Algo AVP (AVP code 648) is of type Unsigned64 and
+    // contains a 64-bit flags field of announced capabilities for a DOIC node.
+    // The value of zero ("0") is reserved.
+    return 3;
+  }
+
+  // *[ Supported-Features ]
+  // The Supported-Features AVP is of type Grouped.
+  // If this AVP is present it may inform the destination host about
+  // the features that the origin host supports for the application.
+  @Override
+  protected long getVendorId() {
+    // Where a Supported-Features AVP is used to identify features that have been defined by 3GPP,
+    // the Vendor-Id AVP shall contain the vendor ID of 3GPP
+    return 10415;
+  }
+
+  @Override
+  protected long getFeatureListID() {
+    // The Feature-List-ID AVP is of type Unsigned32, and it contains the identity of a feature list
+    // The Vendor-Id AVP and the Feature-List-ID AVP shall together identify
+    // which feature list is carried in the Supported-Features AVP for the Application-ID
+    // present in the command header.
+    // If there are multiple feature lists defined by the same vendor and the same application,
+    // the Feature-List-ID AVP shall differentiate those lists from one another.
+    // The destination host shall use the value of the Feature-List-ID AVP to identify the feature list.
+    return 1;
+  }
+
+  @Override
+  protected long getFeatureList() {
+    // The Feature-List AVP contains a list of supported features of the origin host.
+    // Wireshark example taken from a real network capture:
+    // AVP: Feature-List(630) l=16 f=V-- vnd=TGPP val=469762567
+    //    AVP Code: 630 Feature-List
+    //    AVP Flags: 0x80, Vendor-Specific: Set
+    //    AVP Length: 16
+    //    AVP Vendor Id: 3GPP (10415)
+    //    Feature-List Flags: 0x1c000207
+    //        0... .... .... .... .... .... .... .... = Additional MSISDN: Not supported
+    //        .0.. .... .... .... .... .... .... .... = UE Time Zone Retrieval: Not supported
+    //        ..0. .... .... .... .... .... .... .... = Partial Purge from a Combined MME/SGSN: Not supported
+    //        ...1 .... .... .... .... .... .... .... = State/Location Information Retrieval: Supported
+    //        .... 1... .... .... .... .... .... .... = Terminating Access Domain Selection Data Retrieval: Supported
+    //        .... .1.. .... .... .... .... .... .... = UE Reachability Notification: Supported
+    //        .... ..0. .... .... .... .... .... .... = Barring of outgoing international calls except those directed to the home PLMN Country: Not supported
+    //        .... ...0 .... .... .... .... .... .... = Barring of outgoing international calls: Not supported
+    //        .... .... 0... .... .... .... .... .... = Barring of all outgoing calls: Not supported
+    //        .... .... .0.. .... .... .... .... .... = Barring of Outgoing Calls: Not supported
+    //        .... .... ..0. .... .... .... .... .... = Short Message MO-PP: Not supported
+    //        .... .... ...0 .... .... .... .... .... = Allow an MS to request transfer of its location to another LCS client: Not supported
+    //        .... .... .... 0... .... .... .... .... = Allow an MS to perform self location without interaction with the PLMN: Not supported
+    //        .... .... .... .0.. .... .... .... .... = Allow an MS to request its own location: Not supported
+    //        .... .... .... ..0. .... .... .... .... = All Mobile Originating Location Request Classes: Not supported
+    //        .... .... .... ...0 .... .... .... .... = Allow location by LCS clients of a designated LCS service type: Not supported
+    //        .... .... .... .... 0... .... .... .... = Allow location by designated PLMN operator LCS clients: Not supported
+    //        .... .... .... .... .0.. .... .... .... = Allow location by designated external value added LCS clients: Not supported
+    //        .... .... .... .... ..0. .... .... .... = Allow location by any value added LCS client to which a call/session is established from the target UE: Not supported
+    //        .... .... .... .... ...0 .... .... .... = Allow location by any LCS client: Not supported
+    //        .... .... .... .... .... 0... .... .... = All LCS Privacy Exception Classes: Not supported
+    //        .... .... .... .... .... .0.. .... .... = Trace Function: Not supported
+    //        .... .... .... .... .... ..1. .... .... = Regional Subscription: Supported
+    //        .... .... .... .... .... ...0 .... .... = Operator Determined Barring of all outgoing international calls except those directed to the home PLMN country and Barring of all outgoing inter-zonal calls: Not supported
+    //        .... .... .... .... .... .... 0... .... = Operator Determined Barring of all outgoing inter-zonal calls except those directed to the home PLMN country: Not supported
+    //        .... .... .... .... .... .... .0.. .... = Operator Determined Barring of all outgoing inter-zonal calls: Not supported
+    //        .... .... .... .... .... .... ..0. .... = Operator Determined Barring of all outgoing international calls except those directed to the home PLMN country: Not supported
+    //        .... .... .... .... .... .... ...0 .... = Operator Determined Barring of all outgoing international calls: Not supported
+    //        .... .... .... .... .... .... .... 0... = Operator Determined Barring of all outgoing calls: Not supported
+    //        .... .... .... .... .... .... .... .1.. = Operator Determined Barring of Packet Oriented Services from access points that are within the roamed to VPLMN: Supported
+    //        .... .... .... .... .... .... .... ..1. = Operator Determined Barring of Packet Oriented Services from access points that are within the HPLMN whilst the subscriber is roaming in a VPLMN: Supported
+    //        .... .... .... .... .... .... .... ...1 = Operator Determined Barring of all Packet Oriented Services: Supported
+    return 469762567L;
+  }
+
+  @Override
+  protected byte[] getUserData() {
+    String userDataXML;
+    try {
+      String path = "src/test/java/org/mobicents/diameter/stack/functional/sh/base/Sh-Data.xml";
+      userDataXML = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return userDataXML.getBytes(StandardCharsets.UTF_8);
+  }
+
+  @Override
+  protected int getSendDataIndication() {
+    // The Send-Data-Indication AVP is of type Enumerated.
+    // If present it indicates that the sender requests the User-Data. The following values are defined:
+    //  USER_DATA_NOT_REQUESTED (0)
+    //  USER_DATA_REQUESTED (1)
+    return 1;
+  }
+
+  @Override
+  protected int getSubsReqType() {
+    // The Subs-Req-Type AVP is of type Enumerated, and indicates the type of the subscription-to-notifications request.
+    // The following values are defined:
+    //  Subscribe (0)
+    //    This value is used by an AS to subscribe to notifications of changes in data.
+    //  Unsubscribe (1)
+    //    This value is used by an AS to unsubscribe to notifications of changes in data.
+    return 0;
+  }
+
+  @Override
+  protected Time getExpiryTime() {
+    // The Expiry-Time AVP is of type Time.
+    // This AVP contains the expiry time of subscriptions to notifications in the HSS
+    return Time.valueOf("23:59:59");
+  }
+
+  @Override
+  protected int getOneTimeNotification() {
+    // The One-Time-Notification AVP is of type Enumerated. If present it indicates that the sender requests to be notified only one time. The following values are defined:
+    //  ONE_TIME_NOTIFICATION_REQUESTED (0)
+    // This AVP is only applicable to UE reachability for IP (25)
+    return 0;
+  }
 }

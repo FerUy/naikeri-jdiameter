@@ -1,49 +1,4 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.server.impl;
-
-import static org.jdiameter.api.PeerState.DOWN;
-import static org.jdiameter.api.PeerState.INITIAL;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -53,6 +8,7 @@ import java.util.Set;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
+import org.jdiameter.api.AvpSet;
 import org.jdiameter.api.Configuration;
 import org.jdiameter.api.InternalException;
 import org.jdiameter.api.LocalAction;
@@ -87,7 +43,9 @@ import org.jdiameter.server.api.IStateMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+import static org.jdiameter.api.PeerState.*;
+
+ /**
  *
  * @author erick.svenson@yahoo.com
  * @author <a href="mailto:brainslog@gmail.com"> Alexandre Mendonca </a>
@@ -171,25 +129,90 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
 
   @Override
   public void addIncomingConnection(IConnection conn) {
-    PeerState state = fsm.getState(PeerState.class);
-    if (DOWN  ==  state || INITIAL == state) {
-      conn.addConnectionListener(connListener);
-      // ammendonca: if we are receiving a new connection in such state, we may want to make it primary, right?
-      this.connection = conn;
-      logger.debug("Append external connection [{}]", conn.getKey());
+    conn.addConnectionListener(connListener);
+    // ammendonca: if we are receiving a new connection in such state, we may want to make it primary, right?
+    this.connection = conn;
+    logger.debug("Append external connection [{}]", conn.getKey());
+  }
+
+  public void sendUnableCEA(IConnection connection, IMessage cer) throws OverloadException, TransportException {
+    logger.info("Send unable to comply CEA message");
+    IMessage message = parser.createEmptyMessage(Message.CAPABILITIES_EXCHANGE_ANSWER, 0);
+    String errMessage = "Unable to receive CER in OPEN state.";
+    message.setRequest(false);
+    message.setHopByHopIdentifier(cer.getHopByHopIdentifier());
+    message.setEndToEndIdentifier(cer.getEndToEndIdentifier());
+    message.getAvps().addAvp(Avp.ORIGIN_HOST, metaData.getLocalPeer().getUri().getFQDN(), true, false, true);
+    message.getAvps().addAvp(Avp.ORIGIN_REALM, metaData.getLocalPeer().getRealmName(), true, false, true);
+    for (InetAddress ia : metaData.getLocalPeer().getIPAddresses()) {
+      message.getAvps().addAvp(Avp.HOST_IP_ADDRESS, ia, true, false);
     }
-    else {
-      logger.error("Releasing connection [{}] due to state [{}]", conn.getKey(), state.name());
-      incConnections.remove(conn.getKey());
-      try {
-        conn.release();
+    message.getAvps().addAvp(Avp.VENDOR_ID, metaData.getLocalPeer().getVendorId(), true, false, true);
+
+    for (ApplicationId appId: metaData.getLocalPeer().getCommonApplications()) {
+      addAppId(appId, message);
+    }
+
+    message.getAvps().addAvp(Avp.PRODUCT_NAME,  metaData.getLocalPeer().getProductName(), false);
+    message.getAvps().addAvp(Avp.RESULT_CODE, ResultCode.UNABLE_TO_COMPLY, true, false, true);
+    message.getAvps().addAvp(Avp.FIRMWARE_REVISION, metaData.getLocalPeer().getFirmware(), true);
+    message.getAvps().addAvp(Avp.ERROR_MESSAGE, errMessage, false);
+    message.getAvps().removeAvp(Avp.DESTINATION_HOST);
+    message.getAvps().removeAvp(Avp.DESTINATION_REALM);
+    router.garbageCollectRequestRouteInfo(message);
+    // Send to network
+    message.setState(IMessage.STATE_SENT);
+    logger.debug("Calling connection to send message [{}] to peer [{}] over the network", message, getUri());
+    connection.sendMessage(message);
+    logger.debug("Connection sent message [{}] to peer [{}] over the network", message, getUri());
+  }
+
+  private void addAppId(ApplicationId appId, IMessage message) {
+    if (appId.getVendorId() == 0) {
+      if (appId.getAuthAppId() != 0) {
+        message.getAvps().addAvp(Avp.AUTH_APPLICATION_ID, appId.getAuthAppId(), true, false, true);
+      } else if (appId.getAcctAppId() != 0) {
+        message.getAvps().addAvp(Avp.ACCT_APPLICATION_ID, appId.getAcctAppId(), true, false, true);
       }
-      catch (IOException e) {
-        logger.debug("Can not close external connection", e);
+    } else {
+      // Avoid duplicates
+      boolean vendorIdPresent = false;
+      for (Avp avp : message.getAvps().getAvps(Avp.SUPPORTED_VENDOR_ID)) {
+        try {
+          if (avp.getUnsigned32() == appId.getVendorId()) {
+            vendorIdPresent = true;
+            break;
+          }
+        } catch (Exception e) {
+          logger.error("Failed to read Supported-Vendor-Id.", e);
+        }
       }
-      finally {
-        logger.debug("Close external connection");
+      if (!vendorIdPresent) {
+        message.getAvps().addAvp(Avp.SUPPORTED_VENDOR_ID, appId.getVendorId(), true, false, true);
       }
+      AvpSet vendorApp = message.getAvps().addGroupedAvp(Avp.VENDOR_SPECIFIC_APPLICATION_ID, true, false);
+      vendorApp.addAvp(Avp.VENDOR_ID, appId.getVendorId(), true, false, true);
+      if (appId.getAuthAppId() != 0) {
+        vendorApp.addAvp(Avp.AUTH_APPLICATION_ID, appId.getAuthAppId(), true, false, true);
+      }
+      if (appId.getAcctAppId() != 0) {
+        vendorApp.addAvp(Avp.ACCT_APPLICATION_ID, appId.getAcctAppId(), true, false, true);
+      }
+    }
+  }
+
+  public void removeIncomingConnection(IConnection conn) {
+    PeerState state = fsm.getState(PeerState.class);
+    logger.error("Releasing connection [{}] due to state [{}]", conn.getKey(), state.name());
+    incConnections.remove(conn.getKey());
+    try {
+      conn.release();
+    }
+    catch (IOException e) {
+      logger.error("Can not close external connection", e);
+    }
+    finally {
+      logger.debug("Close external connection");
     }
   }
 
@@ -215,7 +238,7 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
 
     @Override
     public void sendCeaMessage(int resultCode, Message cer,  String errMessage) throws TransportException, OverloadException {
-      logger.debug("Send CEA message");
+      logger.info("Send CEA message");
 
       IMessage message = parser.createEmptyMessage(Message.CAPABILITIES_EXCHANGE_ANSWER, 0);
       message.setRequest(false);
@@ -243,7 +266,7 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
 
     @Override
     public int processCerMessage(String key, IMessage message) {
-      logger.debug("Processing CER");
+      logger.info("Processing CER");
 
       int resultCode = ResultCode.SUCCESS;
       try {
@@ -266,7 +289,7 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
         }
         // Handshake
         if (!connection.getKey().equals(key)) { // received cer by other connection
-          logger.debug("CER received by other connection [{}]", key);
+          logger.info("CER received by other connection [{}]", key);
 
           switch (fsm.getState(PeerState.class)) {
             case DOWN:
@@ -306,8 +329,8 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
           }
         }
         else {
-          if (logger.isDebugEnabled()) {
-            logger.debug("CER received by current connection, key: [{}] PeerState: [{}] ", key, fsm.getState(PeerState.class));
+          if (logger.isInfoEnabled()) {
+            logger.info("CER received by current connection, key: [{}] PeerState: [{}] ", key, fsm.getState(PeerState.class));
           }
           if (fsm.getState(PeerState.class).equals(INITIAL)) { // received cer by current connection
             resultCode = 0; // NOP
@@ -322,9 +345,9 @@ public class PeerImpl extends org.jdiameter.client.impl.controller.PeerImpl impl
         }
       }
       catch (Exception exc) {
-        logger.debug("Can not process CER", exc);
+        logger.error("Can not process CER", exc);
       }
-      logger.debug("CER result [{}]", resultCode);
+      logger.info("CER result [{}]", resultCode);
 
       return resultCode;
     }

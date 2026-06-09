@@ -1,0 +1,279 @@
+package org.jdiameter.server.impl.app.sgd;
+
+import org.jdiameter.api.Answer;
+import org.jdiameter.api.EventListener;
+import org.jdiameter.api.IllegalDiameterStateException;
+import org.jdiameter.api.InternalException;
+import org.jdiameter.api.NetworkReqListener;
+import org.jdiameter.api.OverloadException;
+import org.jdiameter.api.Request;
+import org.jdiameter.api.RouteException;
+import org.jdiameter.api.app.AppEvent;
+import org.jdiameter.api.app.StateChangeListener;
+import org.jdiameter.api.app.StateEvent;
+import org.jdiameter.api.sgd.ServerSGdSession;
+import org.jdiameter.api.sgd.ServerSGdSessionListener;
+import org.jdiameter.api.sgd.events.MTForwardShortMessageRequest;
+import org.jdiameter.api.sgd.events.MTForwardShortMessageAnswer;
+import org.jdiameter.api.sgd.events.MOForwardShortMessageRequest;
+import org.jdiameter.api.sgd.events.MOForwardShortMessageAnswer;
+import org.jdiameter.client.api.ISessionFactory;
+import org.jdiameter.common.api.app.sgd.ISGdMessageFactory;
+import org.jdiameter.common.api.app.sgd.SGdSessionState;
+import org.jdiameter.common.impl.app.AppAnswerEventImpl;
+import org.jdiameter.common.impl.app.AppRequestEventImpl;
+import org.jdiameter.common.impl.app.sgd.SGdSession;
+import org.jdiameter.server.impl.app.sgd.Event.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
+ */
+public class SGdServerSessionImpl extends SGdSession implements ServerSGdSession, EventListener<Request, Answer>, NetworkReqListener {
+
+  private static final Logger logger = LoggerFactory.getLogger(SGdServerSessionImpl.class);
+
+  // Factories and Listeners
+  // --------------------------------------------------
+  private transient ServerSGdSessionListener listener;
+  protected long appId;
+  protected IServerSGdSessionData sessionData;
+
+  public SGdServerSessionImpl(IServerSGdSessionData sessionData, ISGdMessageFactory fct, ISessionFactory sf,
+                              ServerSGdSessionListener lst) {
+    super(sf, sessionData);
+    if (lst == null) {
+      throw new IllegalArgumentException("Listener can not be null");
+    }
+    if ((this.appId = fct.getApplicationId()) < 0) {
+      throw new IllegalArgumentException("ApplicationId can not be less than zero");
+    }
+
+    this.listener = lst;
+    super.messageFactory = fct;
+    this.sessionData = sessionData;
+  }
+
+  public void sendMTForwardShortMessageAnswer(MTForwardShortMessageAnswer answer)
+      throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
+    send(Event.Type.SEND_MESSAGE, null, answer);
+  }
+
+  public void sendMOForwardShortMessageRequest(MOForwardShortMessageRequest request)
+      throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
+    send(Event.Type.SEND_MESSAGE, request, null);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <E> E getState(Class<E> stateType) {
+    return stateType == SGdSessionState.class ? (E) this.sessionData.getSGdSessionState() : null;
+  }
+
+  @SuppressWarnings("unused")
+  public boolean handleEvent(StateEvent event) throws InternalException, OverloadException {
+    try {
+      sendAndStateLock.lock();
+      if (!super.session.isValid()) {
+        // FIXME: throw new InternalException("Generic session is not valid.");
+        return false;
+      }
+      final SGdSessionState state = this.sessionData.getSGdSessionState();
+      SGdSessionState newState;
+      Event localEvent = (Event) event;
+      Event.Type eventType = (Type) event.getType();
+
+      switch (state) {
+
+        case IDLE:
+          switch (eventType) {
+
+            case RECEIVE_TFR:
+              this.sessionData.setBuffer((Request) ((AppEvent) event.getData()).getMessage());
+              super.cancelMsgTimer();
+              super.startMsgTimer();
+              newState = SGdSessionState.MESSAGE_SENT_RECEIVED;
+              setState(newState);
+              listener.doMTForwardShortMessageRequestEvent(this, (MTForwardShortMessageRequest) event.getData());
+              break;
+
+            case SEND_MESSAGE:
+              super.session.send(((AppEvent) event.getData()).getMessage(), this);
+              newState = SGdSessionState.MESSAGE_SENT_RECEIVED;
+              setState(newState);
+              break;
+
+            default:
+              logger.error("Wrong action in SGd Server FSM. State: IDLE, Event Type: {}", eventType);
+              break;
+          }
+          break;
+
+        case MESSAGE_SENT_RECEIVED:
+          switch (eventType) {
+            case TIMEOUT_EXPIRES:
+              newState = SGdSessionState.TIMEDOUT;
+              setState(newState);
+              break;
+
+            case RECEIVE_OFA:
+              newState = SGdSessionState.TERMINATED;
+              setState(newState);
+              listener.doMOForwardShortMessageAnswerEvent(this, (MOForwardShortMessageRequest) localEvent.getRequest(),
+                  (MOForwardShortMessageAnswer) localEvent.getAnswer());
+              break;
+
+            case SEND_MESSAGE:
+              try {
+                super.session.send(((AppEvent) event.getData()).getMessage(), this);
+              } finally {
+                newState = SGdSessionState.TERMINATED;
+                setState(newState);
+              }
+              break;
+
+            default:
+              throw new InternalException(
+                  "Should not receive more messages after initial. Command: " + event.getData());
+          }
+          break;
+
+        case TERMINATED:
+          throw new InternalException("Cant receive message in state TERMINATED. Command: " + event.getData());
+
+        case TIMEDOUT:
+          throw new InternalException("Cant receive message in state TIMEDOUT. Command: " + event.getData());
+
+        default:
+          logger.error("SGd Server FSM in wrong state: {}", state);
+          break;
+      }
+    } catch (Exception e) {
+      throw new InternalException(e);
+    } finally {
+      sendAndStateLock.unlock();
+    }
+    return true;
+  }
+
+  public void receivedSuccessMessage(Request request, Answer answer) {
+    AnswerDelivery rd = new AnswerDelivery();
+    rd.session = this;
+    rd.request = request;
+    rd.answer = answer;
+    super.scheduler.execute(rd);
+  }
+
+  public void timeoutExpired(Request request) {
+    try {
+      handleEvent(new Event(Event.Type.TIMEOUT_EXPIRES, new AppRequestEventImpl(request), null));
+    } catch (Exception e) {
+      logger.debug("Failed to process timeout message", e);
+    }
+  }
+
+  public Answer processRequest(Request request) {
+    RequestDelivery rd = new RequestDelivery();
+    rd.session = this;
+    rd.request = request;
+    super.scheduler.execute(rd);
+    return null;
+  }
+
+  protected void send(Event.Type type, AppEvent request, AppEvent answer) throws InternalException {
+    try {
+      if (type != null) {
+        handleEvent(new Event(type, request, answer));
+      }
+    } catch (Exception e) {
+      throw new InternalException(e);
+    }
+  }
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  protected void setState(SGdSessionState newState) {
+    SGdSessionState oldState = this.sessionData.getSGdSessionState();
+    this.sessionData.setSGdSessionState(newState);
+
+    for (StateChangeListener i : stateListeners) {
+      i.stateChanged(this, oldState, newState);
+    }
+    if (newState == SGdSessionState.TERMINATED || newState == SGdSessionState.TIMEDOUT) {
+      super.cancelMsgTimer();
+      this.release();
+    }
+  }
+
+  @Override
+  public void onTimer(String timerName) {
+    if (timerName.equals(SGdSession.TIMER_NAME_MSG_TIMEOUT)) {
+      try {
+        sendAndStateLock.lock();
+        try {
+          handleEvent(
+              new Event(Event.Type.TIMEOUT_EXPIRES, new AppRequestEventImpl(this.sessionData.getBuffer()), null));
+        } catch (Exception e) {
+          logger.debug("Failure handling Timeout event.");
+        }
+        this.sessionData.setBuffer(null);
+        this.sessionData.setTsTimerId(null);
+      } finally {
+        sendAndStateLock.unlock();
+      }
+    }
+  }
+
+  public void release() {
+    if (isValid()) {
+      try {
+        sendAndStateLock.lock();
+        super.release();
+      } catch (Exception e) {
+        logger.debug("Failed to release session", e);
+      } finally {
+        sendAndStateLock.unlock();
+      }
+    } else {
+      logger.debug("Trying to release an already invalid session, with Session ID '{}'", getSessionId());
+    }
+  }
+
+  private class RequestDelivery implements Runnable {
+    ServerSGdSession session;
+    Request request;
+
+    public void run() {
+      try {
+        if (request.getCommandCode() == MTForwardShortMessageRequest.code) {
+          handleEvent(
+              new Event(Type.RECEIVE_TFR, messageFactory.createMTForwardShortMessageRequest(request), null));
+        } else {
+          listener.doOtherEvent(session, new AppRequestEventImpl(request), null);
+        }
+      } catch (Exception e) {
+        logger.debug("Failed to process request message", e);
+      }
+    }
+  }
+
+  private class AnswerDelivery implements Runnable {
+    ServerSGdSession session;
+    Answer answer;
+    Request request;
+
+    public void run() {
+      try {
+        if (answer.getCommandCode() == MOForwardShortMessageAnswer.code) {
+          handleEvent(new Event(Type.RECEIVE_OFA, messageFactory.createMOForwardShortMessageRequest(request),
+              messageFactory.createMOForwardShortMessageAnswer(answer)));
+        } else {
+          listener.doOtherEvent(session, new AppRequestEventImpl(request), new AppAnswerEventImpl(answer));
+        }
+      } catch (Exception e) {
+        logger.debug("Failed to process success message", e);
+      }
+    }
+  }
+
+}
+

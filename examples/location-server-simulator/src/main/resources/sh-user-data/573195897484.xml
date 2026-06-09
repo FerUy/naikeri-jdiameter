@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Sh-Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Sh-Data>
     <CSLocationInformation>
         <LocationNumber>hJdlMCRFmQk=</LocationNumber>
         <CellGlobalId>NzIBAAFOSg==</CellGlobalId>
         <GeographicalInformation>EBu2ELlt9wA=</GeographicalInformation>
-        <GeodeticInformation>AxCiJcdOOq8ZAQ==</GeodeticInformation>
         <VLRNumber>
             <Address>NTk4OTc4OTM1==</Address>
         </VLRNumber>

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,31 +18,32 @@ import java.util.ArrayList;
 public class SubscriberInformation {
 
     private static final Logger logger = LoggerFactory.getLogger(SubscriberInformation.class);
-    private static String subscriberLocationDataFilename = "subscriber-location-data.json";
 
-    public ArrayList<SubscriberElement> subscribers = new ArrayList<SubscriberElement>();
+    public ArrayList<SubscriberElement> subscribers = new ArrayList<>();
 
     SubscriberInformation() {
     }
 
-    public static SubscriberInformation load() throws FileNotFoundException {
+    public static SubscriberInformation load() {
         try {
-            String localSubscriberDataFullname = System.getProperty("user.dir") + "/" + subscriberLocationDataFilename;
+            String subscriberLocationDataFilename = "subscriber-location-data.json";
+            String localSubscriberDataFullName = System.getProperty("user.dir") + "/" + subscriberLocationDataFilename;
 
-            File file = new File(localSubscriberDataFullname);
+            File file = new File(localSubscriberDataFullName);
             BufferedReader bufferedReader;
             if (file.exists()) {
-                logger.info("Trying to load subscribers from '" + localSubscriberDataFullname + "' local file.");
+                logger.info("Trying to load subscribers from '{}' local file.", localSubscriberDataFullName);
                 bufferedReader = new BufferedReader(new FileReader(file));
             } else {
-                logger.info("Loading subscribers from internal 'resources/" + subscriberLocationDataFilename + "' file.");
+                logger.info("Loading subscribers from internal 'resources/{}' file.", subscriberLocationDataFilename);
                 ClassLoader classLoader = SubscriberInformation.class.getClassLoader();
                 InputStream inputStream = classLoader.getResourceAsStream(subscriberLocationDataFilename);
+                assert inputStream != null;
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             }
 
             SubscriberInformation subscriberInformation = new Gson().fromJson(bufferedReader, SubscriberInformation.class);
-            logger.info("Loaded " + subscriberInformation.subscribers.size() + " records from location subscriber file.");
+            logger.info("Loaded {} records from location subscriber file.", subscriberInformation.subscribers.size());
 
             return subscriberInformation;
         } catch (Exception e){
@@ -60,9 +60,9 @@ public class SubscriberInformation {
 
         for (SubscriberElement subscriber: subscribers) {
             if (subscriber.imsi.equals(imsi) || subscriber.msisdn.equals(msisdn)) {
-                if ((imsi == null || imsi.length() == 0) && subscriber.msisdn.equals(msisdn)) {
+                if (imsi.isEmpty() && subscriber.msisdn.equals(msisdn)) {
                     return subscriber;
-                } else if ((msisdn == null || msisdn.length() == 0) && subscriber.imsi.equals(imsi)) {
+                } else if (msisdn.isEmpty() && subscriber.imsi.equals(imsi)) {
                     return subscriber;
                 } else if (subscriber.imsi.equals(imsi) && subscriber.msisdn.equals(msisdn)) {
                     return subscriber;
@@ -90,21 +90,22 @@ public class SubscriberInformation {
             File file = new File(localSubscriberUserDataFile);
             BufferedReader bufferedReader;
             if (file.exists()) {
-                logger.info("Loading subscriber user data from '" + localSubscriberUserDataFile + "' local file.");
+                logger.info("Loading subscriber user data from '{}' local file.", localSubscriberUserDataFile);
                 bufferedReader = new BufferedReader(new FileReader(file));
             } else {
                 localSubscriberUserDataFile = "sh-user-data/" + msisdn + ".xml";
-                logger.info("Loading subscriber user data from internal 'resources/" + localSubscriberUserDataFile + "' file.");
+                logger.info("Loading subscriber user data from internal 'resources/{}' file.", localSubscriberUserDataFile);
                 ClassLoader classLoader = SubscriberInformation.class.getClassLoader();
                 InputStream inputStream = classLoader.getResourceAsStream(localSubscriberUserDataFile);
+                assert inputStream != null;
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             }
-            StringBuffer subscriberUserDataBuffer = new StringBuffer();
+            StringBuilder subscriberUserDataBuffer = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 subscriberUserDataBuffer.append(line).append("\n");
             }
-            logger.info("Loaded " + subscriberUserDataBuffer.length() + " bytes from subscriber user data file.");
+            logger.info("Loaded {} bytes from subscriber user data file.", subscriberUserDataBuffer.length());
 
             return subscriberUserDataBuffer.toString();
 

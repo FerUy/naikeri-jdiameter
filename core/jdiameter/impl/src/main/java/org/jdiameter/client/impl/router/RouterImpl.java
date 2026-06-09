@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.client.impl.router;
 
 import static org.jdiameter.client.impl.helpers.Parameters.AcctApplId;
@@ -382,6 +340,15 @@ public class RouterImpl implements IRouter {
 
   @Override
   public IPeer getPeer(IMessage message, IPeerTable manager) throws RouteException, AvpDataException {
+    return getPeerAction(message,manager, true);
+  }
+
+  @Override
+  public IPeer getPeer(IMessage message, IPeerTable manager, Boolean useRealm) throws RouteException, AvpDataException {
+    return getPeerAction(message,manager, useRealm);
+  }
+
+  protected IPeer getPeerAction(IMessage message, IPeerTable manager, Boolean useRealm) throws RouteException, AvpDataException {
     logger.debug("Getting a peer for message [{}]", message);
     //FIXME: add ability to send without matching realm+peer pair?, that is , route based on peer table entries?
     //that is, if msg.destHost != null > getPeer(msg.destHost).sendMessage(msg);
@@ -474,55 +441,58 @@ public class RouterImpl implements IRouter {
       return c;
     }
     else {
-      logger.debug("Finding peer by destination host avp [host={}] did not find anything. Now going to try finding one by destination realm [{}]",
-          destHost, destRealm);
-      String[] peers = matchedRealm.getPeerNames();
-      if (peers == null || peers.length == 0) {
+      if (useRealm) {
+        logger.debug("Finding peer by destination host avp [host={}] did not find anything. Now going to try finding one by destination realm [{}]",
+                destHost, destRealm);
+        String[] peers = matchedRealm.getPeerNames();
+        if (peers == null || peers.length == 0) {
+          throw new RouteException("Unable to find context by route information [" + destRealm + " ," + destHost + "]");
+        }
+
+        // Collect peers
+        ArrayList<IPeer> availablePeers = new ArrayList<IPeer>(5);
+        logger.debug("Looping through peers in realm [{}]", destRealm);
+        for (String peerName : peers) {
+          IPeer localPeer = manager.getPeer(peerName);
+          if (logger.isDebugEnabled()) {
+            logger.debug("Checking peer [{}] for name [{}]", new Object[]{localPeer, peerName});
+          }
+          // ammendonca: added peer state check.. should not be needed but
+          // hasValidConnection is returning true for disconnected peers in *FTFlowTests
+          if (localPeer != null && localPeer.getState(PeerState.class) == PeerState.OKAY) {
+            if (localPeer.hasValidConnection()) {
+              if (logger.isDebugEnabled()) {
+                logger.debug("Found available peer to add to available peer list with uri [{}] with a valid connection", localPeer.getUri().toString());
+              }
+              availablePeers.add(localPeer);
+            }
+            else {
+              if (logger.isDebugEnabled()) {
+                logger.debug("Found a peer with uri [{}] with no valid connection", localPeer.getUri());
+              }
+            }
+          }
+        }
+        if (logger.isDebugEnabled()) {
+          logger.debug("Performing Realm routing. Realm [{}] has the following peers available [{}] from list [{}]",
+                  new Object[] {destRealm, availablePeers, Arrays.asList(peers)});
+        }
+
+        // Balancing
+        IPeer peer = selectPeer(availablePeers);
+        if (peer == null) {
+          throw new RouteException("Unable to find valid connection to peer[" + destHost + "] in realm[" + destRealm + "]");
+        }
+        else {
+          if (logger.isDebugEnabled()) {
+            logger.debug("Load balancing selected peer with uri [{}]", peer.getUri());
+          }
+        }
+
+        return peer;
+      } else {
         throw new RouteException("Unable to find context by route information [" + destRealm + " ," + destHost + "]");
       }
-
-      // Collect peers
-      ArrayList<IPeer> availablePeers = new ArrayList<IPeer>(5);
-      logger.debug("Looping through peers in realm [{}]", destRealm);
-      for (String peerName : peers) {
-        IPeer localPeer = manager.getPeer(peerName);
-        if (logger.isDebugEnabled()) {
-          logger.debug("Checking peer [{}] for name [{}]", new Object[]{localPeer, peerName});
-        }
-        // ammendonca: added peer state check.. should not be needed but
-        // hasValidConnection is returning true for disconnected peers in *FTFlowTests
-        if (localPeer != null && localPeer.getState(PeerState.class) == PeerState.OKAY) {
-          if (localPeer.hasValidConnection()) {
-            if (logger.isDebugEnabled()) {
-              logger.debug("Found available peer to add to available peer list with uri [{}] with a valid connection", localPeer.getUri().toString());
-            }
-            availablePeers.add(localPeer);
-          }
-          else {
-            if (logger.isDebugEnabled()) {
-              logger.debug("Found a peer with uri [{}] with no valid connection", localPeer.getUri());
-            }
-          }
-        }
-      }
-
-      if (logger.isDebugEnabled()) {
-        logger.debug("Performing Realm routing. Realm [{}] has the following peers available [{}] from list [{}]",
-            new Object[] {destRealm, availablePeers, Arrays.asList(peers)});
-      }
-
-      // Balancing
-      IPeer peer = selectPeer(availablePeers);
-      if (peer == null) {
-        throw new RouteException("Unable to find valid connection to peer[" + destHost + "] in realm[" + destRealm + "]");
-      }
-      else {
-        if (logger.isDebugEnabled()) {
-          logger.debug("Load balancing selected peer with uri [{}]", peer.getUri());
-        }
-      }
-
-      return peer;
     }
   }
 

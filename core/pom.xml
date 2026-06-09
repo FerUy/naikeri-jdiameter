@@ -22,12 +22,9 @@
   </modules>
 
   <properties>
-    <slf4j.version>1.7.2</slf4j.version>
     <picocontainer.version>2.13.5</picocontainer.version>
     <commons-pool.version>1.5.5</commons-pool.version>
-    <sctp.version>2.1.0-16</sctp.version>
-    <netty.version>4.1.42.Final</netty.version>
-    <commons-hex-tools.vesion>1.0.0.CR1</commons-hex-tools.vesion>
+    <commons-hex-tools.version>1.0.0.CR1</commons-hex-tools.version>
   </properties>
 
   <build>

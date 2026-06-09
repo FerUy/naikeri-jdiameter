@@ -26,6 +26,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <!-- Naikeri Artifactory base URL; override via -Dnaikeri.artifactory.url=... or settings.xml -->
+    <naikeri.artifactory.url>https://ec2-56-126-119-82.sa-east-1.compute.amazonaws.com/artifactory/libs-release-local</naikeri.artifactory.url>
+
     <mobicents.checkstyle.version>1.0.0.FINAL</mobicents.checkstyle.version>
     <checkstyle.plugin.version>2.9.1</checkstyle.plugin.version>
     <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
@@ -39,35 +42,33 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
     <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
-    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
-    <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
-    <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-    <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-scm-plugin.version>2.0.0-M2</maven-scm-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
-    <sctp.version>2.1.0-16</sctp.version>
-    <netty.version>4.1.42.Final</netty.version>
+    <sctp.version>2.1.0-35</sctp.version>
+    <netty-all.version>4.1.66.Final</netty-all.version>
+    <slf4j.version>1.7.13</slf4j.version>
 
     <!--<version.cluster>1.15.0-SNAPSHOT</version.cluster>-->
   </properties>
 
   <distributionManagement>
     <repository>
-      <id>admin</id>
+      <id>naikeri</id>
       <name>localhost-releases</name>
-      <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+      <url>${naikeri.artifactory.url}</url>
     </repository>
     <snapshotRepository>
-      <id>admin</id>
+      <id>naikeri</id>
       <name>localhost-snapshots</name>
-      <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+      <url>${naikeri.artifactory.url}</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -97,7 +98,6 @@
       <id>FerUy</id>
       <name>Fernando Mendioroz</name>
       <email>fernando.mendioroz@gmail.com</email>
-      <organizationUrl>https://naikeri.com/</organizationUrl>
       <roles>
         <role>Active Developer</role>
       </roles>
@@ -108,7 +108,7 @@
       <name>Joram Herrera</name>
       <email>joram.herrera2@gmail.com</email>
       <roles>
-        <role>Active Developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>-6</timezone>
     </developer>
@@ -117,7 +117,7 @@
       <name>Alejandro Ferreira Guido</name>
       <email>aferreiraguido@gmail.com</email>
       <roles>
-        <role>Developer</role>
+        <role>Inactive Developer</role>
       </roles>
       <timezone>+1</timezone>
     </developer>
@@ -391,6 +391,21 @@
 
   <repositories>
     <repository>
+      <id>naikeri</id>
+      <name>Naikeri Artifactory</name>
+      <url>${naikeri.artifactory.url}</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
       <id>mobicents-public-repository-group</id>
       <name>Mobicents Public Maven Repository Group</name>
       <url>https://oss.sonatype.org/content/groups/public</url>
@@ -454,9 +469,9 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:git:git@github.com:RestComm/jdiameter.git</connection>
-    <developerConnection>scm:git:https://github.com/RestComm/jdiameter.git</developerConnection>
-    <url>https://github.com/RestComm/jdiameter</url>
+    <connection>scm:git:https://github.com/FerUy/naikeri-jdiameter.git</connection>
+    <developerConnection>scm:git:https://github.com/FerUy/naikeri-jdiameter.git</developerConnection>
+    <url>https://github.com/FerUy/naikeri-jdiameter</url>
   </scm>
 
 </project>

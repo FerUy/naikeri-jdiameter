@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.mobicents.diameter.impl.ha.data;
 
 import java.util.HashMap;
@@ -64,11 +22,17 @@ import org.jdiameter.common.api.app.rf.IRfSessionData;
 import org.jdiameter.common.api.app.ro.IRoSessionData;
 import org.jdiameter.common.api.app.rx.IRxSessionData;
 import org.jdiameter.common.api.app.s13.IS13SessionData;
+import org.jdiameter.common.api.app.s6b.IS6bSessionData;
 import org.jdiameter.common.api.app.sh.IShSessionData;
+import org.jdiameter.common.api.app.swm.ISWmSessionData;
+import org.jdiameter.common.api.app.zh.IZhSessionData;
 import org.jdiameter.common.api.data.ISessionDatasource;
 import org.jdiameter.common.impl.data.LocalDataSource;
 import org.jdiameter.common.api.app.slh.ISLhSessionData;
 import org.jdiameter.common.api.app.slg.ISLgSessionData;
+import org.mobicents.diameter.impl.ha.common.s6b.S6bReplicatedSessionDataFactory;
+import org.mobicents.diameter.impl.ha.common.swm.SWmReplicatedSessionDataFactory;
+import org.mobicents.diameter.impl.ha.common.zh.ZhReplicatedSessionDataFactory;
 import org.restcomm.cache.FqnWrapper;
 import org.restcomm.cache.MobicentsCache;
 import org.restcomm.cluster.DataRemovalListener;
@@ -154,7 +118,9 @@ public class ReplicatedSessionDatasource implements ISessionDatasource, DataRemo
     appSessionDataFactories.put(IS13SessionData.class, new S13ReplicatedSessionDataFactory(this));
     appSessionDataFactories.put(ISLhSessionData.class, new SLhReplicatedSessionDataFactory(this));
     appSessionDataFactories.put(ISLgSessionData.class, new SLgReplicatedSessionDataFactory(this));
-
+    appSessionDataFactories.put(IZhSessionData.class, new ZhReplicatedSessionDataFactory(this));
+    appSessionDataFactories.put(ISWmSessionData.class, new SWmReplicatedSessionDataFactory(this));
+    appSessionDataFactories.put(IS6bSessionData.class, new S6bReplicatedSessionDataFactory(this));
   }
 
   @Override

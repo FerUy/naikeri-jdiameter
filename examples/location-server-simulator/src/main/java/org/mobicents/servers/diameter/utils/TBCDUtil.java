@@ -11,29 +11,15 @@ import static org.mobicents.servers.diameter.utils.byteUtils.bytesToHex;
  * This sample code demonstrates how a character string can be converted to
  * a TBCD (Telephony Binary Coded Decimal) string and vice versa.
  */
-
 public class TBCDUtil {
 
-    private static String cTBCDSymbolString = "0123456789*#abc";
-    private static char[] cTBCDSymbols = cTBCDSymbolString.toCharArray();
+    private static final String cTBCDSymbolString = "0123456789*#abc";
+    private static final char[] cTBCDSymbols = cTBCDSymbolString.toCharArray();
     private static Integer mcc = null, mnc = null, lac = null, ci = null, sac = null, uci = null, rac = null, tac = null, enbid = null;
     private static Long eci = null;
 
     public TBCDUtil() {
     }
-
-    /*public static void main(String[] args) {
-
-        //if (args.length == 0)
-        //    return;
-
-        String msisdn = "60193303030";
-
-        byte[] tbcd = parseTBCD(msisdn);
-
-        System.out.println("TBCD as octets: " + dumpBytes(tbcd));
-        System.out.println("TBCD octets decoded: " + toTBCDString(tbcd));
-    }*/
 
     /*
      * This method converts a TBCD byte array to a character string.
@@ -41,7 +27,7 @@ public class TBCDUtil {
     public static String toTBCDString(byte[] tbcd) {
 
         int size = (tbcd == null ? 0 : tbcd.length);
-        StringBuffer buffer = new StringBuffer(2*size);
+        StringBuilder sb = new StringBuilder(2*size);
         for (int i=0; i<size; ++i) {
             int octet = tbcd[i];
             int n2 = (octet >> 4) & 0xF;
@@ -50,16 +36,16 @@ public class TBCDUtil {
             if (n1 == 15) {
                 throw new NumberFormatException("Illegal filler in octet n=" + i);
             }
-            buffer.append(cTBCDSymbols[n1]);
+            sb.append(cTBCDSymbols[n1]);
 
             if (n2 == 15) {
                 if (i != size-1)
                     throw new NumberFormatException("Illegal filler in octet n=" + i);
             } else
-                buffer.append(cTBCDSymbols[n2]);
+                sb.append(cTBCDSymbols[n2]);
         }
 
-        return buffer.toString();
+        return sb.toString();
     }
 
     /*

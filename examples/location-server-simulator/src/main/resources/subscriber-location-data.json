@@ -5,15 +5,13 @@
       "msisdn": "59899077937",
       "lmsi": "4294967295",
       "servingNode": {
-        "sgsnNumber": "5989900021",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa003",
-        "lcsCapabilitySets": 4,
         "gmlcAddress": "200.123.44.108"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5989900008",
+        "lcsCapabilitySets": 3
       },
       "gmlcAddress": "200.123.44.108",
       "pprAddress": "10.1.0.92",
@@ -45,24 +43,19 @@
         "uncertaintyVerticalSpeed": 2,
         "velocityType": 0
       },
-      "eutranPositioningData": "1",
+      "eutranPositioningData": "440112234408",
       "eutranCellGlobalIdentity": "748-1-518658",
       "plaFlags": 0,
-      "esmlcCellInfoEcgi": "748-1-518658",
-      "esmlcCellInfoCpi": "3",
-      "civicAddress": "Avenida Italia 8973, 11500, Montevideo, Uruguay",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t<cae:MP>248</cae:MP>\n\t<cae:PN>22-109-689</cae:PN>\n\t</civicAddress>",
       "barometricPressure": 1013,
       "lrrFlags": 0,
       "deferredMtLrDataLocationType": 2,
       "deferredMtLrDataTerminationCause": 4,
       "deferredMtLrDataServingNode": {
-        "sgsnNumber": "5989900021",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
         "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
         "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
         "mscNumber": "5989900008",
-        "tgppAAAServerName": "AAA4",
+        "tgppAAAServerName": "aaa4.mnc01.mcc552.3gppnetwork.org",
         "lcsCapabilitySets": 3,
         "gmlcAddress": "200.123.44.109"
       },
@@ -75,38 +68,79 @@
       "reportingAmount": 5,
       "reportingInterval": 30,
       "oneXRttRcid": "7",
-      "delayedLocationDataTerminationCause": 4,
-      "delayedLocationDataServingNode": {
-        "sgsnNumber": "5989900209",
-        "sgsnName": "sgsn21.sgsn8003.sgsn.gprs.mnc03.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc03.mcc552.3gppnetwork.org",
-        "mmeName": "mme10.mmegi8003.mme.epc.mnc03.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc03.mcc552.3gppnetwork.org",
-        "mscNumber": "5989900009",
-        "tgppAAAServerName": "aaa5",
-        "lcsCapabilitySets": 2,
-        "gmlcAddress": "200.123.44.121"
-      }
+      "amfInstanceId": "amf301-c0-a1"
+    },
+    {
+      "imsi": "748016871012347",
+      "msisdn": "59898077937",
+      "lmsi": "4294967299",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "gmlcAddress": "200.123.44.108"
+      },
+      "gmlcAddress": "200.123.44.108",
+      "pprAddress": "10.1.0.92",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 10,
+        "latitude": -34.909744,
+        "longitude": -56.146317,
+        "uncertainty": -1,
+        "confidence": 20,
+        "uncertaintySemiMajorAxis": -1,
+        "uncertaintySemiMinorAxis": -1,
+        "angleOfMajorAxis": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": 32,
+        "uncertaintyInnerRadius": 3.5,
+        "offsetAngle": 12.5,
+        "includedAngle": 21.3
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranPositioningData": "44011223",
+      "eutranCellGlobalIdentity": "748-1-518658",
+      "plaFlags": 0,
+      "barometricPressure": 1010,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 2,
+      "imei": "01171400466105",
+      "lcsEpsClientNameString": "gmlc.client@domain.com",
+      "lcsEpsClientNameFormatInd": 1,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "targetServingNodeForHandover": {
+        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
+        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org"
+      },
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "7",
+      "amfInstanceId": "amf301-c0-a1"
     },
     {
       "imsi": "748026871012341",
       "msisdn": "59899077938",
       "lmsi": "4294967290",
       "servingNode": {
-        "sgsnNumber": "5989900025",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900007",
-        "tgppAAAServerName": "aaa002",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "200.123.44.109"
       },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3
+      },
       "gmlcAddress": "200.123.44.109",
       "pprAddress": "10.1.0.93",
-      "riaFlags": 0,
-
+      "riaFlags": 1,
       "locationResult": 2001,
       "locationEstimate": {
         "typeOfShape": 1,
@@ -136,26 +170,73 @@
         "velocityType": 0
       },
       "cellGlobalIdentity": "748-1-119-15336",
-      "utranPositioningData": "81",
-      "utranGanssPositioningData": "403",
-      "utranAdditionalPositioningData": "0",
+      "utranPositioningData": "0000283140515c4b3a",
       "plaFlags": 0,
-      "civicAddress": "Avenida Brasil 2701, 11300, Montevideo, Uruguay",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-US\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>US</country>\n\t<A1>CA</A1>\n\t<A2>Sacramento</A2>\n\t<RD>I5</RD>\n\t<cae:MP>248</cae:MP>\n\t<cae:PN>22-109-689</cae:PN>\n\t</civicAddress>",
       "barometricPressure": 1014,
       "lrrFlags": 0,
       "deferredMtLrDataLocationType": 3,
-      "deferredMtLrDataTerminationCause": 4,
-      "deferredMtLrDataServingNode": {
-        "sgsnNumber": "5989900021",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "5989900022",
-        "tgppAAAServerName": "AAA4",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "200.123.44.110"
+      "deferredMtLrDataTerminationCause": 9,
+      "imei": "01171400466108",
+      "lcsEpsClientNameString": "client3",
+      "lcsEpsClientNameFormatInd": "0",
+      "pseudonymIndicator": 1,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 0,
+      "targetServingNodeForHandover": {
+        "tgppAAAServerName": "aaa4.mnc01.mcc552.3gppnetwork.org"
       },
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "52"
+    },
+    {
+      "imsi": "748016871012341",
+      "msisdn": "59898077938",
+      "lmsi": "4294967291",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 1,
+        "gmlcAddress": "200.123.44.109"
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3
+      },
+      "gmlcAddress": "200.123.44.109",
+      "pprAddress": "10.1.0.93",
+      "riaFlags": 1,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 1,
+        "latitude": -34.912349,
+        "longitude": -56.149812,
+        "uncertainty": 85,
+        "confidence": -1,
+        "uncertaintySemiMajorAxis": -1,
+        "uncertaintySemiMinorAxis": -1,
+        "angleOfMajorAxis": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": -1,
+        "uncertaintyInnerRadius": -1,
+        "offsetAngle": -1,
+        "includedAngle": -1
+
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "cellGlobalIdentity": "748-1-119-15336",
+      "utranGanssPositioningData": "014a9018ec63",
+      "plaFlags": 0,
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-US\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>US</country>\n\t<A1>CA</A1>\n\t<A2>Sacramento</A2>\n\t<RD>I5</RD>\n\t<cae:MP>248</cae:MP>\n\t<cae:PN>22-109-689</cae:PN>\n\t</civicAddress>",
+      "barometricPressure": 1014,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 3,
+      "deferredMtLrDataTerminationCause": 9,
       "imei": "01171400466108",
       "lcsEpsClientNameString": "client3",
       "lcsEpsClientNameFormatInd": "0",
@@ -164,39 +245,83 @@
       "lcsQosClass": 0,
       "reportingAmount": 5,
       "reportingInterval": 30,
-      "oneXRttRcid": "52",
-      "delayedLocationDataTerminationCause": 4,
-      "delayedLocationDataServingNode": {
-        "sgsnNumber": "5989900023",
-        "sgsnName": "sgsn21.sgsn8003.sgsn.gprs.mnc03.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc03.mcc552.3gppnetwork.org",
-        "mmeName": "mme10.mmegi8003.mme.epc.mnc03.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc03.mcc552.3gppnetwork.org",
-        "mscNumber": "5989900003",
-        "tgppAAAServerName": "5989900005",
+      "oneXRttRcid": "52"
+    },
+    {
+      "imsi": "748015871012341",
+      "msisdn": "59897077938",
+      "lmsi": "4294967290",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "lcsCapabilitySets": 1,
-        "gmlcAddress": "200.123.44.121"
-      }
+        "gmlcAddress": "200.123.44.109"
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3
+      },
+      "gmlcAddress": "200.123.44.109",
+      "pprAddress": "10.1.0.93",
+      "riaFlags": 1,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 1,
+        "latitude": -34.912349,
+        "longitude": -56.149812,
+        "uncertainty": 85,
+        "confidence": -1,
+        "uncertaintySemiMajorAxis": -1,
+        "uncertaintySemiMinorAxis": -1,
+        "angleOfMajorAxis": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": -1,
+        "uncertaintyInnerRadius": -1,
+        "offsetAngle": -1,
+        "includedAngle": -1
+
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "cellGlobalIdentity": "748-1-119-15336",
+      "utranAdditionalPositioningData": "944B",
+      "plaFlags": 0,
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-US\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>US</country>\n\t<A1>CA</A1>\n\t<A2>Sacramento</A2>\n\t<RD>I5</RD>\n\t<cae:MP>248</cae:MP>\n\t<cae:PN>22-109-689</cae:PN>\n\t</civicAddress>",
+      "barometricPressure": 1014,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 3,
+      "deferredMtLrDataTerminationCause": 9,
+      "imei": "01171400466108",
+      "lcsEpsClientNameString": "client3",
+      "lcsEpsClientNameFormatInd": "0",
+      "pseudonymIndicator": 1,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 0,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "52"
     },
     {
       "imsi": "748026871012351",
       "msisdn": "59899077939",
       "lmsi": "4294967270",
       "servingNode": {
-        "sgsnNumber": "5989900041",
+        "mscNumber": "5989900022",
+        "lcsCapabilitySets": 1
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900097",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "200.123.44.106"
+        "lcsCapabilitySets": 3,
+        "gmlcAddress": "189.0.29.201"
       },
       "gmlcAddress": "200.123.44.106",
       "pprAddress": "10.1.0.92",
-      "riaFlags": 0,
-
+      "riaFlags": 1,
       "locationResult": 2001,
       "locationEstimate": {
         "typeOfShape": 3,
@@ -213,7 +338,6 @@
         "uncertaintyInnerRadius": -1,
         "offsetAngle": -1,
         "includedAngle": -1
-
       },
       "accuracyFulfilmentIndicator": 1,
       "ageOfLocationEstimate": 0,
@@ -225,26 +349,14 @@
         "uncertaintyVerticalSpeed": 0,
         "velocityType": 0
       },
-      "geranPositioningData": "0",
-      "geranGanssPositioningData": "0",
+      "geranPositioningData": "00031b212b3a6043",
       "serviceAreaIdentity": "748-10-9501-35100",
       "plaFlags": 0,
-      "civicAddress": "18 de Julio 1981, 11500, Montevideo, Uruguay",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-US\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>US</country>\n\t<A1>CA</A1>\n\t<A2>Sacramento</A2>\n\t<RD>Colorado</RD>\n\t<HNO>223</HNO>\n\t<cae:STP>Boulevard</cae:STP>\n\t<cae:HNP>A</cae:HNP>\n\t</civicAddress>",
       "barometricPressure": 1014,
       "lrrFlags": 0,
       "deferredMtLrDataLocationType": 1,
       "deferredMtLrDataTerminationCause": 1,
-      "deferredMtLrDataServingNode": {
-        "sgsnNumber": "5989900024",
-        "sgsnName": "sgsn02",
-        "sgsnRealm": "antel.com",
-        "mmeName": "mme304",
-        "mmeRealm": "antel.com",
-        "mscNumber": "5989900037",
-        "tgppAAAServerName": "aaa2",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "200.123.44.108"
-      },
       "imei": "01171400466106",
       "lcsEpsClientNameString": "59899092012",
       "lcsEpsClientNameFormatInd": 2,
@@ -254,15 +366,81 @@
       "reportingAmount": 2,
       "reportingInterval": 900,
       "oneXRttRcid": "57",
-      "delayedLocationDataTerminationCause": 2,
+      "delayedLocationDataTerminationCause": 4,
       "delayedLocationDataServingNode": {
         "sgsnNumber": "5989900024",
         "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
         "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "5989900006",
-        "tgppAAAServerName": "aaa2",
+        "lcsCapabilitySets": 1,
+        "gmlcAddress": "200.123.44.10"
+      }
+    },
+    {
+      "imsi": "748016871012351",
+      "msisdn": "59898077939",
+      "lmsi": "4294957271",
+      "servingNode": {
+        "mscNumber": "5989900022",
+        "lcsCapabilitySets": 1
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3,
+        "gmlcAddress": "189.0.29.201"
+      },
+      "gmlcAddress": "200.123.44.106",
+      "pprAddress": "10.1.0.92",
+      "riaFlags": 1,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 3,
+        "latitude": -34.905624,
+        "longitude": -55.042191,
+        "uncertaintySemiMajorAxis": 21.2,
+        "uncertaintySemiMinorAxis": 10.4,
+        "angleOfMajorAxis": 30.0,
+        "confidence": 1,
+        "uncertainty": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": -1,
+        "uncertaintyInnerRadius": -1,
+        "offsetAngle": -1,
+        "includedAngle": -1
+      },
+      "accuracyFulfilmentIndicator": 1,
+      "ageOfLocationEstimate": 0,
+      "velocityEstimate": {
+        "horizontalSpeed": 104,
+        "verticalSpeed": 0,
+        "bearing": 0,
+        "uncertaintyHorizontalSpeed": 20,
+        "uncertaintyVerticalSpeed": 0,
+        "velocityType": 0
+      },
+      "geranGanssPositioningData": "068c021158e863",
+      "serviceAreaIdentity": "748-10-9501-35100",
+      "plaFlags": 0,
+      "barometricPressure": 1004,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 1,
+      "deferredMtLrDataTerminationCause": 2,
+      "imei": "01171400466106",
+      "lcsEpsClientNameString": "59899092012",
+      "lcsEpsClientNameFormatInd": 2,
+      "pseudonymIndicator": 1,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 0,
+      "reportingAmount": 2,
+      "reportingInterval": 900,
+      "oneXRttRcid": "57",
+      "delayedLocationDataTerminationCause": 4,
+      "delayedLocationDataServingNode": {
+        "sgsnNumber": "5989900024",
+        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
+        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "200.123.44.10"
       }
@@ -272,20 +450,20 @@
       "msisdn": "573195897484",
       "lmsi": "7213917157",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
         "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 4,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "tgppAAAServerName": "aaa4.mnc01.mcc552.3gppnetwork.org",
+        "lcsCapabilitySets": 1
       },
       "gmlcAddress": "191.42.21.204",
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
-
       "locationResult": 2001,
       "locationEstimate": {
         "typeOfShape": 9,
@@ -313,33 +491,15 @@
         "uncertaintyVerticalSpeed": 2,
         "velocityType": 0
       },
-      "eutranPositioningData": "5152535253",
       "eutranCellGlobalIdentity": "732-123-2829314",
-      "geranPositioningData": "0",
-      "geranGanssPositioningData": "0",
-      "utranPositioningData": "81",
-      "utranGanssPositioningData": "403",
-      "utranAdditionalPositioningData": "0",
+      "utranPositioningData": "000043",
       "plaFlags": 0,
-      "esmlcCellInfoEcgi": "732-123-2829314",
-      "esmlcCellInfoCpi": "197",
-      "civicAddress": "Calle 2 Sur 20-185, 0cellGlobalIdentity50022, Medellin, Colombia",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\nxmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t</civicAddress>",
       "barometricPressure": 1012,
       "lrrFlags": 0,
       "deferredMtLrDataLocationType": 0,
       "deferredMtLrDataTerminationCause": 3,
-      "deferredMtLrDataServingNode": {
-        "sgsnNumber": "573010002",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "57301003201",
-        "tgppAAAServerName": "aaa4",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "57300910102"
-      },
-      "imei": "352154090165449",
+      "imei": "352154090165440",
       "lcsEpsClientNameString": "sip:fer.bloggs@212.123.1.213",
       "lcsEpsClientNameFormatInd": 4,
       "pseudonymIndicator": 0,
@@ -348,18 +508,119 @@
       "reportingAmount": 5,
       "reportingInterval": 30,
       "oneXRttRcid": "51",
-      "delayedLocationDataTerminationCause": 5,
-      "delayedLocationDataServingNode": {
-        "sgsnNumber": "573010020209",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "57301003232",
-        "tgppAAAServerName": "aaa57",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "191.42.21.205"
-      }
+      "delayedLocationDataTerminationCause": 5
+    },
+    {
+      "imsi": "732101509580858",
+      "msisdn": "573195897485",
+      "lmsi": "7213917167",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "mscNumber": "5730100003",
+        "tgppAAAServerName": "aaa001",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "tgppAAAServerName": "aaa4.mnc01.mcc552.3gppnetwork.org",
+        "lcsCapabilitySets": 1
+      },
+      "gmlcAddress": "191.42.21.204",
+      "pprAddress": "192.168.1.20",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 9,
+        "latitude": 6.195612,
+        "longitude": -75.558125,
+        "uncertainty": -1,
+        "confidence": 85,
+        "uncertaintySemiMajorAxis": 2.4,
+        "uncertaintySemiMinorAxis": 2.1,
+        "angleOfMajorAxis": 6,
+        "altitude": 10,
+        "uncertaintyAltitude": 10,
+        "innerRadius": -1,
+        "uncertaintyInnerRadius": -1,
+        "offsetAngle": -1,
+        "includedAngle": -1
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranPositioningData": "274209d219e02cb2ba",
+      "eutranCellGlobalIdentity": "732-123-2829314",
+      "plaFlags": 0,
+      "barometricPressure": 1012,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 0,
+      "deferredMtLrDataTerminationCause": 3,
+      "imei": "352154090165448",
+      "lcsEpsClientNameString": "sip:fer.bloggs@212.123.1.213",
+      "lcsEpsClientNameFormatInd": 4,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "51",
+      "delayedLocationDataTerminationCause": 9
+    },
+    {
+      "imsi": "732101509580857",
+      "msisdn": "573195897486",
+      "lmsi": "7213927167",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "mscNumber": "5730100003",
+        "tgppAAAServerName": "aaa001",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "tgppAAAServerName": "aaa4.mnc01.mcc552.3gppnetwork.org",
+        "lcsCapabilitySets": 1
+      },
+      "gmlcAddress": "191.42.21.204",
+      "pprAddress": "192.168.1.20",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 9,
+        "latitude": 6.195612,
+        "longitude": -75.558125,
+        "uncertainty": -1,
+        "confidence": 85,
+        "uncertaintySemiMajorAxis": 2.4,
+        "uncertaintySemiMinorAxis": 2.1,
+        "angleOfMajorAxis": 6,
+        "altitude": 10,
+        "uncertaintyAltitude": 10,
+        "innerRadius": -1,
+        "uncertaintyInnerRadius": -1,
+        "offsetAngle": -1,
+        "includedAngle": -1
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranCellGlobalIdentity": "732-123-2829314",
+      "utranGanssPositioningData": "63",
+      "plaFlags": 0,
+      "barometricPressure": 1012,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 0,
+      "deferredMtLrDataTerminationCause": 7,
+      "imei": "352154090165447",
+      "lcsEpsClientNameString": "sip:fer.bloggs@212.123.1.213",
+      "lcsEpsClientNameFormatInd": 4,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "50",
+      "delayedLocationDataTerminationCause": 8
     },
     {
       "imsi": "732101509580859",
@@ -369,17 +630,16 @@
         "sgsnNumber": "5730100028",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 4,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5730100003",
+        "lcsCapabilitySets": 3
       },
       "gmlcAddress": "191.42.21.204",
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
-
       "locationResult": 2001,
       "addLocationEstimate": {
         "typeOfShape": 5,
@@ -402,32 +662,16 @@
         "uncertaintyVerticalSpeed": 2,
         "velocityType": 0
       },
-      "eutranPositioningData": "5152535253",
-      "geranPositioningData": "0",
-      "geranGanssPositioningData": "0",
-      "utranPositioningData": "81",
-      "utranGanssPositioningData": "403",
-      "utranAdditionalPositioningData": "0",
+      "geranPositioningData": "0043",
       "plaFlags": 0,
       "esmlcCellInfoEcgi": "732-103-2829413",
       "esmlcCellInfoCpi": "197",
-      "civicAddress": "Calle 2 Sur 20-185, 050022, Medellin, Colombia",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t</civicAddress>",
       "barometricPressure": 1012,
       "lrrFlags": 0,
       "deferredMtLrDataLocationType": 5,
       "deferredMtLrDataTerminationCause": 3,
-      "deferredMtLrDataServingNode": {
-        "sgsnNumber": "573010002",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "57301003201",
-        "tgppAAAServerName": "aaa4",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "57300910102"
-      },
-      "imei": "352154090165449",
+      "imei": "352154090165541",
       "lcsEpsClientNameString": "gmlcCl453",
       "lcsEpsClientNameFormatInd": 0,
       "pseudonymIndicator": 0,
@@ -436,38 +680,184 @@
       "reportingAmount": 5,
       "reportingInterval": 30,
       "oneXRttRcid": "51",
-      "delayedLocationDataTerminationCause": 5,
-      "delayedLocationDataServingNode": {
-        "sgsnNumber": "573010020209",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "57301003232",
-        "tgppAAAServerName": "aaa57",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "191.42.21.205"
-      }
+      "delayedLocationDataTerminationCause": 2
+    },
+    {
+      "imsi": "732101509580879",
+      "msisdn": "573195897490",
+      "lmsi": "7213917187",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "mscNumber": "5730100003",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "gmlcAddress": "191.42.21.204",
+      "pprAddress": "192.168.1.20",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "addLocationEstimate": {
+        "typeOfShape": 5,
+        "latitude1": 6.646513,
+        "longitude1": -75.492076,
+        "latitude2": 6.648026,
+        "longitude2": -75.495703,
+        "latitude3": 6.648744,
+        "longitude3": -75.495638,
+        "latitude4": 6.648755,
+        "longitude4": -75.495724
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranPositioningData": "202c",
+      "plaFlags": 0,
+      "esmlcCellInfoEcgi": "732-103-2829413",
+      "esmlcCellInfoCpi": "197",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t</civicAddress>",
+      "barometricPressure": 1012,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 5,
+      "deferredMtLrDataTerminationCause": 6,
+      "imei": "352154390165449",
+      "lcsEpsClientNameString": "gmlcCl453",
+      "lcsEpsClientNameFormatInd": 0,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "51",
+      "delayedLocationDataTerminationCause": 2
+    },
+    {
+      "imsi": "732101509580869",
+      "msisdn": "573195897491",
+      "lmsi": "7213917107",
+      "servingNode": {
+        "sgsnNumber": "5730100028",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "gmlcAddress": "191.42.21.204",
+      "pprAddress": "192.168.1.20",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "addLocationEstimate": {
+        "typeOfShape": 5,
+        "latitude1": 6.646513,
+        "longitude1": -75.492076,
+        "latitude2": 6.648026,
+        "longitude2": -75.495703,
+        "latitude3": 6.648744,
+        "longitude3": -75.495638,
+        "latitude4": 6.648755,
+        "longitude4": -75.495724
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "geranGanssPositioningData": "0163",
+      "plaFlags": 0,
+      "esmlcCellInfoEcgi": "732-103-2829413",
+      "esmlcCellInfoCpi": "197",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t</civicAddress>",
+      "barometricPressure": 1012,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 5,
+      "deferredMtLrDataTerminationCause": 6,
+      "imei": "352154092165449",
+      "lcsEpsClientNameString": "gmlcCl453",
+      "lcsEpsClientNameFormatInd": 0,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "51",
+      "delayedLocationDataTerminationCause": 2
+    },
+    {
+      "imsi": "732101509581859",
+      "msisdn": "573195897492",
+      "lmsi": "6213917157",
+      "servingNode": {
+        "sgsnNumber": "5730100028",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5730100003",
+        "lcsCapabilitySets": 3
+      },
+      "gmlcAddress": "191.42.21.204",
+      "pprAddress": "192.168.1.20",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "addLocationEstimate": {
+        "typeOfShape": 5,
+        "latitude1": 6.646513,
+        "longitude1": -75.492076,
+        "latitude2": 6.648026,
+        "longitude2": -75.495703,
+        "latitude3": 6.648744,
+        "longitude3": -75.495638,
+        "latitude4": 6.648755,
+        "longitude4": -75.495724
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "velocityEstimate": {
+        "horizontalSpeed": 20,
+        "verticalSpeed": 3,
+        "bearing": 0,
+        "uncertaintyHorizontalSpeed": 10,
+        "uncertaintyVerticalSpeed": 2,
+        "velocityType": 0
+      },
+      "utranGanssPositioningData": "01ec63",
+      "plaFlags": 0,
+      "esmlcCellInfoEcgi": "732-103-2829413",
+      "esmlcCellInfoCpi": "196",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t</civicAddress>",
+      "barometricPressure": 1012,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 5,
+      "deferredMtLrDataTerminationCause": 3,
+      "imei": "352154090165441",
+      "lcsEpsClientNameString": "gmlcCl453",
+      "lcsEpsClientNameFormatInd": 0,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "51",
+      "delayedLocationDataTerminationCause": 2
     },
     {
       "imsi": "748026871012321",
       "msisdn": "59894455661",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5730100028",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "5490"
     },
     {
@@ -478,17 +868,14 @@
         "sgsnNumber": "5730100028",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
-        "gmlcAddress": "191.42.21.204"
+        "lcsCapabilitySets": 3
       },
-      "gmlcAddress": "10.2.1.200",
+      "additionalServingNode": {
+        "tgppAAAServerName": "aaa001",
+        "lcsCapabilitySets": 3
+      },
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "5001"
     },
     {
@@ -496,20 +883,17 @@
       "msisdn": "59894455663",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 3,
         "gmlcAddress": "191.42.21.204"
       },
+      "additionalServingNode": {
+        "mscNumber": "5730100020",
+        "lcsCapabilitySets": 2
+      },
       "gmlcAddress": "10.2.1.200",
-      "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4201"
     },
     {
@@ -517,20 +901,54 @@
       "msisdn": "59894455664",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 3,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5730100003",
+        "lcsCapabilitySets": 2
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
+      "locationResult": "4221"
+    },
+    {
+      "imsi": "748026871012327",
+      "msisdn": "59894455667",
+      "lmsi": "4294967207",
+      "servingNode": {
+        "sgsnNumber": "5730100028",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 1,
+        "gmlcAddress": "191.42.21.204"
+      },
+      "gmlcAddress": "10.2.1.200",
+      "riaFlags": 1,
+      "locationResult": "4221"
+    },
+    {
+      "imsi": "748026871012328",
+      "msisdn": "59894455668",
+      "lmsi": "4294967208",
+      "servingNode": {
+        "mscNumber": "5989900022",
+        "lcsCapabilitySets": 1
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3,
+        "gmlcAddress": "189.0.29.201"
+      },
+      "gmlcAddress": "10.2.1.200",
+      "pprAddress": "10.1.1.57",
+      "riaFlags": 1,
       "locationResult": "4221"
     },
     {
@@ -538,20 +956,19 @@
       "msisdn": "59894455665",
       "lmsi": "4294967205",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 3,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5730100003",
+        "lcsCapabilitySets": 3
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4222"
     },
     {
@@ -559,13 +976,7 @@
       "msisdn": "59894455666",
       "lmsi": "4294967206",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
-        "tgppAAAServerName": "aaa001",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "191.42.21.204"
       },
@@ -573,7 +984,6 @@
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
       "esmlcCellInfoEcgi": "732-123-2829314",
-
       "locationResult": "4225"
     },
     {
@@ -581,20 +991,18 @@
       "msisdn": "59894455691",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 4,
         "gmlcAddress": "191.42.21.204"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5989900008",
+        "lcsCapabilitySets": 3
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "5490"
     },
     {
@@ -605,17 +1013,12 @@
         "sgsnNumber": "5730100028",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 2,
         "gmlcAddress": "191.42.21.204"
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "5001"
     },
     {
@@ -623,20 +1026,21 @@
       "msisdn": "59894455693",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5989900008",
         "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 4,
         "gmlcAddress": "191.42.21.204"
       },
+      "additionalServingNode": {
+        "sgsnNumber": "5730100028",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3
+      },
       "gmlcAddress": "10.2.1.200",
-      "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4201"
     },
     {
@@ -644,20 +1048,15 @@
       "msisdn": "59894455694",
       "lmsi": "4294967201",
       "servingNode": {
-        "sgsnNumber": "5730100028",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa001",
-        "lcsCapabilitySets": 1,
+        "lcsCapabilitySets": 2,
         "gmlcAddress": "191.42.21.204"
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4221"
     },
     {
@@ -668,17 +1067,12 @@
         "sgsnNumber": "5730100028",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa001",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "191.42.21.204"
       },
       "gmlcAddress": "10.2.1.200",
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4222"
     },
     {
@@ -689,38 +1083,32 @@
         "sgsnNumber": "5730100028",
         "sgsnName": "dra.simulator",
         "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mmeName": "dra.simulator",
-        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
-        "mscNumber": "5989900008",
         "tgppAAAServerName": "aaa001",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "191.42.21.204"
       },
       "gmlcAddress": "10.2.1.200",
-      "pprAddress": "10.1.1.57",
       "riaFlags": 0,
-
       "locationResult": "4225"
     },
     {
-      "imsi": "748026871012345",
+      "imsi": "552016871012349",
       "msisdn": "60192235906",
       "lmsi": "4294967295",
       "servingNode": {
-        "sgsnNumber": "5989900021",
-        "sgsnName": "dra.simulator",
-        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mmeName": "dra.simulator",
         "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5989900008",
-        "tgppAAAServerName": "aaa003",
         "lcsCapabilitySets": 4,
         "gmlcAddress": "200.123.44.108"
+      },
+      "additionalServingNode": {
+        "tgppAAAServerName": "aaa4.mnc01.mcc748.3gppnetwork.org",
+        "lcsCapabilitySets": 1
       },
       "gmlcAddress": "200.123.44.108",
       "pprAddress": "10.1.0.92",
       "riaFlags": 0,
-
       "locationResult": 2001,
       "locationEstimate": {
         "typeOfShape": 10,
@@ -748,27 +1136,13 @@
         "uncertaintyVerticalSpeed": 0,
         "velocityType": 0
       },
-      "eutranPositioningData": "1",
-      "eutranCellGlobalIdentity": "502-18-207631207",
+      "eutranPositioningData": "4013",
       "plaFlags": 0,
       "esmlcCellInfoEcgi": "502-18-207631207",
       "esmlcCellInfoCpi": "3",
-      "civicAddress": "Times Square Mall, 2009, Kuala Lumpur, Malaysia",
+      "civicAddress": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<civicAddress xml:lang=\"en-AU\"\n\txmlns=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr\"\n\txmlns:cae=\"urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr:ext\">\n\t<country>AU</country>\n\t<A1>NSW</A1>\n\t<A3>Wollongong</A3>\n\t<A4>North Wollongong</A4>\n\t<RD>Flinders</RD>\n\t<STS>Street</STS>\n\t<RDBR>Campbell Street</RDBR>\n\t<LMK>Gilligan's Island</LMK>\n\t<LOC>Corner</LOC>\n\t<NAM>Video Rental Store</NAM>\n\t<PC>2500</PC>\n\t<ROOM>Westerns and Classics</ROOM>\n\t<PLC>store</PLC>\n\t<POBOX>Private Box 15</POBOX>\n\t<cae:MP>248</cae:MP>\n\t<cae:PN>22-109-689</cae:PN>\n\t</civicAddress>",
       "barometricPressure": 1010,
       "lrrFlags": 0,
-      "deferredMtLrDataLocationType": 4,
-      "deferredMtLrDataTerminationCause": 4,
-      "deferredMtLrDataServingNode": {
-        "sgsnNumber": "5989900021",
-        "sgsnName": "sgsn19.sgsn8002.sgsn.gprs.mnc01.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc019.mcc502.3gppnetwork.org",
-        "mmeName": "mmeC19.mmegi8001.mme.epc.mnc01.mcc552.3gppnetwork.org",
-        "mmeRealm": "epc.mnc01.mcc552.3gppnetwork.org",
-        "mscNumber": "5989900008",
-        "tgppAAAServerName": "AAA4",
-        "lcsCapabilitySets": 3,
-        "gmlcAddress": "200.123.44.109"
-      },
       "imei": "42151400476102",
       "lcsEpsClientNameString": "gmlcClient1",
       "lcsEpsClientNameFormatInd": 3,
@@ -780,16 +1154,83 @@
       "oneXRttRcid": "7",
       "delayedLocationDataTerminationCause": 4,
       "delayedLocationDataServingNode": {
-        "sgsnNumber": "5989900209",
-        "sgsnName": "sgsn21.sgsn8003.sgsn.gprs.mnc03.mcc552.3gppnetwork.org",
-        "sgsnRealm": "gprs.mnc03.mcc552.3gppnetwork.org",
         "mmeName": "mme10.mmegi8003.mme.epc.mnc03.mcc552.3gppnetwork.org",
         "mmeRealm": "epc.mnc03.mcc552.3gppnetwork.org",
         "mscNumber": "5989900009",
-        "tgppAAAServerName": "aaa5",
         "lcsCapabilitySets": 2,
         "gmlcAddress": "200.123.44.121"
       }
+    },
+    {
+      "imsi": "552016871012345",
+      "msisdn": "60192235909",
+      "lmsi": "4294967268",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "tgppAAAServerName": "aaa003",
+        "lcsCapabilitySets": 4,
+        "gmlcAddress": "200.123.44.108"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5520100003",
+        "lcsCapabilitySets": 1
+      },
+      "gmlcAddress": "200.123.44.108",
+      "pprAddress": "10.1.0.92",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 10,
+        "latitude": 3.137215,
+        "longitude": 101.730501,
+        "uncertainty": -1,
+        "confidence": 20,
+        "uncertaintySemiMajorAxis": -1,
+        "uncertaintySemiMinorAxis": -1,
+        "angleOfMajorAxis": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": 32,
+        "uncertaintyInnerRadius": 3.5,
+        "offsetAngle": 12.5,
+        "includedAngle": 21.3
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "velocityEstimate": {
+        "horizontalSpeed": 10,
+        "verticalSpeed": 0,
+        "bearing": 2,
+        "uncertaintyHorizontalSpeed": 1,
+        "uncertaintyVerticalSpeed": 0,
+        "velocityType": 0
+      },
+      "eutranPositioningData": "05810b52d8a4",
+      "eutranCellGlobalIdentity": "502-18-207631207",
+      "plaFlags": 0,
+      "esmlcCellInfoEcgi": "502-18-207631207",
+      "esmlcCellInfoCpi": "3",
+      "barometricPressure": 1010,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 4,
+      "deferredMtLrDataTerminationCause": 4,
+      "deferredMtLrDataServingNode": {
+        "sgsnNumber": "5520100021",
+        "sgsnName": "sgsn1B34.mnc01.mcc552.gprs",
+        "sgsnRealm": "mnc01.mcc552.gprs",
+        "lcsCapabilitySets": 3,
+        "gmlcAddress": "200.123.44.109"
+      },
+      "imei": "42151400476102",
+      "lcsEpsClientNameString": "gmlcClient1",
+      "lcsEpsClientNameFormatInd": 3,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "7"
     }
   ]
 }

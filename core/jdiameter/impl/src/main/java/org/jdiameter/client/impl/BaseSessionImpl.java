@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.client.impl;
 
 import static org.jdiameter.client.impl.helpers.Parameters.MessageTimeOut;
@@ -161,18 +119,18 @@ public abstract class BaseSessionImpl implements BaseSession {
     return false;
   }
 
-  protected void genericSend(Message message, EventListener listener)
+  protected void genericSend(Message message, EventListener listener, Boolean useRealm)
       throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
     if (isValid) {
       long timeOut = container.getConfiguration().getLongValue(MessageTimeOut.ordinal(), (Long) MessageTimeOut.defValue());
-      genericSend(message, listener, timeOut, TimeUnit.MILLISECONDS);
+      genericSend(message, listener, timeOut, TimeUnit.MILLISECONDS, useRealm);
     }
     else {
       throw new IllegalDiameterStateException("Session already released");
     }
   }
 
-  protected void genericSend(Message aMessage, EventListener listener, long timeout, TimeUnit timeUnit)
+  protected void genericSend(Message aMessage, EventListener listener, long timeout, TimeUnit timeUnit, Boolean useRealm)
       throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
     if (isValid) {
       setLastAccessTime();
@@ -199,7 +157,7 @@ public abstract class BaseSessionImpl implements BaseSession {
 
       message.createTimer(container.getScheduledFacility(), timeout, timeUnit);
       try {
-        container.sendMessage(message);
+        container.sendMessage(message, useRealm);
       }
       catch (RouteException e) {
         message.clearTimer();
@@ -345,12 +303,12 @@ public abstract class BaseSessionImpl implements BaseSession {
     }
 
     public void send(Message message) throws RouteException, OverloadException, IllegalDiameterStateException, InternalException {
-      genericSend(message, createListener());
+      genericSend(message, createListener(), true);
     }
 
     public void send(Message message, long timeOut, TimeUnit timeUnit)
         throws RouteException, OverloadException, IllegalDiameterStateException, InternalException {
-      genericSend(message, createListener(), timeOut, timeUnit);
+      genericSend(message, createListener(), timeOut, timeUnit, true);
     }
   }
 

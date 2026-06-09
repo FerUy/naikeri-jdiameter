@@ -1,24 +1,3 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.mobicents.diameter.stack.functional.slh.base;
 
 import org.jdiameter.api.IllegalDiameterStateException;
@@ -31,10 +10,10 @@ import org.jdiameter.api.slh.events.LCSRoutingInfoAnswer;
 import org.mobicents.diameter.stack.functional.Utils;
 import org.mobicents.diameter.stack.functional.slh.AbstractSLhClient;
 
+import static org.mobicents.diameter.stack.TBCDUtil.parseTBCD;
+
 /**
- *
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
- *
  */
 public class ClientSLh extends AbstractSLhClient {
 
@@ -42,6 +21,14 @@ public class ClientSLh extends AbstractSLhClient {
   protected boolean sentRIR;
 
   public ClientSLh() {
+  }
+
+  public boolean isReceivedRIA() {
+    return receivedRIA;
+  }
+
+  public boolean isSentRIR() {
+    return sentRIR;
   }
 
   public void sendLCSRoutingInfoRequest() throws Exception {
@@ -67,37 +54,27 @@ public class ClientSLh extends AbstractSLhClient {
     this.receivedRIA = true;
   }
 
-  //*********************************************************//
-  //***************** RIR methods ***************************//
-  //*********************************************************//
+  /*** Attributes for LCS-Routing-Info-Request (RIR)  ***/
 
   @Override
   protected String getUserName() {
-    // Information Element IMSI Mapped to AVP User-Name
-    String imsi = "748039876543210";
-    return imsi;
+    return "748039876543210";
   }
 
   @Override
   protected byte[] getMSISDN() {
-    String msisdnString = "59899077937";
-    byte[] msisdn = msisdnString.getBytes();
-    return msisdn;
+    return parseTBCD("59899077937");
   }
 
   @Override
   protected byte[] getGMLCNumber() {
-    String gmlcNumberString = "759834279";
-    byte[] gmlcNumber = gmlcNumberString.getBytes();
-    return gmlcNumber;
-  }
-
-  public boolean isReceivedRIA() {
-    return receivedRIA;
-  }
-
-  public boolean isSentRIR() {
-    return sentRIR;
+    // The GMLC-Number AVP is of type OctetString.
+    // This AVP shall contain the ISDN number of the GMLC in international number format
+    // as described in ITU-T Rec E.164 and shall be encoded as a TBCD-string.
+    // See 3GPP TS 29.002 for encoding of TBCD-strings.
+    // This AVP shall not include leading indicators for the nature of address and the numbering plan;
+    // it shall contain only the TBCD-encoded digits of the address.
+    return parseTBCD("598991230301");
   }
 
 }

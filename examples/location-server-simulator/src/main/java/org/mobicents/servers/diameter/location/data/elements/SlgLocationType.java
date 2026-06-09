@@ -13,7 +13,7 @@ public enum SlgLocationType {
     CancelDeferredLocation ("CANCEL_DEFERRED_LOCATION"),
     NotificationVerificationOnly ("NOTIFICATION_VERIFICATION_ONLY");
 
-    String slgLocationType;
+    final String slgLocationType;
 
     SlgLocationType(String slgLocationType) {
         this.slgLocationType = slgLocationType;

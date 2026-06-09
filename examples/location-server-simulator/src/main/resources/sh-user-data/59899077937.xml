@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Sh-Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Sh-Data>
     <PublicIdentifiers>
         <IMSPublicIdentity>sip:john.doe@hp.com</IMSPublicIdentity>
         <MSISDN>59899077937</MSISDN>
         <Extension>
             <IdentityType>2</IdentityType>
-            <WildcardedPSI>http://www.jainsleediameter.com</WildcardedPSI>
+            <WildcardedPSI>https://www.jainsleediameter.com</WildcardedPSI>
             <Extension>
-                <WildcardedIMPU>http://www.jain-slee.diameter.com</WildcardedIMPU>
+                <WildcardedIMPU>https://www.jain-slee.diameter.com</WildcardedIMPU>
                 <Extension>
                     <ExtendedMSISDN>
                         <MSISDN>59899077938</MSISDN>
@@ -17,7 +17,7 @@
                         <EnhancedIMSPublicIdentifiers>
                             <IMSPublicIdentity>sip:john.doe2@hw.com</IMSPublicIdentity>
                             <IdentityType>0</IdentityType>
-                            <Extension></Extension>
+                            <Extension/>
                         </EnhancedIMSPublicIdentifiers>
                     </Extension>
                 </Extension>
@@ -41,10 +41,10 @@
                     <ServerName>sip:scsf243@02.com</ServerName>
                     <DefaultHandling>0</DefaultHandling>
                     <ServiceInfo>service</ServiceInfo>
-                    <Extension></Extension>
+                    <Extension/>
                 </ApplicationServer>
                 <ProfilePartIndicator>0</ProfilePartIndicator>
-                <Extension></Extension>
+                <Extension/>
             </InitialFilterCriteria>
         </IFCs>
         <IMSUserState>1</IMSUserState>
@@ -68,13 +68,13 @@
                         <ServicePriorityLevel>1</ServicePriorityLevel>
                         <UEReachabilityForIP>
                             <UEIPReachabilityMME>0</UEIPReachabilityMME>
-                            <Extension></Extension>
+                            <Extension/>
                         </UEReachabilityForIP>
                         <SMSRegistrationInfo>
                             <IP-SM-GW-Number>5989901019</IP-SM-GW-Number>
-                            <Extension></Extension>
+                            <Extension/>
                         </SMSRegistrationInfo>
-                        <Extension></Extension>
+                        <Extension/>
                     </Extension>
                 </Extension>
             </Extension>

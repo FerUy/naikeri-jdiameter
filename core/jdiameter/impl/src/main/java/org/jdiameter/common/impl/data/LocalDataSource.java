@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.common.impl.data;
 
 import java.util.HashMap;
@@ -61,9 +19,14 @@ import org.jdiameter.common.api.app.ro.IRoSessionData;
 import org.jdiameter.common.api.app.rx.IRxSessionData;
 import org.jdiameter.common.api.app.s13.IS13SessionData;
 import org.jdiameter.common.api.app.s6a.IS6aSessionData;
+import org.jdiameter.common.api.app.s6b.IS6bSessionData;
+import org.jdiameter.common.api.app.s6c.IS6cSessionData;
+import org.jdiameter.common.api.app.sgd.ISGdSessionData;
 import org.jdiameter.common.api.app.sh.IShSessionData;
 import org.jdiameter.common.api.app.slg.ISLgSessionData;
 import org.jdiameter.common.api.app.slh.ISLhSessionData;
+import org.jdiameter.common.api.app.zh.IZhSessionData;
+import org.jdiameter.common.api.app.swm.ISWmSessionData;
 import org.jdiameter.common.api.data.ISessionDatasource;
 import org.jdiameter.common.impl.app.acc.AccLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.auth.AuthLocalSessionDataFactory;
@@ -75,9 +38,14 @@ import org.jdiameter.common.impl.app.ro.RoLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.rx.RxLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.s13.S13LocalSessionDataFactory;
 import org.jdiameter.common.impl.app.s6a.S6aLocalSessionDataFactory;
+import org.jdiameter.common.impl.app.s6b.S6bLocalSessionDataFactory;
+import org.jdiameter.common.impl.app.s6c.S6cLocalSessionDataFactory;
+import org.jdiameter.common.impl.app.sgd.SGdLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.sh.ShLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.slg.SLgLocalSessionDataFactory;
 import org.jdiameter.common.impl.app.slh.SLhLocalSessionDataFactory;
+import org.jdiameter.common.impl.app.zh.ZhLocalSessionDataFactory;
+import org.jdiameter.common.impl.app.swm.SWmLocalSessionDataFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,9 +59,9 @@ public class LocalDataSource implements ISessionDatasource {
 
   //provided by impl, no way to change that, no conf! :)
   protected HashMap<Class<? extends IAppSessionData>, IAppSessionDataFactory<? extends IAppSessionData>> appSessionDataFactories =
-      new HashMap<Class<? extends IAppSessionData>, IAppSessionDataFactory<? extends IAppSessionData>>();
+      new HashMap<>();
 
-  private ConcurrentHashMap<String, SessionEntry> sessionIdToEntry = new ConcurrentHashMap<String, LocalDataSource.SessionEntry>();
+  private ConcurrentHashMap<String, SessionEntry> sessionIdToEntry = new ConcurrentHashMap<>();
 
   private static final Logger logger = LoggerFactory.getLogger(LocalDataSource.class);
 
@@ -108,9 +76,14 @@ public class LocalDataSource implements ISessionDatasource {
     appSessionDataFactories.put(ICxDxSessionData.class, new CxDxLocalSessionDataFactory());
     appSessionDataFactories.put(IRxSessionData.class, new RxLocalSessionDataFactory());
     appSessionDataFactories.put(IS6aSessionData.class, new S6aLocalSessionDataFactory());
+    appSessionDataFactories.put(IS6bSessionData.class, new S6bLocalSessionDataFactory());
+    appSessionDataFactories.put(IS6cSessionData.class, new S6cLocalSessionDataFactory());
+    appSessionDataFactories.put(ISGdSessionData.class, new SGdLocalSessionDataFactory());
     appSessionDataFactories.put(IS13SessionData.class, new S13LocalSessionDataFactory());
     appSessionDataFactories.put(ISLhSessionData.class, new SLhLocalSessionDataFactory());
     appSessionDataFactories.put(ISLgSessionData.class, new SLgLocalSessionDataFactory());
+    appSessionDataFactories.put(IZhSessionData.class, new ZhLocalSessionDataFactory());
+    appSessionDataFactories.put(ISWmSessionData.class, new SWmLocalSessionDataFactory());
   }
 
   public LocalDataSource(IContainer container) {
@@ -159,7 +132,7 @@ public class LocalDataSource implements ISessionDatasource {
   @Override
   public void addSession(BaseSession session) {
     logger.debug("addSession({})", session);
-    SessionEntry se = null;
+    SessionEntry se;
 
     String sessionId = session.getSessionId();
     //FIXME: check here replicable vs not replicable?

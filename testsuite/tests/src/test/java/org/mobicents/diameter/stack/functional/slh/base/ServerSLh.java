@@ -1,24 +1,3 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.mobicents.diameter.stack.functional.slh.base;
 
 import org.jdiameter.api.Answer;
@@ -34,10 +13,13 @@ import org.jdiameter.api.slh.events.LCSRoutingInfoAnswer;
 import org.mobicents.diameter.stack.functional.Utils;
 import org.mobicents.diameter.stack.functional.slh.AbstractSLhServer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import static org.mobicents.diameter.stack.TBCDUtil.parseTBCD;
+
 /**
- *
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
- *
  */
 public class ServerSLh extends AbstractSLhServer {
 
@@ -45,6 +27,17 @@ public class ServerSLh extends AbstractSLhServer {
   protected boolean sentRIA;
 
   protected LCSRoutingInfoRequest request;
+
+  public ServerSLh() {
+  }
+
+  protected boolean isReceivedRIR() {
+    return receivedRIR;
+  }
+
+  protected boolean isSentRIA() {
+    return sentRIA;
+  }
 
   public void sendLCSRoutingInfoAnswer() throws Exception {
     if (!receivedRIR || request == null) {
@@ -99,178 +92,154 @@ public class ServerSLh extends AbstractSLhServer {
   }
 
 
-  //*********************************************************//
-  //***************** RIA methods ***************************//
-  //*********************************************************//
+  /** Attributes for LCS-Routing-Info-Answer (RIA) **/
 
   @Override
   protected String getUserName() {
     // Information Element IMSI Mapped to AVP User-Name
-    String imsi = "748039876543210";
-    return imsi;
+    return "748039876543210";
   }
 
   @Override
   protected byte[] getMSISDN() {
-    String msisdnString = "59899077937";
-    byte[] msisdn = msisdnString.getBytes();
-    return msisdn;
+    return parseTBCD("59899077937");
   }
 
   @Override
   protected byte[] getLMSI() {
-  /*
-     3GPP TS 29.173 v13.0.0 section 6.4.2
-       The LMSI AVP is of type OctetString and it shall contain the Local Mobile Station Identity (LMSI) allocated by the VLR, as defined in 3GPP TS 23.003
-  */
-    String lmsiString = "748031234567890";
-    byte[] lmsi = lmsiString.getBytes();
-    return lmsi;
+    // The LMSI AVP is of type OctetString, and it shall contain the Local Mobile Station Identity (LMSI) allocated by the VLR,
+    // as defined in 3GPP TS 23.003 .
+    return new byte[] {114, 4, (byte) 233, (byte) 141};
   }
 
+  /** [ Serving-Node ] **/
   @Override
   protected byte[] getSGSNNumber() {
-    String sgsnNumString = "59899004501";
-    byte[] sgsnNumber = sgsnNumString.getBytes();
-    return sgsnNumber;
+    // sent in Additional-Serving-Node AVP
+    return null;
   }
 
   @Override
   protected String getSGSNName() {
-    String sgsnName = "SGSN01";
-    return sgsnName;
+    // sent in Additional-Serving-Node AVP
+    return null;
   }
 
   @Override
   protected String getSGSNRealm() {
-    String sgsnRealm = "sgsn.restcomm.com";
-    return sgsnRealm;
+    // sent in Additional-Serving-Node AVP
+    return null;
   }
 
   @Override
   protected String getMMEName() {
-  /*
-     3GPP TS 29.173 v13.0.0 section 6.4.4
-       TThe MME-Name AVP is of type DiameterIdentity and it shall contain the Diameter identity of the serving MME.
-  */
-    String mmeName = "MME710";
-    return mmeName;
+    // The MME-Name AVP is of type DiameterIdentity, and it shall contain the Diameter identity of the serving MME.
+    return "mmec03.mmegi3000.mme.epc.mnc002.mcc748.3gppnetwork.org";
   }
 
   @Override
   protected String getMMERealm() {
-  /*
-     3GPP TS 29.173 v13.0.0 section 6.4.12
-       The MME-Realm AVP is of type DiameterIdentity and it shall contain the Diameter Realm Identity of the serving MME.
-  */
-    String mmeRealm = "mme.restcomm.com";
-    return mmeRealm;
+    // The MME-Realm AVP is of type DiameterIdentity, and it shall contain the Diameter Realm Identity of the serving MME.
+    return "epc.mnc002.mcc748.3gppnetwork.org";
   }
 
   @Override
   protected byte[] getMSCNumber() {
-    String mscNumString = "59899001207";
-    byte[] mscNumber = mscNumString.getBytes();
-    return mscNumber;
+    return null;
   }
 
   @Override
   protected String get3GPPAAAServerName() {
-    String tgppAAAServerName = "aaa.restcomm.com";
-    return tgppAAAServerName;
+    // The 3GPP-AAA-Server-Name AVP is of type DiameterIdentity, and defines the Diameter address of the 3GPP AAA Server node.
+    return null;
   }
 
   @Override
   protected long getLCSCapabilitiesSets() {
-    long lcsCapabilitiesSets = 99900123L;
-    return lcsCapabilitiesSets;
+    // The LCS-Capabilities-Sets AVP is of type Unsigned32, and it shall contain a bit mask.
+    // The meaning of the bits shall be as defined in 3GPP 29.002.
+    return -1;
   }
 
   @Override
   protected byte[] getAdditionalSGSNNumber() {
-    String sgsnNumString = "59899004502";
-    byte[] sgsnNumber = sgsnNumString.getBytes();
-    return sgsnNumber;
+    // The SGSN-Number AVP is of type OctetString, and it shall contain the ISDN number of the SGSN.
+    // For further details on the definition of this AVP, see 3GPP TS 23.003.
+    // This AVP contains an SGSN-Number in international number format as described in ITU-T Rec E.164 [41]
+    // and shall be encoded as a TBCD-string. See 3GPP TS 29.002 for encoding of TBCD-strings.
+    // This AVP shall not include leading indicators for the nature of address and the numbering plan;
+    // it shall contain only the TBCD-encoded digits of the address
+    return parseTBCD("59899000208");
   }
 
   @Override
   protected String getAdditionalSGSNName() {
-    String sgsnName = "SGSN02";
-    return sgsnName;
+    // The SGSN-Name AVP is of type DiameterIdentity, and it shall contain the Diameter identity of the serving SGSN.
+    return "sgsn1B34.mnc001.mcc748.gprs";
   }
 
   @Override
   protected String getAdditionalSGSNRealm() {
-    String sgsnRealm = "sgsn2.restcomm.com";
-    return sgsnRealm;
+    // The SGSN-Realm AVP is of type DiameterIdentity, and it shall contain the Diameter Realm Identity of the serving SGSN.
+    return "mnc001.mcc748.gprs";
   }
 
   @Override
   protected String getAdditionalMMEName() {
-    String mmeName = "MME712";
-    return mmeName;
+    // sent in Serving-Node AVP
+    return null;
   }
 
   @Override
   protected String getAdditionalMMERealm() {
-    String mmeRealm = "mme2.restcomm.com";
-    return mmeRealm;
+    // sent in Serving-Node AVP
+    return null;
   }
 
   @Override
   protected byte[] getAdditionalMSCNumber() {
-    String mscNumString = "59899001210";
-    byte[] mscNumber = mscNumString.getBytes();
-    return mscNumber;
+    return parseTBCD("59899001210");
   }
 
   @Override
   protected String getAdditional3GPPAAAServerName() {
-    String tgppAAAServerName = "aaa2.restcomm.com";
-    return tgppAAAServerName;
+    // The 3GPP-AAA-Server-Name AVP is of type DiameterIdentity, and defines the Diameter address of the 3GPP AAA Server node.
+    return "aaa3.mnc002.mcc748.3gppnetwork.org";
   }
 
   @Override
   protected long getAdditionalLCSCapabilitiesSets() {
-    long lcsCapabilitiesSets = 88800123L;
-    return lcsCapabilitiesSets;
+    // The LCS-Capabilities-Sets AVP is of type Unsigned32, and it shall contain a bit mask.
+    // The meaning of the bits shall be as defined in 3GPP 29.002.
+    return 3L;
   }
 
   @Override
   protected java.net.InetAddress getAdditionalGMLCAddress() {
-    try {
-      java.net.InetAddress gmlcAddress = java.net.InetAddress.getLocalHost();
-      return gmlcAddress;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // The GMLC-Address AVP is of type Address and shall contain the IPv4 or IPv6 address of H-GMLC
+    // or the V-GMLC associated with the serving node
     return null;
   }
 
   @Override
-  protected java.net.InetAddress getGMLCAddress() {
-  /*
-    3GPP TS 29.173 v13.0.0 section 6.4.7
-      The GMLC-Address AVP is of type Address and shall contain the IPv4 or IPv6 address of H-GMLC or the V-GMLC associated with the serving node.
-  */
+  protected InetAddress getGMLCAddress() {
+    // The GMLC-Address AVP is of type Address and shall contain the IPv4 or IPv6 address of H-GMLC
+    // or the V-GMLC associated with the serving node
+    InetAddress gmlcAddress = null;
     try {
-      java.net.InetAddress gmlcAddress = java.net.InetAddress.getLocalHost();
-      return gmlcAddress;
-    } catch (Exception e) {
+      gmlcAddress = InetAddress.getByName("10.0.0.14");
+    } catch (UnknownHostException e) {
       e.printStackTrace();
     }
-    return null;
+    return gmlcAddress;
   }
 
   @Override
   protected java.net.InetAddress getPPRAddress() {
-  /*
-     3GPP TS 29.173 v13.0.0 section 6.4.9
-       The PPR-Address AVP is of type Address and contains the IPv4 or IPv6 address of the Privacy Profile Register for the targeted user
-  */
+    // The PPR-Address AVP is of type Address and contains
+    // the IPv4 or IPv6 address of the Privacy Profile Register for the targeted user.
     try {
-      java.net.InetAddress pprAddress = java.net.InetAddress.getLocalHost();
-      return pprAddress;
+      return InetAddress.getLocalHost();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -279,22 +248,15 @@ public class ServerSLh extends AbstractSLhServer {
 
   @Override
   protected long getRIAFLags() {
-  /*
-  3GPP TS 29.173 v13.0.0 section 6.4.15
-    Bit	Event Type                                        Description
-    0   Combined-MME/SGSN-Supporting-Optimized-LCS-Proc   This bit, when set, indicates that the UE is served by the MME and the SGSN parts of the same
-                                                          combined MME/SGSN and this combined MME/SGSN supports the optimized LCS procedure.
-  */
-    long riaFlags = 1L;
-    return riaFlags;
-  }
-
-  public boolean isReceivedRIR() {
-    return receivedRIR;
-  }
-
-  public boolean isSentRIA() {
-    return sentRIA;
+    // The RIA-Flags AVP is of type Unsigned32, and it shall contain a bit mask.
+    // The meaning of the bits shall be as defined in table 6.4.15/1:
+    // Table 6.4.15/1: RIA-Flags
+    // Bit	Event Type                                        Description
+    //  0   Combined-MME/SGSN-Supporting-Optimized-LCS-Proc   This bit, when set, indicates that the UE
+    //                                                        is served by the MME and the SGSN parts
+    //                                                        of the same combined MME/SGSN and this combined MME/SGSN
+    //                                                        supports the optimized LCS procedure.
+    return 1;
   }
 
 }

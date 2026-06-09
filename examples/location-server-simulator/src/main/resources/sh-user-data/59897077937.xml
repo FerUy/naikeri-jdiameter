@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Sh-Data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Sh-Data>
     <Extension>
         <Extension>
             <Extension>
@@ -8,7 +8,6 @@
                     <EPSLocationInformation>
                         <E-UTRANCellGlobalId>BfKRAk4nFQ==</E-UTRANCellGlobalId>
                         <TrackingAreaId>BfKRAwY=</TrackingAreaId>
-                        <GeographicalInformation>EKEgAU402RI=</GeographicalInformation>
                         <GeodeticInformation>AxCiJcdOOq8ZAP==</GeodeticInformation>
                         <MMEName>MMEC18.MMEGI8001.MME.EPC.MNC019.MCC502.3GPPNETWORK.ORG</MMEName>
                         <CurrentLocationRetrieved>0</CurrentLocationRetrieved>

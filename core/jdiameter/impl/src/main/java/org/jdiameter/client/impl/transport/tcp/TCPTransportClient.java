@@ -1,45 +1,3 @@
-/*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2014, TeleStax Inc. and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- * This file incorporates work covered by the following copyright and
- * permission notice:
- *
- *   JBoss, Home of Professional Open Source
- *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
- *   by the @authors tag. See the copyright.txt in the distribution for a
- *   full listing of individual contributors.
- *
- *   This is free software; you can redistribute it and/or modify it
- *   under the terms of the GNU Lesser General Public License as
- *   published by the Free Software Foundation; either version 2.1 of
- *   the License, or (at your option) any later version.
- *
- *   This software is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *   Lesser General Public License for more details.
- *
- *   You should have received a copy of the GNU Lesser General Public
- *   License along with this software; if not, write to the Free
- *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
 package org.jdiameter.client.impl.transport.tcp;
 
 import java.io.IOException;
@@ -76,14 +34,17 @@ public class TCPTransportClient implements Runnable {
   private TCPClientConnection parentConnection;
   private IConcurrentFactory concurrentFactory;
 
-  public static final int DEFAULT_BUFFER_SIZE  = 1024;
-  public static final int DEFAULT_STORAGE_SIZE = 2048;
+  public static final String BYTE_BUFFER_SIZE_KEY = "org.restcomm.tcp.byteBufferSize";
+  public static final String BYTE_BUFFER_SIZE_DEFAULT = "8192";
+  public static final String BYTE_STORAGE_SIZE_KEY = "org.restcomm.tcp.byteStorageSize";
+  public static final String BYTE_STORAGE_SIZE_DEFAULT = "16384";
+  protected int bufferSize = 8192;
+  protected int storageSize = 16384;
+  protected ByteBuffer buffer;
+  protected ByteBuffer storage;
 
   protected boolean stop = false;
   protected Thread selfThread;
-
-  protected int bufferSize = DEFAULT_BUFFER_SIZE;
-  protected ByteBuffer buffer = ByteBuffer.allocate(this.bufferSize);
 
   protected InetSocketAddress destAddress;
   protected InetSocketAddress origAddress;
@@ -91,14 +52,11 @@ public class TCPTransportClient implements Runnable {
   protected SocketChannel socketChannel;
   protected Lock lock = new ReentrantLock();
 
-  protected int storageSize = DEFAULT_STORAGE_SIZE;
-  protected ByteBuffer storage = ByteBuffer.allocate(storageSize);
-
   private String socketDescription = null;
 
   private static final Logger logger = LoggerFactory.getLogger(TCPTransportClient.class);
 
-  //PCB - allow non blocking IO
+  //PCB - allow non-blocking IO
   private static final boolean BLOCKING_IO = false;
   private static final long SELECT_TIMEOUT = 500; // milliseconds
 
@@ -109,11 +67,15 @@ public class TCPTransportClient implements Runnable {
    * Default constructor
    *
    * @param concurrentFactory factory for create threads
-   * @param parenConnection connection created this transport
+   * @param parentConnection connection created this transport
    */
-  TCPTransportClient(IConcurrentFactory concurrentFactory, TCPClientConnection parenConnection) {
-    this.parentConnection = parenConnection;
+  TCPTransportClient(IConcurrentFactory concurrentFactory, TCPClientConnection parentConnection) {
+    this.parentConnection = parentConnection;
     this.concurrentFactory = concurrentFactory;
+    this.bufferSize = Integer.parseInt(System.getProperty(BYTE_BUFFER_SIZE_KEY, BYTE_BUFFER_SIZE_DEFAULT));
+    this.storageSize = Integer.parseInt(System.getProperty(BYTE_STORAGE_SIZE_KEY, BYTE_STORAGE_SIZE_DEFAULT));
+    buffer = ByteBuffer.allocate(bufferSize);
+    storage = ByteBuffer.allocate(storageSize);
   }
 
   /**
@@ -150,7 +112,7 @@ public class TCPTransportClient implements Runnable {
   }
 
   public void initialize(Socket socket) throws IOException, NotInitializedException  {
-    logger.debug("Initialising TCPTransportClient for a socket on [{}]", socket);
+    logger.debug("Initialising TCPTransportClient for a socket on [{}] with bufferSize [{}] and storageSize[{}]", socket, bufferSize, storageSize);
     socketDescription = socket.toString();
     socketChannel = socket.getChannel();
     //PCB added logging
@@ -213,6 +175,9 @@ public class TCPTransportClient implements Runnable {
           it.remove();
           if (selKey.isValid() && selKey.isReadable()) {
             // Get channel with bytes to read
+
+            // The IDE shows a warning on the next line, DO NOT CHANGE IT!!!
+            // The "Surround with try-with-resources block" suggestion from the IDE is a bug
             SocketChannel sChannel = (SocketChannel) selKey.channel();
             int dataLength = sChannel.read(buffer);
             logger.debug("Just read [{}] bytes on [{}]", dataLength, socketDescription);
@@ -275,8 +240,7 @@ public class TCPTransportClient implements Runnable {
     destAddress = null;
   }
 
-  private void clearBuffer() throws IOException {
-    bufferSize = DEFAULT_BUFFER_SIZE;
+  private void clearBuffer() {
     buffer = ByteBuffer.allocate(bufferSize);
   }
 
@@ -307,7 +271,7 @@ public class TCPTransportClient implements Runnable {
       if (logger.isTraceEnabled()) {
         String hex = MessageParser.byteArrayToHexString(bytes.array());
         logger.trace("About to send a byte buffer of size [{}] over the TCP nio socket [{}]\n{}",
-            new Object[]{bytes.array().length, socketDescription, hex});
+                bytes.array().length, socketDescription, hex);
       }
       else {
         logger.debug("About to send a byte buffer of size [{}] over the TCP nio socket [{}]", bytes.array().length, socketDescription);
@@ -329,10 +293,7 @@ public class TCPTransportClient implements Runnable {
     finally {
       lock.unlock();
     }
-    if (rc == -1) {
-      throw new IOException("Connection closed");
-    }
-    else if (rc == 0) {
+    if (rc == 0) {
       logger.error("socketChannel.write(bytes) - returned zero indicating that perhaps the write buffer is full");
     }
     if (logger.isDebugEnabled()) {
@@ -342,7 +303,7 @@ public class TCPTransportClient implements Runnable {
 
   @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append("Transport to ");
     if (this.destAddress != null) {
       buffer.append(this.destAddress.getHostName());
@@ -381,7 +342,7 @@ public class TCPTransportClient implements Runnable {
       storage.put(data);
     }
     catch (BufferOverflowException boe) {
-      logger.error("Buffer overflow occured", boe);
+      logger.error("Buffer overflow occurred", boe);
     }
     boolean messageReceived;
     do {
@@ -409,12 +370,12 @@ public class TCPTransportClient implements Runnable {
 
       // check that version is 1, as per RFC 3588 - Section 3:
       // This Version field MUST be set to 1 to indicate Diameter Version 1
-      byte vers = (byte) (tmp >> 24);
-      if (vers != 1) {
+      byte version = (byte) (tmp >> 24);
+      if (version != 1) {
         // ZhixiaoLuo: fix #28, if unlucky storage.limit < data.length(1024), then always failed to do storage.put(data)
         // ZhixiaoLuo: and get BufferOverflowException in append(data)
         storage.clear();
-        logger.error("Invalid message version detected [" + vers + "]");
+        logger.error("Invalid message version detected [" + version + "]");
         return false;
       }
       // extract the message length, so we know how much to read
@@ -422,7 +383,7 @@ public class TCPTransportClient implements Runnable {
 
       // verify that we do have the whole message in the storage
       if (storage.limit() < messageLength) {
-        // we don't have it all.. let's restore buffer to receive more
+        // we don't have it all... let's restore buffer to receive more
         storage.position(storage.limit());
         storage.limit(storage.capacity());
         logger.debug("Received partial message, waiting for remaining (expected: {} bytes, got {} bytes).", messageLength, storage.position());
@@ -447,10 +408,10 @@ public class TCPTransportClient implements Runnable {
       }
     }
     catch (BufferUnderflowException bue) {
-      // we don't have enough data to read message length.. wait for more
+      // we don't have enough data to read message length... wait for more
       storage.position(storage.limit());
       storage.limit(storage.capacity());
-      logger.debug("Buffer underflow occured, waiting for more data.", bue);
+      logger.debug("Buffer underflow occurred, waiting for more data.", bue);
       return false;
     }
     return true;

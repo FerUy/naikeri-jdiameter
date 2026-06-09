@@ -36,5 +36,4 @@ public class AdditionalLocationEstimate {
     public Double longitude14;
     public Double latitude15;
     public Double longitude15;
-
 }

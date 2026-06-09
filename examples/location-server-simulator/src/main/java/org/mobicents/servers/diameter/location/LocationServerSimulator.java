@@ -16,13 +16,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.jdiameter.api.ApplicationId;
-import org.jdiameter.api.IllegalDiameterStateException;
-import org.jdiameter.api.InternalException;
 import org.jdiameter.api.Mode;
 import org.jdiameter.api.Network;
-import org.jdiameter.api.OverloadException;
 import org.jdiameter.api.Peer;
-import org.jdiameter.api.RouteException;
 import org.jdiameter.api.SessionFactory;
 import org.jdiameter.api.sh.ServerShSession;
 import org.jdiameter.api.slg.ServerSLgSession;
@@ -53,19 +49,11 @@ public class LocationServerSimulator {
 
     private static final Logger logger = LoggerFactory.getLogger(LocationServerSimulator.class);
 
-    private SubscriberInformation subscriberInformation;
-
     private SLgReferencePoint slgMobilityManagementEntity;
-    private SLhReferencePoint slhHomeSubscriberServer;
-    private ShReferencePoint shHomeSubscriberServer;
     private SessionFactory sessionFactory;
 
     private static final Object[] EMPTY_ARRAY = new Object[]{};
 
-    /**
-     * @param args
-     * @throws Exception
-     */
     public static void main(String[] args) throws Exception {
         // Parse command line options
         Options options = new Options();
@@ -108,6 +96,7 @@ public class LocationServerSimulator {
                         DEFERRED_MT_LR_RESPONSE(4)
                         DEFERRED_MO_LR_TTTP_INITIATION(5)
                         DELAYED_LOCATION_REPORTING(6)
+                        HANDOVER_TO_5GC (7)
                     },
                     REFERENCE_NUMBER[IntegerAsString]
                 }
@@ -119,7 +108,7 @@ public class LocationServerSimulator {
              */
             get("/lrr", new RouteImpl("/lrr") {
                 @Override
-                public Object handle(Request request, Response response) throws Exception {
+                public Object handle(Request request, Response response) {
                     Boolean isImsi = false;
                     String subscriberIdentity = request.queryParams("msisdn");
                     if (subscriberIdentity == null) {
@@ -129,7 +118,7 @@ public class LocationServerSimulator {
                     String locationEvent = request.queryParams("locationEvent");
                     String lcsReferenceNumber = request.queryParams("lcsReferenceNumber");
                     if (lcsReferenceNumber != null) {
-                        if (Integer.valueOf(lcsReferenceNumber) >= 0)
+                        if (Integer.parseInt(lcsReferenceNumber) >= 0)
                             return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent, lcsReferenceNumber, isImsi);
                         else
                             return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent, null, isImsi);
@@ -169,10 +158,10 @@ public class LocationServerSimulator {
         AvpDictionary.INSTANCE.parseDictionary(this.getClass().getClassLoader().getResourceAsStream("dictionary.xml"));
 
         try {
-            subscriberInformation = SubscriberInformation.load();
+            SubscriberInformation subscriberInformation = SubscriberInformation.load();
 
             slgMobilityManagementEntity = new SLgReferencePoint(subscriberInformation);
-            slhHomeSubscriberServer = new SLhReferencePoint(subscriberInformation);
+            SLhReferencePoint slhHomeSubscriberServer = new SLhReferencePoint(subscriberInformation);
 
             String serverXmlConfigurationFile = System.getProperty("user.dir") + "/config-server.xml";
             InputStream xmlConfigurationReader;
@@ -206,7 +195,7 @@ public class LocationServerSimulator {
             slhHomeSubscriberServer.init(sessionFactory);
             sessionFactory.registerAppFacory(ServerSLhSession.class, slhHomeSubscriberServer);
 
-            shHomeSubscriberServer = new ShReferencePoint(sessionFactory, subscriberInformation);
+            ShReferencePoint shHomeSubscriberServer = new ShReferencePoint(sessionFactory, subscriberInformation);
             sessionFactory.registerAppFacory(ServerShSession.class, shHomeSubscriberServer);
             network.addNetworkReqListener(shHomeSubscriberServer,
                     ApplicationId.createByAuthAppId(10415L, shHomeSubscriberServer.getApplicationId()));
@@ -215,8 +204,7 @@ public class LocationServerSimulator {
         }
     }
 
-    public void sendLocationReportRequest(String command)
-            throws InternalException, OverloadException, IllegalDiameterStateException, RouteException {
+    public void sendLocationReportRequest(String command) {
 
         String[] commandParameter = command.split(" ");
 
@@ -270,7 +258,7 @@ public class LocationServerSimulator {
         StringBuilder sb = new StringBuilder();
         byte[] contents = new byte[1024];
         String strFileContents;
-        int bytesRead = 0;
+        int bytesRead;
 
         while ((bytesRead = bin.read(contents)) != -1) {
             strFileContents = new String(contents, 0, bytesRead);

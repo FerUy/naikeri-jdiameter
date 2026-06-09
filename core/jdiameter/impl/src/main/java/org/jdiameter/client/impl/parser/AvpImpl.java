@@ -1,45 +1,3 @@
- /*
-  * TeleStax, Open Source Cloud Communications
-  * Copyright 2011-2016, TeleStax Inc. and individual contributors
-  * by the @authors tag.
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * under the terms of the GNU Affero General Public License as
-  * published by the Free Software Foundation; either version 3 of
-  * the License, or (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU Affero General Public License for more details.
-  *
-  * You should have received a copy of the GNU Affero General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>
-  *
-  * This file incorporates work covered by the following copyright and
-  * permission notice:
-  *
-  *   JBoss, Home of Professional Open Source
-  *   Copyright 2007-2011, Red Hat, Inc. and individual contributors
-  *   by the @authors tag. See the copyright.txt in the distribution for a
-  *   full listing of individual contributors.
-  *
-  *   This is free software; you can redistribute it and/or modify it
-  *   under the terms of the GNU Lesser General Public License as
-  *   published by the Free Software Foundation; either version 2.1 of
-  *   the License, or (at your option) any later version.
-  *
-  *   This software is distributed in the hope that it will be useful,
-  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  *   Lesser General Public License for more details.
-  *
-  *   You should have received a copy of the GNU Lesser General Public
-  *   License along with this software; if not, write to the Free
-  *   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  *   02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
-
 package org.jdiameter.client.impl.parser;
 
 import java.net.InetAddress;
@@ -68,9 +26,9 @@ class AvpImpl implements Avp {
   int avpCode;
   long vendorID;
 
-  boolean isMandatory = false;
-  boolean isEncrypted = false;
-  boolean isVendorSpecific = false;
+  boolean isMandatory;
+  boolean isEncrypted;
+  boolean isVendorSpecific;
 
   byte[] rawData = new byte[0];
   AvpSet groupedData;
@@ -251,11 +209,7 @@ class AvpImpl implements Avp {
   public URI getDiameterURI() throws AvpDataException {
     try {
       return new URI(parser.bytesToOctetString(rawData));
-    }
-    catch (URISyntaxException e) {
-      throw new AvpDataException(e, this);
-    }
-    catch (UnknownServiceException e) {
+    } catch (URISyntaxException | UnknownServiceException e) {
       throw new AvpDataException(e, this);
     }
   }
@@ -268,8 +222,7 @@ class AvpImpl implements Avp {
         rawData = new byte[0];
       }
       return groupedData;
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new AvpDataException(e, this);
     }
   }
@@ -289,14 +242,14 @@ class AvpImpl implements Avp {
     return (rawData == null || rawData.length == 0) ? parser.encodeAvpSet(groupedData) : rawData;
   }
 
-  // Caching toString.. Avp shouldn't be modified once created.
+  // Caching toString... Avp shouldn't be modified once created.
   private String toString;
 
   @Override
   public String toString() {
     if (toString == null) {
-      this.toString = new StringBuffer("AvpImpl [avpCode=").append(avpCode).append(", vendorID=").append(vendorID).
-          append(", len=").append((rawData != null) ? rawData.length : null).append("]@").append(super.hashCode()).toString();
+      this.toString = "AvpImpl [avpCode=" + avpCode + ", vendorID=" + vendorID +
+              ", len=" + ((rawData != null) ? rawData.length : null) + "]@" + super.hashCode();
     }
 
     return this.toString;

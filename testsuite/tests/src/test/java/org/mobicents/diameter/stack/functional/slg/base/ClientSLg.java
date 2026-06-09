@@ -1,24 +1,3 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.mobicents.diameter.stack.functional.slg.base;
 
 import org.jdiameter.api.Answer;
@@ -36,12 +15,12 @@ import org.jdiameter.api.slg.events.ProvideLocationAnswer;
 import org.mobicents.diameter.stack.functional.Utils;
 import org.mobicents.diameter.stack.functional.slg.AbstractSLgClient;
 
-import java.util.Arrays;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import static org.mobicents.diameter.stack.TBCDUtil.parseTBCD;
 
 /**
- *
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
- *
  */
 public class ClientSLg extends AbstractSLgClient {
 
@@ -53,6 +32,22 @@ public class ClientSLg extends AbstractSLgClient {
   protected LocationReportRequest locationReportRequest;
 
   public ClientSLg() {
+  }
+
+  public boolean isReceivedPLA() {
+    return receivedPLA;
+  }
+
+  public boolean isSentPLR() {
+    return sentPLR;
+  }
+
+  public boolean isReceivedLRR() {
+    return receivedLRR;
+  }
+
+  public boolean isSentLRA() {
+    return sentLRA;
   }
 
   public void sendProvideLocationRequest() throws Exception {
@@ -127,529 +122,475 @@ public class ClientSLg extends AbstractSLgClient {
     return null;
   }
 
-  //*********************************************************//
-  //***************** PLR methods ***************************//
-  //*********************************************************//
+  /*** Attributes for Provide-Location-Request (PLR), Location-Report-Answer (LRA) ***/
 
   // { SLg-Location-Type }
+  @Override
   protected int getSLgLocationType() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.2
-    The SLg-Location-Type AVP is of type Enumerated. The following values are defined:
-    CURRENT_LOCATION (0)
-    CURRENT_OR_LAST_KNOWN_LOCATION (1)
-    INITIAL_LOCATION (2)
-    ACTIVATE_DEFERRED_LOCATION (3)
-    CANCEL_DEFERRED_LOCATION (4)
-    NOTIFICATION_VERIFICATION_ONLY (5)
-  */
-    int slgLocationType = 0;
-    return slgLocationType;
+    // The LCS-Client-Type AVP (AVP code 1241) is of type Enumerated and contains the type of services requested by the LCS Client.
+    // It can be one of the following values:
+    // 0 EMERGENCY_SERVICES
+    // 1 VALUE_ADDED_SERVICES
+    // 2 PLMN_OPERATOR_SERVICES
+    // 3 LAWFUL_INTERCEPT_SERVICES
+    return 1;
   }
 
   @Override
   protected String getLCSNameString() {
-    String lcsNameString = "Restcomm Geolocation API";
-    return lcsNameString;
+    // The LCS-Name-String AVP (AVP code 1238) is of type UTF8String and contains the LCS Client name.
+    return "fernando@restcomm.org";
   }
 
   protected int getLCSFormatIndicator() {
-  /*
-    "0" = "LOGICAL_NAME"
-    "1" = "EMAIL_ADDRESS"
-    "2" = "MSISDN"
-    "3" = "URL"
-    "4" = "SIP_URL"
-  */
-    int lcsFormatIndicator = 2;
-    return lcsFormatIndicator;
+    // The LCS-Format-Indicator AVP (AVP code 1237) is of type Enumerated and contains the format of the LCS Client name. It can be one of the following values:
+    // 0 LOGICAL_NAME
+    // 1 EMAIL_ADDRESS
+    // 2 MSISDN
+    // 3 URL
+    // 4 SIP_URL
+    return 1;
   }
 
   @Override
   protected String getUserName() {
     // Information Element IMSI Mapped to AVP User-Name
-    String imsi = "748039876543210";
-    return imsi;
+    return "748039876543210";
   }
 
   @Override
   protected byte[] getMSISDN() {
-    String msisdnString = "59899077937";
-    byte[] msisdn = msisdnString.getBytes();
-    return msisdn;
+    return parseTBCD("59899077937");
   }
 
   @Override
   protected String getIMEI() {
-    String imei = "011714004661057";
-    return imei;
+    return "011714004661057";
   }
 
   @Override
   protected int getLCSClientType() {
-  /*
-    "0" = "EMERGENCY_SERVICES"
-    "1" = "VALUE_ADDED_SERVICES"
-    "2" = "PLMN_OPERATOR_SERVICES"
-    "3" = "LAWFUL_INTERCEPT_SERVICES"
-  */
-    int lcsClientType = 1;
-    return lcsClientType;
+    // The LCS-Client-Type AVP (AVP code 1241) is of type Enumerated and contains the type of services
+    // requested by the LCS Client.
+    // It can be one of the following values:
+    // 0 EMERGENCY_SERVICES
+    // 1 VALUE_ADDED_SERVICES
+    // 2 PLMN_OPERATOR_SERVICES
+    // 3 LAWFUL_INTERCEPT_SERVICES
+    return 1;
   }
 
   @Override
   protected String getLCSRequestorIdString() {
-    String lcsRequestorIdString = "restcomm_geolocation_23";
-    return lcsRequestorIdString;
+    // The LCS-Requestor-ID-String AVP (AVP code 1240) is of type UTF8String and contains
+    // the identification of the Requestor and can be e.g. MSISDN or logical name
+    return "Restcomm Geolocation API";
   }
 
   @Override
   protected int getReqLCSFormatIndicator() {
-  /*
-    "0" = "LOGICAL_NAME"
-    "1" = "EMAIL_ADDRESS"
-    "2" = "MSISDN"
-    "3" = "URL"
-    "4" = "SIP_URL"
-  */
-    int requestorLCSFormatIndicator = 3;
-    return requestorLCSFormatIndicator;
+    // The LCS-Format-Indicator AVP (AVP code 1237) is of type Enumerated and contains the format of the LCS Client name. It can be one of the following values:
+    // 0 LOGICAL_NAME
+    // 1 EMAIL_ADDRESS
+    // 2 MSISDN
+    // 3 URL
+    // 4 SIP_URL
+    return 0;
   }
 
   @Override
   protected long getLCSPriority() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.5
-    The LCS-Priority AVP is of type Unsigned32. It indicates the priority of the location request.
-    The value 0 shall indicate the highest priority, and the value 1 shall indicate normal priority.
-    All other values shall be treated as 1 (normal priority). For details, refer to 3GPP TS 22.071.
-  */
-    int lcsPriority = 1;
-    return lcsPriority;
+    // The LCS-Priority AVP is of type Unsigned32. It indicates the priority of the location request.
+    // The value 0 shall indicate the highest priority, and the value 1 shall indicate normal priority.
+    // All other values shall be treated as 1 (normal priority). For details, refer to 3GPP TS 22.071.
+    return 1;
   }
 
   @Override
   protected int getLCSQoSClass() {
-  /*
-    3GPP TS 29.172 v13.0.0 section 7.4.27
-      ASSURED (0)
-      BEST EFFORT (1)
-  */
-    int lcsQoSClass = 1;
-    return lcsQoSClass;
+    // The LCS-QoS-Class AVP is of the type Enumerated. The following values are defined:
+    // ASSURED (0)
+    // BEST EFFORT (1)
+    return 1;
   }
 
   @Override
   protected long getHorizontalAccuracy() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.7
-    The Horizontal-Accuracy AVP is of type Unsigned32. Bits 6-0 corresponds to Uncertainty Code defined in 3GPP TS 23.032 [3].
-    The horizontal location error should be less than the error indicated by the uncertainty code with 67% confidence.
-    Bits 7 to 31 shall be ignored
-  */
-    long horizontalAccuracy = 120L;
-    return horizontalAccuracy;
+    // The Horizontal-Accuracy AVP is of type Unsigned32. Bits 6-0 corresponds to Uncertainty Code defined in 3GPP TS 23.032 [3].
+    // The horizontal location error should be less than the error indicated by the uncertainty code with 67% confidence.
+    // Bits 7 to 31 shall be ignored
+    return 127;
   }
 
   @Override
   protected long getVerticalAccuracy() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.8
-    The Vertical-Accuracy AVP is of type Unsigned32. Bits 6-0 corresponds to Uncertainty Code defined in 3GPP TS 23.032 [3].
-    The Vertical location error should be less than the error indicated by the uncertainty code with 67% confidence.
-    Bits 7 to 31 shall be ignored
-  */
-    long verticalAccuracy = 3237L;
-    return verticalAccuracy;
+    // The Vertical-Accuracy AVP is of type Unsigned32. Bits 6-0 corresponds to Uncertainty Code defined in 3GPP TS 23.032.
+    // The Vertical location error should be less than the error indicated by the uncertainty code with 67% confidence.
+    // Bits 7 to 31 shall be ignored
+    return 3;
   }
 
   @Override
   protected int getVerticalRequested() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.9
-    VERTICAL_COORDINATE_IS_NOT REQUESTED (0)
-	VERTICAL_COORDINATE_IS_REQUESTED (1)
-  */
-    int verticalRequested = 0;
-    return verticalRequested;
+    // The Vertical-Requested AVP is of type Enumerated. The following values are defined:
+    // VERTICAL_COORDINATE_IS_NOT REQUESTED (0)
+    // VERTICAL_COORDINATE_IS_REQUESTED (1)
+    return 1;
   }
 
   @Override
   protected int getResponseTime() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.11
-    LOW_DELAY (0)
-    DELAY_TOLERANT (1)
-  */
-    int responseTime = 1;
-    return responseTime;
+    // The Response-Time AVP is of type Enumerated. The following values are defined:
+    // LOW_DELAY (0)
+    // DELAY_TOLERANT (1)
+    return 1;
   }
 
   @Override
   protected int getVelocityRequested() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.10
-    VELOCITY_IS_NOT_REQUESTED (0)
-    VELOCITY_IS_REQUESTED (1)
-   */
-    int velocityRequested = 0;
-    return velocityRequested;
+    // The Velocity-Requested AVP is of type Enumerated. The following values are defined:
+    // VELOCITY_IS_NOT_REQUESTED (0)
+    // VELOCITY_IS_REQUESTED (1)
+    return 1;
   }
 
   @Override
   protected long getLCSSupportedGADShapes() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.12
-    The Supported-GAD-Shapes AVP is of type Unsigned32 and it shall contain a bitmask.
-    A node shall mark in the BIT STRING all Shapes defined in 3GPP TS 23.032 [3] it supports.
-    Bits 6-0 in shall indicate the supported Shapes defined in 3GPP TS 23.032 [3]. Bits 7 to 31 shall be ignored.
-    ellipsoidPoint (0)
-    ellipsoidPointWithUncertaintyCircle (1)
-    ellipsoidPointWithUncertaintyEllipse (2)
-    polygon (3)
-    ellipsoidPointWithAltitude (4)
-    ellipsoidPointWithAltitudeAndUncertaintyElipsoid (5)
-    ellipsoidArc (6)
-  */
-    long supportedGADShapes = 3L;
-    return supportedGADShapes;
+    // The Supported-GAD-Shapes AVP is of type Unsigned32, and it shall contain a bitmask.
+    // A node shall mark in the BIT STRING all Shapes defined in 3GPP TS 23.032 it supports.
+    // Bits 10-0 in shall indicate the supported Shapes defined in 3GPP TS 23.032. Bits 11 to 31 shall be ignored.
+    // ellipsoidPoint (0)
+    // ellipsoidPointWithUncertaintyCircle (1)
+    // ellipsoidPointWithUncertaintyEllipse (2)
+    // polygon (3)
+    // ellipsoidPointWithAltitude (4)
+    // ellipsoidPointWithAltitudeAndUncertaintyEllipsoid (5)
+    // ellipsoidArc (6)
+    // highAccuracyEllipsoidPointWithUncertaintyEllipse (7)
+    // highAccuracyEllipsoidPointWithAltitudeAndUncertaintyEllipsoid (8)
+    // highAccuracyEllipsoidPointWithScalableUncertaintyEllipse (9)
+    // highAccuracyEllipsoidPointWithAltitudeAndScalableUncertaintyEllipsoid (10)
+    return 127L;
   }
 
   @Override
   protected long getLSCServiceTypeId() {
-    long lcsServiceTypeId = 234L;
-    return lcsServiceTypeId;
+    // The LCS-Service-Type-ID is of type Unsigned32.
+    // It defines the identifier associated to one of the Service Types for which the LCS client is allowed to locate
+    // the particular UE.
+    // Wireshark example taken from a real network capture:
+    // AVP: LCS-Service-Type-ID(2520) l=16 f=VM- vnd=TGPP val=1
+    //    AVP Code: 2520 LCS-Service-Type-ID
+    //    AVP Flags: 0xc0, Vendor-Specific: Set, Mandatory: Set
+    //    AVP Length: 16
+    //    AVP Vendor Id: 3GPP (10415)
+    //    LCS-Service-Type-ID: 1
+    return 1;
   }
 
   @Override
   protected String getLCSCodeword() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.1
-    The LCS-Codeword AVP is of type UTF8String.
-    It indicates the potential codeword string to send in a notification message to the UE
-  */
-    String lcsCodeword = "rcgl49f9f$#ERSD";
-    return lcsCodeword;
+    // The LCS-Codeword AVP is of type UTF8String.
+    // It indicates the potential codeword string to send in a notification message to the UE
+    return "restcomm49f9f$#ERSD";
   }
 
   @Override
   protected String getServiceSelection() {
-    String apn = "restcomm.org";
-    return apn;
+    // Wireshark example taken from a real network capture:
+    // AVP: Service-Selection(493) l=26 f=-M- val=stg.eu.ng.1nce.net
+    //    AVP Code: 493 Service-Selection
+    //    AVP Flags: 0x40, Mandatory: Set
+    //    AVP Length: 26
+    //    Service-Selection: stg.eu.ng.1nce.net
+    //    Padding: 0000
+    return "seairis.dev.eu.1nce.net";
   }
 
   @Override
   protected int getLCSPrivacyCheckSession() {
-  /*
-  3GPP TS 291.172 v13.0.0 section 7.4.22
-  LCS-Privacy-Check-Session ::= <AVP header: 2522 10415>
-    { LCS-Privacy-Check }
-  3GPP TS 29.172 v13.0.0 section 7.4.14
-    ALLOWED_WITHOUT_NOTIFICATION (0)
-    ALLOWED_WITH_NOTIFICATION (1)
-    ALLOWED_IF_NO_RESPONSE (2)
-    RESTRICTED_IF_NO_RESPONSE (3)
-    NOT_ALLOWED (4)
-  */
-    int lcsPrivacyCheckSession = 2;
-    return lcsPrivacyCheckSession;
+    // The LCS-Privacy-Check-Session AVP is of type Grouped.
+    // AVP format:
+    // LCS-Privacy-Check-Session ::= <AVP header: 2522 10415>
+    //                   { LCS-Privacy-Check }
+    // The LCS-Privacy-Check AVP is of type Enumerated. The following values are defined:
+    // ALLOWED_WITHOUT_NOTIFICATION (0)
+    // ALLOWED_WITH_NOTIFICATION (1)
+    // ALLOWED_IF_NO_RESPONSE (2)
+    // RESTRICTED_IF_NO_RESPONSE (3)
+    // NOT_ALLOWED (4)
+    return 2;
   }
 
   @Override
   protected int getLCSPrivacyCheckNonSession() {
-  /*
-  3GPP TS 291.172 v13.0.0 section 7.4.22
-  LCS-Privacy-Check-Non-Session ::= <AVP header: 2521 10415>
-    { LCS-Privacy-Check }
-  3GPP TS 29.172 v13.0.0 section 7.4.14
-    ALLOWED_WITHOUT_NOTIFICATION (0)
-    ALLOWED_WITH_NOTIFICATION (1)
-    ALLOWED_IF_NO_RESPONSE (2)
-    RESTRICTED_IF_NO_RESPONSE (3)
-    NOT_ALLOWED (4)
-  */
-    int lcsPrivacyCheckNonSession = 4;
-    return lcsPrivacyCheckNonSession;
+    // The LCS-Privacy-Check-Non-Session AVP is of type Grouped.
+    // AVP format:
+    // LCS-Privacy-Check-Non-Session ::= <AVP header: 2521 10415>
+    //                    { LCS-Privacy-Check }
+    // The LCS-Privacy-Check AVP is of type Enumerated. The following values are defined:
+    // ALLOWED_WITHOUT_NOTIFICATION (0)
+    // ALLOWED_WITH_NOTIFICATION (1)
+    // ALLOWED_IF_NO_RESPONSE (2)
+    // RESTRICTED_IF_NO_RESPONSE (3)
+    // NOT_ALLOWED (4)
+    return 4;
   }
 
   @Override
   protected long getDeferredLocationType() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.36
-    Bit	Event Type          Description
-    0   UE-Available        Any event in which the SGSN has established a contact with the UE.
-    1   Entering-Into-Area  An event where the UE enters a pre-defined geographical area.
-    2   Leaving-From-Area   An event where the UE leaves a pre-defined geographical area.
-    3   Being-Inside-Area   An event where the UE is currently within the pre-defined geographical area.For this event,
-                            the value of Occurrence-Info AVP is always treated as set to “ONE_TIME_EVENT”.
-    4   Periodic-LDR        An event where a defined periodic timer expires in the UE and activates a location report or a location request.
-  */
-    long deferredLocationType = 8L;
-    return deferredLocationType;
+    // The Deferred-Location-Type AVP is of type Unsigned32, and it shall contain a bit mask.
+    // Each bit indicates a type of event, until when the location estimation is deferred.
+    // For details, please refer to 3GPP TS 23.271 clause 4.4.2.
+    // The meaning of the bits shall be as defined in table 7.4.36/1:
+    // Bit	Event Type            Description
+    //    0   UE-Available        Any event in which the SGSN has established a contact with the UE.
+    //    1   Entering-Into-Area  An event where the UE enters a pre-defined geographical area.
+    //    2   Leaving-From-Area   An event where the UE leaves a pre-defined geographical area.
+    //    3   Being-Inside-Area   An event where the UE is currently within the pre-defined geographical area.
+    //    4   Periodic-LDR        An event where a defined periodic timer expires in the UE and activates a location report or a location request.
+    //    5   Motion-Event        An event where the UE moves by more than a minimum linear distance. This event is applicable to a deferred EPC-MT-LR only.
+    //    6   LDR-Activated       An event where deferred location reporting has been activated in the UE. This event is applicable to a deferred EPC-MT-LR only.
+    //    7   Maximum-Interval-Expiration	An event where the maximum reporting interval has expired. This event is applicable to a deferred EPC-MT-LR only.
+    return 1;
   }
 
   @Override
   protected byte[] getLCSReferenceNumber() {
-  /*
-    3GPP TS 29.172 v13.0.0 section 7.4.37
-      The LCS-Reference-Number AVP is of type OctetString of length 1. It shall contain the points number identifying the deferred location request.
-  */
-    String lcsRefNumber = "4C4353353739";
-    byte[] lcsRefNum = lcsRefNumber.getBytes();
-    return lcsRefNum;
+    // The LCS-Reference-Number AVP is of type OctetString of length 1.
+    // It shall contain the points number identifying the deferred location request.
+    return new byte[] {0x21};
   }
 
   @Override
   protected int getOccurrenceInfo() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.43
-     The Occurrence-Info AVP is of type Enumerated. The following values are defined:
-       ONE_TIME_EVENT (0)
-       MULTIPLE_TIME_EVENT (1)
-  */
-    int occurrenceInfo = 1;
-    return occurrenceInfo;
+    // The Occurrence-Info AVP is of type Enumerated. The following values are defined:
+    // ONE_TIME_EVENT (0)
+    // MULTIPLE_TIME_EVENT (1)
+    return 1;
   }
 
   @Override
   protected long getIntervalTime() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.44
-     The Interval-Time AVP is of type Unsigned32 and it contains minimum time interval between area reports, in seconds.
-  */
-    long intervalTime = 3600L;
-    return intervalTime;
+    // The Interval-Time AVP is of type Unsigned32, and it contains
+    // the minimum time interval between area reports or motion reports, in seconds.
+    // The minimum value shall be 1 second and the maximum value 32767 seconds
+    return 32767;
+  }
+
+  @Override
+  protected long getMaximumInterval() {
+    // The Maximum-Interval AVP is of type Unsigned32, and it contains the maximum time interval
+    // between consecutive event reports, in seconds.
+    // The minimum value shall be 1 second and the maximum value 86400 seconds.
+    // The Maximum-Interval AVP is only applicable to a deferred EPC-MT-LR.
+    return 86400;
+  }
+
+  @Override
+  protected long getSamplingInterval() {
+    // The Sampling-Interval AVP is of type Unsigned32, and it contains the maximum time interval
+    // between consecutive evaluations by a UE of an area event or motion event, in seconds.
+    // The minimum value shall be 1 second and the maximum value 3600 seconds.
+    // The Sampling-Interval AVP is only applicable to a deferred EPC-MT-LR.
+    return 3600;
+  }
+
+  @Override
+  protected long getReportingDuration() {
+    // The Reporting-Duration AVP is of type Unsigned32, and it contains the maximum duration of event reporting, in seconds.
+    // Its minimum value shall be 1 and maximum value shall be 8640000.
+    // The Reporting-Duration AVP is only applicable to a deferred EPC-MT-LR.
+    return 8640000;
+  }
+
+  @Override
+  protected long getReportingLocationRequirements() {
+    // The Reporting-Location-Requirements AVP is of type Unsigned32, and it shall contain a bit string
+    // indicating requirements on location provision for a deferred EPC-MT-LR.
+    // When a bit is set to one, the corresponding requirement is present.
+    // When a bit is set to zero or when the AVP is omitted, the corresponding requirement is not present.
+    // For support of backward compatibility, a receiver shall ignore any bits that are set to one but are not supported.
+    // The meaning of the bits shall be as defined in table 7.4.69/1:
+    // Table 7.4.69/1: Reporting-Location-Requirements
+    // Bit     Requirement        Description
+    //  0      Location-Estimate  A location estimate is required for each area event,
+    //                            motion event report or expiration of the maximum time interval between event reports.
+    //  1-31   None               Spare
+    return 1;
   }
 
   @Override
   protected long getAreaType() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.41
-     "Country Code"			0
-     "PLMN ID"				1
-     "Location Area ID"		2
-     "Routing Area ID"		3
-     "Cell Global ID"		4
-     "UTRAN Cell ID"		5
-  */
-    long areaType = 3L;
-    return areaType;
+    // The Area-Type AVP is of type Unsigned32. The following values are defined:
+    // "Country Code"            0
+    // "PLMN ID"                 1
+    // "Location Area ID"        2
+    // "Routing Area ID"         3
+    // "Cell Global ID"          4
+    // "UTRAN Cell ID"           5
+    // "Tracking Area ID"        6
+    // "E-UTRAN Cell Global ID"  7
+    return 7;
   }
 
   @Override
   protected byte[] getAreaIdentification() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.42
-     The Area-Identification AVP is of type OctetString and shall contain the identification of the area applicable
-     for the change of area event based deferred location reporting. Octets are coded as described in 3GPP TS 29.002 [24].
-  */
-    String areaId = "617265613531";
-    byte[] areaIdentification = areaId.getBytes();
-    return areaIdentification;
+    // The Area-Identification AVP is of type OctetString and shall contain
+    // the identification of the area applicable for the change of area event based deferred location reporting.
+    // For Area-Type 0 to 5, octets are coded as described in 3GPP TS 29.002.
+    // For Area-Type 6, octets are coded as defined for the Tracking Area Identity area identification in 3GPP TS 24.080.
+    // For Area-Type 7, octets are coded as defined for the ECGI area identification in 3GPP TS 24.080.
+    // For a deferred EPC-MT-LR for the area event, only Area-Type 6 and 7 are applicable.
+    return new byte[] {0x47, (byte) 0xf8, 0x10, 0x00, 0x09, 0x5f, 0x02};
+  }
+
+  @Override
+  protected long getAdditionalAreaType() {
+    // The Area-Type AVP is of type Unsigned32. The following values are defined:
+    // "Country Code"            0
+    // "PLMN ID"                 1
+    // "Location Area ID"        2
+    // "Routing Area ID"         3
+    // "Cell Global ID"          4
+    // "UTRAN Cell ID"           5
+    // "Tracking Area ID"        6
+    // "E-UTRAN Cell Global ID"  7
+    return 6;
+  }
+
+  @Override
+  protected byte[] getAdditionalAreaIdentification() {
+    // The Area-Identification AVP is of type OctetString and shall contain
+    // the identification of the area applicable for the change of area event based deferred location reporting.
+    // For Area-Type 0 to 5, octets are coded as described in 3GPP TS 29.002.
+    // For Area-Type 6, octets are coded as defined for the Tracking Area Identity area identification in 3GPP TS 24.080.
+    // For Area-Type 7, octets are coded as defined for the ECGI area identification in 3GPP TS 24.080.
+    // For a deferred EPC-MT-LR for the area event, only Area-Type 6 and 7 are applicable.
+    return new byte[] {0x47, (byte) 0xf8, 0x10, 0x00, 0x6d};
   }
 
   @Override
   protected java.net.InetAddress getGMLCAddress() {
-
+    // The GMLC-Address AVP is of type Address and shall contain the IPv4 or IPv6 address of H-GMLC
+    // or the V-GMLC associated with the serving node
+    InetAddress gmlcAddress = null;
     try {
-      java.net.InetAddress gmlcAddress = java.net.InetAddress.getLocalHost();
-      return gmlcAddress;
-    } catch (Exception e) {
+      gmlcAddress = InetAddress.getByName("10.0.0.14");
+    } catch (UnknownHostException e) {
       e.printStackTrace();
     }
-    return null;
+    return gmlcAddress;
   }
 
   @Override
   protected long getPLRFLags() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.52
-    Bit	Event Type                                    Description
-    0   MO-LR-ShortCircuit-Indicator                  This bit, when set, indicates that the MO-LR short circuit feature is requested
-                                                      for the periodic location.This bit is applicable only when the deferred MT-LR procedure is
-                                                      initiated for a periodic location event and when the message is sent over Lgd interface.
-    1   Optimized-LCS-Proc-Req                        This bit, when set, indicates that the GMLC is requesting the optimized LCS procedure
-                                                      for the combined MME/SGSN. This bit is applicable only when the MT-LR procedure is
-                                                      initiated by the GMLC. The GMLC shall set this bit only when the HSS indicates the combined MME/SGSN
-                                                      node supporting the optimized LCS procedure.
-    2   Delayed-Location-Reporting-Support-Indicator  This bit, when set, indicates that the GMLC supports delayed location reporting for UEs transiently
-                                                      not reachable (e.g. UEs in extended idle mode DRX or Power Saving Mode) as specified in subclauses
-                                                      9.1.6 and 9.1.15 of 3GPP TS 23.271 [2], i.e. that the GMLC supports receiving a
-                                                      PROVIDE SUBSCRIBER LOCATION RESPONSE with the UE-Transiently-Not-Reachable-Indicator set in the
-                                                      PLA-Flags IE; and receiving the location information in a subsequent SUBSCRIBER LOCATION REPORT
-                                                      when the UE becomes reachable.
-  */
-    long plrFlags = 4L;
-    return plrFlags;
+    // The PLR-Flags AVP is of type Unsigned32, and it shall contain a bit mask.
+    // The meaning of the bits shall be as defined in table 7.4.52/1:
+    // Table 7.4.52/1: PLR-Flags
+    // Bit  Name                                            Description
+    // 0    MO-LR-ShortCircuit-Indicator                    This bit, when set, indicates that
+    //                                                      the MO-LR short circuit feature is requested
+    //                                                      for the periodic location.
+    //                                                      This bit is applicable only when the
+    //                                                      deferred MT-LR procedure is initiated for
+    //                                                      a periodic location event and when
+    //                                                      the message is sent over Lgd interface.
+    // 1    Optimized-LCS-Proc-Req	                        This bit, when set, indicates that the GMLC
+    //                                                      is requesting the optimized LCS procedure
+    //                                                      for the combined MME/SGSN.
+    //                                                      This bit is applicable only when the MT-LR procedure
+    //                                                      is initiated by the GMLC over the Lgd interface.
+    //                                                      The GMLC shall set this bit only when
+    //                                                      the HSS indicates the combined MME/SGSN node
+    //                                                      supporting the optimized LCS procedure.
+    // 2    Delayed-Location-Reporting-Support-Indicator    This bit, when set, indicates that the
+    //                                                      GMLC supports delayed location reporting for
+    //                                                      UEs transiently not reachable
+    //                                                      (e.g. UEs in extended idle mode DRX or
+    //                                                      Power Saving Mode) as specified in clauses
+    //                                                      9.1.6 and 9.1.15 of 3GPP TS 23.271,
+    //                                                      i.e. that the GMLC supports receiving a
+    //                                                      PROVIDE SUBSCRIBER LOCATION RESPONSE with
+    //                                                      the UE-Transiently-Not-Reachable-Indicator set in the PLA-Flags IE;
+    //                                                      and receiving the location information in a
+    //                                                      subsequent SUBSCRIBER LOCATION REPORT
+    //                                                      when the UE becomes reachable.
+    // NOTE1: Bits not defined in this table shall be cleared by the sending GMLC and discarded by the receiving MME or SGSN.
+    return 4;
   }
 
   @Override
   protected long getReportingAmount() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.46
-     The Reporting-Amount AVP is of type Unsigned32 and it contains reporting frequency. Its minimum value shall be 1 and maximum value shall be 8639999.
-  */
-    long reportingAmount = 8639910L;
-    return reportingAmount;
+    // The Reporting-Amount AVP is of type Unsigned32, and it contains reporting frequency.
+    // Its minimum value shall be 1 and maximum value shall be 8639999.
+    return 8639999;
   }
 
   @Override
   protected long getReportingInterval() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.47
-     The Interval-Time  AVP is of type Unsigned32 and it contains reporting frequency. Its minimum value shall be 1 and maximum value shall be 8639999.
-  */
-    long reportingInterval = 8639998L;
-    return reportingInterval;
+    // The Interval-Time AVP is of type Unsigned32, and it contains reporting interval in seconds.
+    // Its minimum value shall be 1 and maximum value shall be 8639999.
+    return 8639999;
   }
 
   @Override
   protected int getPrioritizedListIndicator() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.51
-    The Prioritized-List-Indicator AVP is of type Enumerated and it indicates if the PLMN-ID-List is provided in prioritized order or not.
-      NOT_PRIORITIZED  (0)
-      PRIORITIZED (1)
-  */
-    int prioritizedListIndicator = 0;
-    return prioritizedListIndicator;
+    // The Prioritized-List-Indicator AVP is of type Enumerated, and it indicates if the PLMN-ID-List is provided in prioritized order or not.
+    //  NOT_PRIORITIZED  (0)
+    //  PRIORITIZED (1)
+    return 0;
   }
 
   @Override
   protected byte[] getVisitedPLMNId() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.49
-    The PLMN-ID-List AVP is of type Grouped.
-      AVP format:
-      PLMN-ID-List ::= <AVP header: 2544 10415>
-        { Visited-PLMN-Id }
-        [ Periodic-Location-Support-Indicator ]
-        *[ AVP ]
-    If not included, the default value of Periodic-Location-Support-Indicator shall be considered as "NOT_SUPPORTED" (0).
-  */
-    String[] visitedPlmnIdList = {"598", "571", "502", "503"};
-    byte[] visitedPlmnIdListByteArray = Arrays.toString(visitedPlmnIdList).getBytes();
-    return visitedPlmnIdListByteArray;
-    /*String vPlmnIdList = "222";
-    byte[] visitedPlmnIdList = vPlmnIdList.getBytes();
-    return visitedPlmnIdList;*/
+    // The PLMN-ID-List AVP is of type Grouped.
+    // AVP format:
+    // PLMN-ID-List ::= <AVP header: 2544 10415>
+    //        { Visited-PLMN-Id }
+    //        [ Periodic-Location-Support-Indicator ]
+    //        *[ AVP ]
+    // Wireshark example taken from a real network capture:
+    // AVP: Visited-PLMN-Id(1407) l=15 f=VM- vnd=TGPP val=MCC 748 Uruguay, MNC 01 Administración Nacional de Telecomunicaciones (ANTEL)
+    //    AVP Code: 1407 Visited-PLMN-Id
+    //    AVP Flags: 0xc0, Vendor-Specific: Set, Mandatory: Set
+    //    AVP Length: 15
+    //    AVP Vendor Id: 3GPP (10415)
+    //    Visited-PLMN-Id: 47f810
+    //    Mobile Country Code (MCC): Uruguay (748)
+    //    Mobile Network Code (MNC): Administración Nacional de Telecomunicaciones (ANTEL) (01)
+    //    Padding: 00
+    return new byte[] {0x47, (byte) 0xf8, 0x10};
   }
 
   @Override
   protected int getPeriodicLocationSupportIndicator() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.50
-    The Periodic-Location-Support-Indicator AVP is of type Enumerated and it indicates if the given PLMN-ID (indicated by Visited-PLMN-Id)
-    supports periodic location or not.
-      NOT_SUPPORTED (0)
-      SUPPORTED (1)
-  */
-    int periodicLocationSupportIndicator = 1;
-    return periodicLocationSupportIndicator;
+    // The Periodic-Location-Support-Indicator AVP is of type Enumerated, and it indicates if the given PLMN-ID
+    // (indicated by Visited-PLMN-Id) supports periodic location or not.
+    // NOT_SUPPORTED (0)
+    // SUPPORTED (1)
+    return 1;
   }
 
-  public boolean isReceivedPLA() {
-    return receivedPLA;
+  @Override
+  protected long getLinearDistance() {
+    // The Linear-Distance AVP is of type Unsigned32, and it contains the minimum linear (straight line) distance
+    // for motion event reports, in meters.
+    // The minimum value shall be 1 and maximum value shall be 10,000.
+    // The Linear-Distance AVP is only applicable to a deferred EPC-MT-LR
+    return 10000;
   }
-
-  public boolean isSentPLR() {
-    return sentPLR;
-  }
-
-
-  //*********************************************************//
-  //***************** LRA methods ***************************//
-  //*********************************************************//
-
-  // (commented LRA methods are already defined above for PLR)
-
-  /*@Override
-  protected java.net.InetAddress getGMLCAddress() {
-  /*
-    3GPP TS 29.173 v13.0.0 section 6.4.7
-      The GMLC-Address AVP is of type Address and shall contain the IPv4 or IPv6 address of H-GMLC or the V-GMLC associated with the serving node.
-  */
-    /*try {
-      java.net.InetAddress gmlcAddress = java.net.InetAddress.getLocalHost();
-      return gmlcAddress;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
-  }*/
 
   @Override
   protected long getLRAFLags() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.56
-    Bit	Event Type                    Description
-    0   MO-LR-ShortCircuit-Indicator  This bit, when set, indicates that the MO-LR short circuit feature is used for obtaining location estimate.
-                                      This bit is applicable only when the message is sent over Lgd interface.
-  */
-    long lraFlags = 0;
-    return lraFlags;
+    // The LRA-Flags AVP is of type Unsigned32, and it shall contain a bit mask.
+    // The meaning of the bits shall be as defined in table 7.4.56/1:
+    // Table 7.4.56/1: LRA-Flags
+    // Bit Name                            Description
+    //  0  MO-LR-ShortCircuit-Indicator    This bit, when set, indicates that the MO-LR short circuit feature
+    //                                     is used for obtaining location estimate.
+    //                                     This bit is applicable only when the message is sent over Lgd interface.
+    return 0;
   }
-
-  /*@Override
-  protected int getPrioritizedListIndicator() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.51
-    The Prioritized-List-Indicator AVP is of type Enumerated and it indicates if the PLMN-ID-List is provided in prioritized order or not.
-      NOT_PRIORITIZED  (0)
-      PRIORITIZED (1)
-  */
-    /*int prioritizedListIndicator = 0;
-    return prioritizedListIndicator;
-  }*/
-
-  /*@Override
-  protected byte[] getVisitedPLMNId() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.49
-    The PLMN-ID-List AVP is of type Grouped.
-      AVP format:
-      PLMN-ID-List ::= <AVP header: 2544 10415>
-        { Visited-PLMN-Id }
-        [ Periodic-Location-Support-Indicator ]
-        *[ AVP ]
-    If not included, the default value of Periodic-Location-Support-Indicator shall be considered as "NOT_SUPPORTED" (0).
-  */
-    /*String vPlmnIdList = "471800";
-    byte[] visitedPlmnIdList = vPlmnIdList.getBytes();
-    return visitedPlmnIdList;
-  }*/
-
-  /*@Override
-  protected int getPeriodicLocationSupportIndicator() {
-  /*
-  3GPP TS 29.172 v13.0.0 section 7.4.50
-    The Periodic-Location-Support-Indicator AVP is of type Enumerated and it indicates if the given PLMN-ID (indicated by Visited-PLMN-Id)
-    supports periodic location or not.
-      NOT_SUPPORTED (0)
-      SUPPORTED (1)
-  */
-    /*int periodicLocationSupportIndicator = 1;
-    return periodicLocationSupportIndicator;
-  }*/
-
-  /*@Override
-  protected byte[] getLCSReferenceNumber() {
-  /*
-    3GPP TS 29.172 v13.0.0 section 7.4.37
-      The LCS-Reference-Number AVP is of type OctetString of length 1. It shall contain the points number identifying the deferred location request.
-  */
-    /*String lcsRefNumber = "4C4353353739";
-    byte[] lcsRefNum = lcsRefNumber.getBytes();
-    return lcsRefNum;
-  }*/
-
-  public boolean isReceivedLRR() {
-    return receivedLRR;
-  }
-
-  public boolean isSentLRA() {
-    return sentLRA;
-  }
-
 
 }

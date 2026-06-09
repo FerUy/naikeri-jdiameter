@@ -2,8 +2,8 @@ pipeline {
 	agent any
 
 	tools {
-	    jdk 'JDK 11'
-		maven 'Maven_3.8.5'
+	    jdk 'jdk-11'
+        maven 'maven-3.9.12'
 	}
 
 	options {
@@ -34,7 +34,7 @@ pipeline {
 		stage("Release") {
 			steps {
 				echo "Building a release version of #${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
-        		withAnt(installation: 'Ant_1.10.12') {
+        		withAnt(installation: 'Ant_1.10.15') {
           			dir('release') {
           			    //sh "rm -rf restcomm-diameter*.zip"
             			sh "ant -f build.xml -Ddiameter.release.version=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"

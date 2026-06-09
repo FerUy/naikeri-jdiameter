@@ -1,24 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
- * contributors as indicated by the @authors tag. All rights reserved.
- * See the copyright.txt in the distribution for a full listing
- * of individual contributors.
- *
- * This copyrighted material is made available to anyone wishing to use,
- * modify, copy, or redistribute it subject to the terms and conditions
- * of the GNU General Public License, v. 2.0.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License,
- * v. 2.0 along with this distribution; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- */
 package org.mobicents.diameter.stack.functional.cxdx.base;
 
 import static org.junit.Assert.fail;
@@ -29,6 +8,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.jdiameter.api.DisconnectCause;
@@ -51,18 +31,11 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class CxDxSessionBasicFlowRTRTest {
-  // TODO: add test on replicated nodes ?
   private ClientRTR clientNode;
   private ServerRTR serverNode1;
-  private URI clientConfigURI;
-  private URI serverNode1ConfigURI;
+  private final URI clientConfigURI;
+  private final URI serverNode1ConfigURI;
 
-  /**
-   * @param clientNode
-   * @param node1
-   * @param node2
-   * @param serverCount
-   */
   public CxDxSessionBasicFlowRTRTest(String clientConfigUrl, String serverNode1ConfigURL) throws Exception {
     super();
     this.clientConfigURI = new URI(clientConfigUrl);
@@ -82,10 +55,7 @@ public class CxDxSessionBasicFlowRTRTest {
       this.clientNode.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
       Stack stack = this.clientNode.getStack();
       List<Peer> peers = stack.unwrap(PeerTable.class).getPeerTable();
-      if (peers.size() == 1) {
-        // ok
-      }
-      else if (peers.size() > 1) {
+      if (peers.size() > 1) {
         // works better with replicated, since disconnected peers are also listed
         boolean foundConnected = false;
         for (Peer p : peers) {
@@ -96,12 +66,10 @@ public class CxDxSessionBasicFlowRTRTest {
             foundConnected = true;
           }
         }
-      }
-      else {
+      } else if (peers.size() != 1) {
         throw new Exception("Wrong number of connected peers: " + peers);
       }
-    }
-    catch (Throwable e) {
+    } catch (Throwable e) {
       e.printStackTrace();
     }
   }
@@ -111,9 +79,8 @@ public class CxDxSessionBasicFlowRTRTest {
     if (this.serverNode1 != null) {
       try {
         this.serverNode1.stop(DisconnectCause.REBOOTING);
-      }
-      catch (Exception e) {
-
+      } catch (Exception e) {
+        e.printStackTrace();
       }
       this.serverNode1 = null;
     }
@@ -121,16 +88,15 @@ public class CxDxSessionBasicFlowRTRTest {
     if (this.clientNode != null) {
       try {
         this.clientNode.stop(DisconnectCause.REBOOTING);
-      }
-      catch (Exception e) {
-
+      } catch (Exception e) {
+        e.printStackTrace();
       }
       this.clientNode = null;
     }
   }
 
   @Test
-  public void testRegistrationTermination() throws Exception {
+  public void testRegistrationTermination() {
     try {
       // pain of parameter tests :) ?
       serverNode1.sendRegistrationTermination();
@@ -145,30 +111,19 @@ public class CxDxSessionBasicFlowRTRTest {
     }
 
     if (!clientNode.isReceivedRegistrationTermination()) {
-      StringBuilder sb = new StringBuilder("Did not receive RTR! ");
-      sb.append("Client ER:\n").append(clientNode.createErrorReport(this.clientNode.getErrors()));
-
-      fail(sb.toString());
+      fail("Did not receive RTR! " + "Client ER:\n" + clientNode.createErrorReport(this.clientNode.getErrors()));
     }
-    if (!serverNode1.isReceivedRegistrationTermination()) {
-      StringBuilder sb = new StringBuilder("Did not receive RTA! ");
-      sb.append("Server ER:\n").append(serverNode1.createErrorReport(this.serverNode1.getErrors()));
 
-      fail(sb.toString());
+    if (!serverNode1.isReceivedRegistrationTermination()) {
+      fail("Did not receive RTA! " + "Server ER:\n" + serverNode1.createErrorReport(this.serverNode1.getErrors()));
     }
 
     if (!clientNode.isPassed()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Client ER:\n").append(clientNode.createErrorReport(this.clientNode.getErrors()));
-
-      fail(sb.toString());
+      fail("Client ER:\n" + clientNode.createErrorReport(this.clientNode.getErrors()));
     }
 
     if (!serverNode1.isPassed()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Server ER:\n").append(serverNode1.createErrorReport(this.serverNode1.getErrors()));
-
-      fail(sb.toString());
+      fail("Server ER:\n" + serverNode1.createErrorReport(this.serverNode1.getErrors()));
     }
   }
 
@@ -182,10 +137,10 @@ public class CxDxSessionBasicFlowRTRTest {
     String replicatedServer1 = "configurations/functional-cxdx/replicated-config-server-node1.xml";
 
     Class<CxDxSessionBasicFlowRTRTest> t = CxDxSessionBasicFlowRTRTest.class;
-    client = t.getClassLoader().getResource(client).toString();
-    server1 = t.getClassLoader().getResource(server1).toString();
-    replicatedClient = t.getClassLoader().getResource(replicatedClient).toString();
-    replicatedServer1 = t.getClassLoader().getResource(replicatedServer1).toString();
+    client = Objects.requireNonNull(t.getClassLoader().getResource(client)).toString();
+    server1 = Objects.requireNonNull(t.getClassLoader().getResource(server1)).toString();
+    replicatedClient = Objects.requireNonNull(t.getClassLoader().getResource(replicatedClient)).toString();
+    replicatedServer1 = Objects.requireNonNull(t.getClassLoader().getResource(replicatedServer1)).toString();
 
     return Arrays.asList(new Object[][] { { client, server1 }, { replicatedClient, replicatedServer1 } });
   }

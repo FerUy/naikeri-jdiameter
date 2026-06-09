@@ -1,22 +1,3 @@
-/*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2016, TeleStax Inc. and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- */
-
 package org.mobicents.diameter.stack.functional.s13.base;
 
 import static org.junit.Assert.fail;
@@ -27,6 +8,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.jdiameter.api.DisconnectCause;
@@ -52,15 +34,9 @@ public class S13SessionBasicFlowTest {
   // TODO: add test on replicated nodes ?
   private Client clientNode;
   private Server serverNode1;
-  private URI clientConfigURI;
-  private URI serverNode1ConfigURI;
+  private final URI clientConfigURI;
+  private final URI serverNode1ConfigURI;
 
-  /**
-   * @param clientNode
-   * @param node1
-   * @param node2
-   * @param serverCount
-   */
   public S13SessionBasicFlowTest(String clientConfigUrl, String serverNode1ConfigURL) throws Exception {
     super();
     this.clientConfigURI = new URI(clientConfigUrl);
@@ -80,10 +56,7 @@ public class S13SessionBasicFlowTest {
       this.clientNode.start(Mode.ANY_PEER, 10, TimeUnit.SECONDS);
       Stack stack = this.clientNode.getStack();
       List<Peer> peers = stack.unwrap(PeerTable.class).getPeerTable();
-      if (peers.size() == 1) {
-        // ok
-      }
-      else if (peers.size() > 1) {
+      if (peers.size() > 1) {
         // works better with replicated, since disconnected peers are also listed
         boolean foundConnected = false;
         for (Peer p : peers) {
@@ -94,12 +67,10 @@ public class S13SessionBasicFlowTest {
             foundConnected = true;
           }
         }
-      }
-      else {
+      } else if (peers.size() != 1) {
         throw new Exception("Wrong number of connected peers: " + peers);
       }
-    }
-    catch (Throwable e) {
+    } catch (Throwable e) {
       e.printStackTrace();
     }
   }
@@ -109,9 +80,8 @@ public class S13SessionBasicFlowTest {
     if (this.serverNode1 != null) {
       try {
         this.serverNode1.stop(DisconnectCause.REBOOTING);
-      }
-      catch (Exception e) {
-
+      } catch (Exception e) {
+        e.printStackTrace();
       }
       this.serverNode1 = null;
     }
@@ -119,16 +89,15 @@ public class S13SessionBasicFlowTest {
     if (this.clientNode != null) {
       try {
         this.clientNode.stop(DisconnectCause.REBOOTING);
-      }
-      catch (Exception e) {
-
+      } catch (Exception e) {
+        e.printStackTrace();
       }
       this.clientNode = null;
     }
   }
 
   @Test
-  public void testMEIdentityCheck() throws Exception {
+  public void testMEIdentityCheck() {
     try {
       // pain of parameter tests :) ?
       clientNode.sendMEIdentityCheckRequest();
@@ -143,30 +112,18 @@ public class S13SessionBasicFlowTest {
     }
 
     if (!serverNode1.isReceivedECR()) {
-      StringBuilder sb = new StringBuilder("Did not receive ECR! ");
-      sb.append("Server ER:\n").append(serverNode1.createErrorReport(this.serverNode1.getErrors()));
-
-      fail(sb.toString());
+      fail("Did not receive ECR! " + "Server ER:\n" + serverNode1.createErrorReport(this.serverNode1.getErrors()));
     }
     if (!clientNode.isReceivedECA()) {
-      StringBuilder sb = new StringBuilder("Did not receive ECA! ");
-      sb.append("Client ER:\n").append(clientNode.createErrorReport(this.clientNode.getErrors()));
-
-      fail(sb.toString());
+      fail("Did not receive ECA! " + "Client ER:\n" + clientNode.createErrorReport(this.clientNode.getErrors()));
     }
 
     if (!clientNode.isPassed()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Client ER:\n").append(clientNode.createErrorReport(this.clientNode.getErrors()));
-
-      fail(sb.toString());
+      fail("Client ER:\n" + clientNode.createErrorReport(this.clientNode.getErrors()));
     }
 
     if (!serverNode1.isPassed()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Server ER:\n").append(serverNode1.createErrorReport(this.serverNode1.getErrors()));
-
-      fail(sb.toString());
+      fail("Server ER:\n" + serverNode1.createErrorReport(this.serverNode1.getErrors()));
     }
   }
 
@@ -180,8 +137,8 @@ public class S13SessionBasicFlowTest {
     //String replicatedServer1 = "configurations/functional-s13/replicated-config-server-node1.xml";
 
     Class<S13SessionBasicFlowTest> t = S13SessionBasicFlowTest.class;
-    client = t.getClassLoader().getResource(client).toString();
-    server1 = t.getClassLoader().getResource(server1).toString();
+    client = Objects.requireNonNull(t.getClassLoader().getResource(client)).toString();
+    server1 = Objects.requireNonNull(t.getClassLoader().getResource(server1)).toString();
     //replicatedClient = t.getClassLoader().getResource(replicatedClient).toString();
     //replicatedServer1 = t.getClassLoader().getResource(replicatedServer1).toString();
 

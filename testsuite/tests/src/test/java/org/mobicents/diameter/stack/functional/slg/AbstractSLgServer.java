@@ -1,24 +1,3 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.mobicents.diameter.stack.functional.slg;
 
 import org.jdiameter.api.ApplicationId;
@@ -55,8 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractSLgServer extends TBase implements ServerSLgSessionListener {
 
-  // NOTE: implementing NetworkReqListener since its required for stack to
-  // know we support it... ech.
+  // NOTE: implementing NetworkReqListener since it's required for stack to know we support it... ech.
 
   protected ServerSLgSession serverSLgSession;
 
@@ -138,6 +116,7 @@ public abstract class AbstractSLgServer extends TBase implements ServerSLgSessio
   protected abstract byte[] getCellGlobalIdentity();
   protected abstract byte[] getUTRANPositioningData();
   protected abstract byte[] getUTRANGANSSPositioningData();
+  protected abstract byte[] getUTRANAdditionalPositioningData();
   protected abstract byte[] getServiceAreaIdentity();
   protected abstract byte[] getSGSNNumber();
   protected abstract String getSGSNName();
@@ -167,85 +146,76 @@ public abstract class AbstractSLgServer extends TBase implements ServerSLgSessio
   protected abstract long getReportingAmount();
   protected abstract long getReportingInterval();
   protected abstract int getLocationEvent();
-  /*protected abstract byte[] getLocationEstimate();
-  protected abstract int getAccuracyFulfilmentIndicator();
-  protected abstract long getAgeOfLocationEstimate();
-  protected abstract byte[] getVelocityEstimate();
-  protected abstract byte[] getEUTRANPositioningData();
-  protected abstract byte[] getECGI();
-  protected abstract byte[] getGERANPositioningData();
-  protected abstract byte[] getGERANGANSSPositioningData();
-  protected abstract byte[] getCellGlobalIdentity();
-  protected abstract byte[] getUTRANPositioningData();
-  protected abstract byte[] getUTRANGANSSPositioningData();
-  protected abstract byte[] getServiceAreaIdentity();*/
   protected abstract int getPseudonymIndicator();
-  /*protected abstract byte[] getSGSNNumber();
-  protected abstract String getSGSNName();
-  protected abstract String getSGSNRealm();
-  protected abstract String getMMEName();
-  protected abstract String getMMERealm();
-  protected abstract byte[] getMSCNumber();
-  protected abstract String get3GPPAAAServerName();
-  protected abstract long getLCSCapabilitiesSets();*/
   protected abstract long getLRRFLags();
   protected abstract long getTerminationCause();
-  // protected abstract long getCellPortionId();
   protected abstract byte[] get1xRTTRCID();
-  /*protected abstract String getCivicAddress();
-  protected abstract long getBarometricPressure();*/
 
-  // ----------- 3GPP TS 29.172 v14.1.0 points ----------- //
-/*
-  6.2	Provide Subscriber Location
-  6.2.1	General
-  The Provide Subscriber Location operation is used by a GMLC to request the location of a
-  target UE from the MME or SGSN at any time, as part of EPC-MT-LR or PS-MT-LR positioning procedures.
-  The response contains a location estimate of the target UE and other additional information.
-  The Provide Subscriber Location operation is also used by a GMLC to request the location of
-  the target UE from the SGSN or MME at any time, as part of deferred MT-LR procedure.
-  The response contains the acknowledgment of the receipt of the request and other additional information.
-*/
-
-  public ProvideLocationAnswer createPLA(ProvideLocationRequest plr, long resultCode) throws Exception {
   /*
-  3GPP TS 29.172 v14.1.0 points
-  7.3.2	Provide-Location-Answer (PLA) Command
-  The Provide-Location-Answer (PLA) command, indicated by the Command-Code field set to 8388620 and
-  the ‘R’ bit cleared in the Command Flags field, is sent by the MME or SGSN to the GMLC in response
-  to the Provide-Location-Request command.
-  Message Format:
+   3GPP TS 29.172 v18.1.0 § 6
+    ELP Procedures
+    6.1 General
+    The ELP procedures, between the GMLC and the MME over SLg interface and between GMLC and SGSN over Lgd interface, are used to exchange messages related to location services. The ELP can be divided into the following sub-procedures.
+    - Provide Subscriber Location
+    - Subscriber Location Report
 
-   < Provide-Location-Answer > ::=	< Diameter Header: 8388620, PXY, 16777255 >
-	< Session-Id >
-	[ Vendor-Specific-Application-Id ]
-	[ Result-Code ]
-	[ Experimental-Result ]
-	{ Auth-Session-State }
-	{ Origin-Host }
-	{ Origin-Realm }
-	[ Location-Estimate ]
-	[ Accuracy-Fulfilment-Indicator ]
-	[ Age-Of-Location-Estimate]
-	[ Velocity-Estimate ]
-	[ EUTRAN-Positioning-Data]
-	[ ECGI ]
-	[ GERAN-Positioning-Info ]
-	[ Cell-Global-Identity ]
-	[ UTRAN-Positioning-Info ]
-	[ Service-Area-Identity ]
-	[ Serving-Node ]
-	[ PLA-Flags ]
-	[ ESMLC-Cell-Info ]
-	[ Civic-Address ]
-	[ Barometric-Pressure ]
-	*[ Supported-Features ]
-	*[ AVP ]
-	*[ Failed-AVP ]
-	*[ Proxy-Info ]
-	*[ Route-Record ]
+    6.2	Provide Subscriber Location
+    6.2.1 General
+    The Provide Subscriber Location operation is used by a GMLC to request the location of a target UE from the MME or SGSN
+    at any time, as part of EPC-MT-LR or PS-MT-LR positioning procedures. The response contains a location estimate of the
+    target UE and other additional information.
 
+    The Provide Subscriber Location operation is also used by a GMLC to request the location of the target UE from the
+    SGSN or MME at any time, as part of deferred MT-LR procedure. The response contains the acknowledgment of the
+    receipt of the request and other additional information.
+
+    6.3 Subscriber Location Report
+    6.3.1 General
+    The Subscriber Location Report operation is used by an MME or SGSN to provide the location of a target UE to a GMLC,
+    when a request for location has been implicitly issued or when a Delayed Location Reporting is triggered after
+    receipt of a request for location for a UE transiently not reachable.
   */
+
+
+  /*
+   3GPP TS 29.172 v18.1.0 § 7.3.2
+   The Provide-Location-Answer (PLA) command, indicated by the Command-Code field set to 8388620
+   and the 'R' bit cleared in the Command Flags field, is sent by the MME or SGSN to the GMLC
+   in response to the Provide-Location-Request command.
+
+   Message Format:
+   < Provide-Location-Answer > ::=	< Diameter Header: 8388620, PXY, 16777255 >
+                                    < Session-Id >
+                                    [ DRMP ]
+                                    [ Vendor-Specific-Application-Id ]
+                                    [ Result-Code ]
+                                    [ Experimental-Result ]
+                                    { Auth-Session-State }
+                                    { Origin-Host }
+                                    { Origin-Realm }
+                                    [ Location-Estimate ]
+                                    [ Accuracy-Fulfilment-Indicator ]
+                                    [ Age-Of-Location-Estimate]
+                                    [ Velocity-Estimate ]
+                                    [ EUTRAN-Positioning-Data]
+                                    [ ECGI ]
+                                    [ GERAN-Positioning-Info ]
+                                    [ Cell-Global-Identity ]
+                                    [ UTRAN-Positioning-Info ]
+                                    [ Service-Area-Identity ]
+                                    [ Serving-Node ]
+                                    [ PLA-Flags ]
+                                    [ ESMLC-Cell-Info ]
+                                    [ Civic-Address ]
+                                    [ Barometric-Pressure ]
+                                   *[ Supported-Features ]
+                                   *[ AVP ]
+                                   [ Failed-AVP ]
+                                   *[ Proxy-Info ]
+                                   *[ Route-Record ]
+  */
+  public ProvideLocationAnswer createPLA(ProvideLocationRequest plr, long resultCode) throws Exception {
+    // < Provide-Location-Answer > ::=	< Diameter Header: 8388620, PXY, 16777255 >
     ProvideLocationAnswer pla = new ProvideLocationAnswerImpl((Request) plr.getMessage(), resultCode);
 
     AvpSet reqSet = plr.getMessage().getAvps();
@@ -271,233 +241,154 @@ public abstract class AbstractSLgServer extends TBase implements ServerSLgSessio
 
     // [ Location-Estimate ]
     byte[] locationEstimate = getLocationEstimate();
-    if (locationEstimate != null){
+    if (locationEstimate != null)
       set.addAvp(Avp.LOCATION_ESTIMATE, locationEstimate, 10415, true, false);
-    }
 
     // [ Accuracy-Fulfilment-Indicator ]
-    int accuracyFulfilmentIndicator = getAccuracyFulfilmentIndicator();
-    if (accuracyFulfilmentIndicator != -1){
-      set.addAvp(Avp.ACCURACY_FULFILMENT_INDICATOR, accuracyFulfilmentIndicator, 10415, false, false);
-    }
+    if (getAccuracyFulfilmentIndicator() != -1)
+      set.addAvp(Avp.ACCURACY_FULFILMENT_INDICATOR, getAccuracyFulfilmentIndicator(), 10415, false, false);
 
     // [ Age-Of-Location-Estimate ]
-    long ageOfLocationEstimate = getAgeOfLocationEstimate();
-    if (ageOfLocationEstimate != -1){
-      set.addAvp(Avp.AGE_OF_LOCATION_ESTIMATE, ageOfLocationEstimate, 10415, false, false, true);
-    }
+    if (getAgeOfLocationEstimate() != -1)
+      set.addAvp(Avp.AGE_OF_LOCATION_ESTIMATE, getAgeOfLocationEstimate(), 10415, false, false, true);
 
     // [ Velocity-Estimate ]
-    byte[] velocityEstimate = getVelocityEstimate();
-    if (velocityEstimate != null){
-      set.addAvp(Avp.VELOCITY_ESTIMATE, velocityEstimate, 10415, false, false);
-    }
+    if (getVelocityEstimate() != null)
+      set.addAvp(Avp.VELOCITY_ESTIMATE, getVelocityEstimate(), 10415, false, false);
 
     // [ EUTRAN-Positioning-Data ]
-    byte[] eutranPositioningData = getEUTRANPositioningData();
-    if (eutranPositioningData != null){
-      set.addAvp(Avp.EUTRAN_POSITIONING_DATA, eutranPositioningData, 10415, false, false);
-    }
+    if (getEUTRANPositioningData() != null)
+      set.addAvp(Avp.EUTRAN_POSITIONING_DATA, getEUTRANPositioningData(), 10415, false, false);
 
     // [ ECGI ]
-    byte[] ecgi = getECGI();
-    if (ecgi != null){
-      set.addAvp(Avp.ECGI, ecgi, 10415, false, false);
-    }
+    if (getECGI() != null)
+      set.addAvp(Avp.ECGI, getECGI(), 10415, false, false);
 
     // [ GERAN-Positioning-Info ]
     AvpSet geranPositioningInfo = set.addGroupedAvp(Avp.GERAN_POSITIONING_INFO, 10415, false, false);
-    byte[] geranPositioningData = getGERANPositioningData();
-    byte[] geranGanssPositioningData = getGERANGANSSPositioningData();
-
-    if (geranPositioningData != null){
-      geranPositioningInfo.addAvp(Avp.GERAN_POSITIONING_DATA, geranPositioningData, 10415, false, false);
-    }
-    if (geranGanssPositioningData != null){
-      geranPositioningInfo.addAvp(Avp.GERAN_GANSS_POSITIONING_DATA, geranGanssPositioningData, 10415, false, false);
-    }
+    if (getGERANPositioningData() != null)
+      geranPositioningInfo.addAvp(Avp.GERAN_POSITIONING_DATA, getGERANPositioningData(), 10415, false, false);
+    if ( getGERANGANSSPositioningData() != null)
+      geranPositioningInfo.addAvp(Avp.GERAN_GANSS_POSITIONING_DATA,  getGERANGANSSPositioningData(), 10415, false, false);
 
     // [ Cell-Global-Identity ]
-    byte[] cellGlobalIdentity = getCellGlobalIdentity();
-    if (cellGlobalIdentity != null){
-      set.addAvp(Avp.CELL_GLOBAL_IDENTITY, cellGlobalIdentity, 10415, false, false);
-    }
+    if (getCellGlobalIdentity() != null)
+      set.addAvp(Avp.CELL_GLOBAL_IDENTITY, getCellGlobalIdentity(), 10415, false, false);
 
     // [ UTRAN-Positioning-Info ]
     AvpSet utranPositioningInfo = set.addGroupedAvp(Avp.UTRAN_POSITIONING_INFO, 10415, false, false);
-    byte[] utranPositioningData = getUTRANPositioningData();
-    byte[] utranGanssPositioningData = getUTRANGANSSPositioningData();
-
-    if ( utranPositioningData != null){
-      utranPositioningInfo.addAvp(Avp.UTRAN_POSITIONING_DATA, utranPositioningData, 10415, false, false);
-    }
-    if ( utranGanssPositioningData != null){
-      utranPositioningInfo.addAvp(Avp.UTRAN_GANSS_POSITIONING_DATA, utranGanssPositioningData, 10415, false, false);
-    }
+    if (getUTRANPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_POSITIONING_DATA, getUTRANPositioningData(), 10415, false, false);
+    if (getUTRANGANSSPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_GANSS_POSITIONING_DATA, getUTRANGANSSPositioningData(), 10415, false, false);
+    if (getUTRANAdditionalPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_ADDITIONAL_POSITIONING_DATA, getUTRANAdditionalPositioningData(), 10415, false, false);
 
     // [ Service-Area-Identity ]
-    byte[] serviceAreaIdentity = getServiceAreaIdentity();
-    if (serviceAreaIdentity != null){
-      set.addAvp(Avp.SERVICE_AREA_IDENTITY, serviceAreaIdentity, 10415, false, false);
-    }
+    if (getServiceAreaIdentity() != null)
+      set.addAvp(Avp.SERVICE_AREA_IDENTITY, getServiceAreaIdentity(), 10415, false, false);
 
-// [ Serving-Node ] IE: Target Serving Node Identity
-/*
-  Serving-Node ::= <AVP header: 2401 10415>
-    [ SGSN-Number ]
-    [ SGSN-Name ]
-    [ SGSN-Realm ]
-    [ MME-Name ]
-    [ MME-Realm ]
-    [ MSC-Number ]
-    [ 3GPP-AAA-Server-Name ]
-    [ LCS-Capabilities-Sets ]
-    [ GMLC-Address ]
-    *[AVP]
-*/
+    // [ Serving-Node ] (Target Serving Node Identity)
     AvpSet servingNode = set.addGroupedAvp(Avp.SERVING_NODE, 10415, false, false);
-    byte[] sgsnNumber = getSGSNNumber();
-    String sgsnName= getSGSNName();
-    String sgsnRealm = getSGSNRealm();
-    String mmeName = getMMEName();
-    String mmeRealm = getMMERealm();
-    byte[] mscNumber = getMSCNumber();
-    String tgppAAAServerName= get3GPPAAAServerName();
-    long lcsCapabilitiesSet = getLCSCapabilitiesSets();
-    java.net.InetAddress gmlcAddress = getGMLCAddress();
-
-    if (sgsnNumber != null){
-      servingNode.addAvp(Avp.SGSN_NUMBER, sgsnNumber, 10415, false, false);
-    }
-    if (sgsnName != null){
-      servingNode.addAvp(Avp.SGSN_NAME, sgsnName, 10415, false, false, false);
-    }
-    if (sgsnRealm != null){
-      servingNode.addAvp(Avp.SGSN_REALM, sgsnRealm, 10415, false, false, false);
-    }
-    if (mmeName != null){
-      servingNode.addAvp(Avp.MME_NAME, mmeName, 10415, false, false, false);
-    }
-    if (mmeRealm != null){
-      servingNode.addAvp(Avp.MME_REALM, mmeRealm, 10415, false, false, false);
-    }
-    if (mscNumber != null){
-      servingNode.addAvp(Avp.MSC_NUMBER, mscNumber, 10415, false, false);
-    }
-    if (tgppAAAServerName != null){
-      servingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, tgppAAAServerName, 10415, false, false, false);
-    }
-    if (lcsCapabilitiesSet != -1){
-      servingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, lcsCapabilitiesSet, 10415, false, false, true);
-    }
-    if (gmlcAddress != null){
-      servingNode.addAvp(Avp.GMLC_ADDRESS, gmlcAddress, 10415, false, false);
-    }
+    if (getSGSNNumber() != null)
+      servingNode.addAvp(Avp.SGSN_NUMBER, getSGSNNumber(), 10415, false, false);
+    if (getSGSNName() != null)
+      servingNode.addAvp(Avp.SGSN_NAME, getSGSNName(), 10415, false, false, false);
+    if (getSGSNRealm() != null)
+      servingNode.addAvp(Avp.SGSN_REALM, getSGSNRealm(), 10415, false, false, false);
+    if (getMMEName() != null)
+      servingNode.addAvp(Avp.MME_NAME, getMMEName(), 10415, false, false, false);
+    if (getMMERealm() != null)
+      servingNode.addAvp(Avp.MME_REALM, getMMERealm(), 10415, false, false, false);
+    if (getMSCNumber() != null)
+      servingNode.addAvp(Avp.MSC_NUMBER, getMSCNumber(), 10415, false, false);
+    if (get3GPPAAAServerName() != null)
+      servingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, get3GPPAAAServerName(), 10415, false, false, false);
+    if (getLCSCapabilitiesSets() != -1)
+      servingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, getLCSCapabilitiesSets(), 10415, false, false, true);
+    if (getGMLCAddress() != null)
+      servingNode.addAvp(Avp.GMLC_ADDRESS, getGMLCAddress(), 10415, false, false);
 
     // [ PLA-Flags ]
-    long plaFlags = getPLAFLags();
-    if (plaFlags != -1){
-      set.addAvp(Avp.PLA_FLAGS, plaFlags, 10415, false, false, true);
-    }
+    if (getPLAFLags() != -1)
+      set.addAvp(Avp.PLA_FLAGS, getPLAFLags(), 10415, false, false, true);
 
     // [ ESMLC-Cell-Info ]
-/*
-  ESMLC-Cell-Info ::= <AVP header: 2552 10415>
-    [ ECGI ]
-    [ Cell-Portion-ID ]
-    *[ AVP ]
-*/
     AvpSet esmlcCellInfo = set.addGroupedAvp(Avp.ESMLC_CELL_INFO, 10415, false, false);
-    // ECGI attribute already defined
-    long cellPortionId = getCellPortionId();
-
-    if (ecgi != null){
-      esmlcCellInfo.addAvp(Avp.ECGI, ecgi, 10415, false, false);
-    }
-    if (cellPortionId != -1){
-      esmlcCellInfo.addAvp(Avp.CELL_PORTION_ID, cellPortionId, 10415, false, false, true);
-    }
+    if (getECGI() != null)
+      esmlcCellInfo.addAvp(Avp.ECGI, getECGI(), 10415, false, false);
+    if (getCellPortionId() != -1)
+      esmlcCellInfo.addAvp(Avp.CELL_PORTION_ID, getCellPortionId(), 10415, false, false, true);
 
     // [ Civic-Address ]
-    String civicAddress = getCivicAddress();
-    if (civicAddress != null){
-      set.addAvp(Avp.CIVIC_ADDRESS, civicAddress, 10415, false, false, false);
+    if (getCivicAddress() != null){
+      set.addAvp(Avp.CIVIC_ADDRESS, getCivicAddress(), 10415, false, false, false);
     }
 
     // [ Barometric-Pressure ]
-    long barometricPressure = getBarometricPressure();
-    if (barometricPressure != -1){
-      set.addAvp(Avp.BAROMETRIC_PRESSURE, barometricPressure, 10415, false, false, true);
+    if (getBarometricPressure() != -1){
+      set.addAvp(Avp.BAROMETRIC_PRESSURE, getBarometricPressure(), 10415, false, false, true);
     }
 
     return pla;
   }
 
-  // ----------- 3GPP TS 29.172 v14.1.0 points ----------- //
-/*
-  6.3	Subscriber Location Report
-  6.3.1	General
-  The Subscriber Location Report operation is used by an MME or SGSN to provide the location of a target UE
-  to a GMLC, when a request for location has been implicitly issued or when a Delayed Location Reporting
-  is triggered after receipt of a request for location for a UE transiently not reachable.
-*/
 
-  protected LocationReportRequest createLRR(ServerSLgSession slgSession) throws Exception {
   /*
-  3GPP TS 29.172 v14.1.0 points
-  7.3.3	Location-Report-Request (LRR) Command
-  The Location-Report-Request (LRR) command, indicated by the Command-Code field set to 8388621
-  and the ‘R’ bit set in the Command Flags field, is sent by the MME or SGSN
-  in order to provide subscriber location data to the GMLC.
-  Message Format:
+    3GPP TS 29.172 v18.1.0 § 7.3.3
+    The Location-Report-Request (LRR) command, indicated by the Command-Code field set to 8388621
+    and the 'R' bit set in the Command Flags field, is sent by the MME or SGSN in order to
+    provide subscriber location data to the GMLC.
 
-   < Location-Report-Request> ::=	< Diameter Header: 8388621, REQ, PXY, 16777255 >
-
-	< Session-Id >
-	[ Vendor-Specific-Application-Id ]
-	{ Auth-Session-State }
-	{ Origin-Host }
-	{ Origin-Realm }
-	{ Destination-Host }
-	{ Destination-Realm }
-	{ Location-Event }
-	[ LCS-EPS-Client-Name ]
-	[ User-Name ]
-	[ MSISDN]
-	[ IMEI ]
-	[ Location-Estimate ]
-	[ Accuracy-Fulfilment-Indicator ]
-	[ Age-Of-Location-Estimate ]
-	[ Velocity-Estimate ]
-	[ EUTRAN-Positioning-Data ]
-	[ ECGI ]
-	[ GERAN-Positioning-Info ]
-	[ Cell-Global-Identity ]
-	[ UTRAN-Positioning-Info ]
-	[ Service-Area-Identity ]
-	[ LCS-Service-Type-ID ]
-	[ Pseudonym-Indicator ]
-	[ LCS-QoS-Class ]
-	[ Serving-Node ]
-	[ LRR-Flags ]
-	[ LCS-Reference-Number ]
-	[ Deferred-MT-LR-Data]
-	[ GMLC-Address ]
-	[ Periodic-LDR-Information ]
-	[ ESMLC-Cell-Info ]
-	[ 1xRTT-RCID ]
-	[ Civic-Address ]
-	[ Barometric-Pressure ]
-	*[ Supported-Features ]
-	*[ AVP ]
-	*[ Proxy-Info ]
-  *[ Route-Record ]
-
-  */
-    // Create LocationReportRequest
+    Message Format:
+    < Location-Report-Request> ::= < Diameter Header: 8388621, REQ, PXY, 16777255 >
+                                   < Session-Id >
+                                   [ DRMP ]
+                                   [ Vendor-Specific-Application-Id ]
+                                   { Auth-Session-State }
+                                   { Origin-Host }
+                                   { Origin-Realm }
+                                   { Destination-Host }
+                                   { Destination-Realm }
+                                   { Location-Event }
+                                   [ LCS-EPS-Client-Name ]
+                                   [ User-Name ]
+                                   [ MSISDN]
+                                   [ IMEI ]
+                                   [ Location-Estimate ]
+                                   [ Accuracy-Fulfilment-Indicator ]
+                                   [ Age-Of-Location-Estimate ]
+                                   [ Velocity-Estimate ]
+                                   [ EUTRAN-Positioning-Data ]
+                                   [ ECGI]
+                                   [ GERAN-Positioning-Info ]
+                                   [ Cell-Global-Identity ]
+                                   [ UTRAN-Positioning-Info ]
+                                   [ Service-Area-Identity ]
+                                   [ LCS-Service-Type-ID ]
+                                   [ Pseudonym-Indicator ]
+                                   [ LCS-QoS-Class ]
+                                   [ Serving-Node ]
+                                   [ LRR-Flags ]
+                                   [ LCS-Reference-Number ]
+                                   [ Deferred-MT-LR-Data]
+                                   [ GMLC-Address ]
+                                   [ Reporting-Amount ]
+                                   [ Periodic-LDR-Information ]
+                                   [ ESMLC-Cell-Info ]
+                                   [ 1xRTT-RCID ] ]
+                                   [ Delayed-Location-Reporting-Data ]
+                                   [ Civic-Address ]
+                                   [ Barometric-Pressure ]
+                                  *[ Supported-Features ]
+                                  *[ AVP ]
+                                  *[ Proxy-Info ]
+                                  *[ Route-Record ]
+   */
+  protected LocationReportRequest createLRR(ServerSLgSession slgSession) throws Exception {
+    // < Location-Report-Request> ::= < Diameter Header: 8388621, REQ, PXY, 16777255 >
     LocationReportRequest lrr = new LocationReportRequestImpl(slgSession.getSessions().get(0).createRequest(LocationReportRequest.code, getApplicationId(),
         getServerRealmName()));
-    // < Location-Report-Request> ::=	< Diameter Header: 8388621, REQ, PXY, 16777255 >
 
     AvpSet reqSet = lrr.getMessage().getAvps();
 
@@ -523,270 +414,202 @@ public abstract class AbstractSLgServer extends TBase implements ServerSLgSessio
     // { Destination-Realm }
 
     // { Location-Event }
-    int locationEvent = getLocationEvent();
-    if (locationEvent != -1){
-      reqSet.addAvp(Avp.LOCATION_EVENT, locationEvent, 10415, true, false);
-    }
+    if (getLocationEvent() != -1)
+      reqSet.addAvp(Avp.LOCATION_EVENT, getLocationEvent(), 10415, true, false);
 
     // { LCS-EPS-Client-Name }
     AvpSet lcsEPSClientName = reqSet.addGroupedAvp(Avp.LCS_EPS_CLIENT_NAME, 10415, false, false);
-    String lcsNameString = getLCSNameString();
-    int lcsFormatIndicator = getLCSFormatIndicator();
-
-    if (lcsNameString != null){
-      lcsEPSClientName.addAvp(Avp.LCS_NAME_STRING, lcsNameString, 10415, false, false, false);
-    }
-    if (lcsFormatIndicator != -1){
-      lcsEPSClientName.addAvp(Avp.LCS_FORMAT_INDICATOR, lcsFormatIndicator, 10415, false, false);
-    }
+    if (getLCSNameString() != null)
+      lcsEPSClientName.addAvp(Avp.LCS_NAME_STRING, getLCSNameString(), 10415, false, false, false);
+    if (getLCSFormatIndicator() != -1)
+      lcsEPSClientName.addAvp(Avp.LCS_FORMAT_INDICATOR, getLCSFormatIndicator(), 10415, false, false);
 
     // [ User-Name ] IE: IMSI
-    String userName = getUserName();
-    if (userName != null) {
-      reqSet.addAvp(Avp.USER_NAME, userName, 10415, true, false, false);
+    if (getUserName() != null) {
+      reqSet.addAvp(Avp.USER_NAME, getUserName(), 10415, true, false, false);
     }
 
     // [ MSISDN ]
-    byte[] msisdn = getMSISDN();
-    if (msisdn != null){
-      reqSet.addAvp(Avp.MSISDN, msisdn, 10415, true, false);
-    }
+    if (getMSISDN() != null)
+      reqSet.addAvp(Avp.MSISDN, getMSISDN(), 10415, true, false);
 
     // [ IMEI ]
-    String imei = getIMEI();
-    if (imei != null){
-      reqSet.addAvp(Avp.TGPP_IMEI, imei, 10415, false, false, false);
-    }
+    if (getIMEI() != null)
+      reqSet.addAvp(Avp.TGPP_IMEI, getIMEI(), 10415, false, false, false);
 
     // [ Location-Estimate ]
-    byte[] locationEstimate = getLocationEstimate();
-    if (locationEstimate != null){
-      reqSet.addAvp(Avp.LOCATION_ESTIMATE, locationEstimate, 10415, true, false);
-    }
+    if (getLocationEstimate() != null)
+      reqSet.addAvp(Avp.LOCATION_ESTIMATE, getLocationEstimate(), 10415, true, false);
 
     // [ Accuracy-Fulfilment-Indicator ]
-    int accuracyFulfilmentIndicator = getAccuracyFulfilmentIndicator();
-    if (accuracyFulfilmentIndicator != -1){
-      reqSet.addAvp(Avp.ACCURACY_FULFILMENT_INDICATOR, accuracyFulfilmentIndicator, 10415, false, false);
+    if (getAccuracyFulfilmentIndicator() != -1){
+      reqSet.addAvp(Avp.ACCURACY_FULFILMENT_INDICATOR, getAccuracyFulfilmentIndicator(), 10415, false, false);
     }
 
     // [ Age-Of-Location-Estimate ]
-    long ageOfLocationEstimate = getAgeOfLocationEstimate();
-    if (ageOfLocationEstimate != -1){
-      reqSet.addAvp(Avp.AGE_OF_LOCATION_ESTIMATE, ageOfLocationEstimate, 10415, false, false, true);
-    }
+    if (getAgeOfLocationEstimate() != -1)
+      reqSet.addAvp(Avp.AGE_OF_LOCATION_ESTIMATE, getAgeOfLocationEstimate(), 10415, false, false, true);
 
     // [ Velocity-Estimate ]
-    byte[] velocityEstimate = getVelocityEstimate();
-    if (velocityEstimate != null){
-      reqSet.addAvp(Avp.VELOCITY_ESTIMATE, velocityEstimate, 10415, false, false);
-    }
+    if (getVelocityEstimate() != null)
+      reqSet.addAvp(Avp.VELOCITY_ESTIMATE, getVelocityEstimate(), 10415, false, false);
 
     // [ EUTRAN-Positioning-Data ]
-    byte[] eutranPositioningData = getEUTRANPositioningData();
-    if (eutranPositioningData != null){
-      reqSet.addAvp(Avp.EUTRAN_POSITIONING_DATA, eutranPositioningData, 10415, false, false);
-    }
+    if (getEUTRANPositioningData() != null)
+      reqSet.addAvp(Avp.EUTRAN_POSITIONING_DATA, getEUTRANPositioningData(), 10415, false, false);
 
     // [ ECGI ]
-    byte[] ecgi = getECGI();
-    if (ecgi != null){
-      reqSet.addAvp(Avp.ECGI, ecgi, 10415, false, false);
-    }
+    if (getECGI() != null)
+      reqSet.addAvp(Avp.ECGI, getECGI(), 10415, false, false);
 
     // [ GERAN-Positioning-Info ]
     AvpSet geranPositioningInfo = reqSet.addGroupedAvp(Avp.GERAN_POSITIONING_INFO, 10415, false, false);
-    byte[] geranPositioningData = getGERANPositioningData();
-    byte[] geranGanssPositioningData = getGERANGANSSPositioningData();
-
-    if (geranPositioningData != null){
-      geranPositioningInfo.addAvp(Avp.GERAN_POSITIONING_DATA, geranPositioningData, 10415, false, false);
-    }
-    if (geranGanssPositioningData != null){
-      geranPositioningInfo.addAvp(Avp.GERAN_GANSS_POSITIONING_DATA, geranGanssPositioningData, 10415, false, false);
-    }
+    if (getGERANPositioningData() != null)
+      geranPositioningInfo.addAvp(Avp.GERAN_POSITIONING_DATA, getGERANPositioningData(), 10415, false, false);
+    if ( getGERANGANSSPositioningData() != null)
+      geranPositioningInfo.addAvp(Avp.GERAN_GANSS_POSITIONING_DATA,  getGERANGANSSPositioningData(), 10415, false, false);
 
     // [ Cell-Global-Identity ]
-    byte[] cellGlobalIdentity = getCellGlobalIdentity();
-    if (cellGlobalIdentity != null){
-      reqSet.addAvp(Avp.CELL_GLOBAL_IDENTITY, cellGlobalIdentity, 10415, false, false);
-    }
+    if (getCellGlobalIdentity() != null)
+      reqSet.addAvp(Avp.CELL_GLOBAL_IDENTITY, getCellGlobalIdentity(), 10415, false, false);
 
     // [ UTRAN-Positioning-Info ]
     AvpSet utranPositioningInfo = reqSet.addGroupedAvp(Avp.UTRAN_POSITIONING_INFO, 10415, false, false);
-    byte[] utranPositioningData = getUTRANPositioningData();
-    byte[] utranGanssPositioningData = getUTRANGANSSPositioningData();
-
-    if (utranPositioningData != null){
-      utranPositioningInfo.addAvp(Avp.UTRAN_POSITIONING_DATA, utranPositioningData, 10415, false, false);
-    }
-    if (utranGanssPositioningData != null){
-      utranPositioningInfo.addAvp(Avp.UTRAN_GANSS_POSITIONING_DATA, utranGanssPositioningData, 10415, false, false);
-    }
+    if (getUTRANPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_POSITIONING_DATA, getUTRANPositioningData(), 10415, false, false);
+    if (getUTRANGANSSPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_GANSS_POSITIONING_DATA, getUTRANGANSSPositioningData(), 10415, false, false);
+    if (getUTRANAdditionalPositioningData() != null)
+      utranPositioningInfo.addAvp(Avp.UTRAN_ADDITIONAL_POSITIONING_DATA, getUTRANAdditionalPositioningData(), 10415, false, false);
 
     // [ Service-Area-Identity ]
-    byte[] serviceAreaIdentity = getServiceAreaIdentity();
-    if (serviceAreaIdentity != null){
-      reqSet.addAvp(Avp.SERVICE_AREA_IDENTITY, serviceAreaIdentity, 10415, false, false);
-    }
+    if (getServiceAreaIdentity() != null)
+      reqSet.addAvp(Avp.SERVICE_AREA_IDENTITY, getServiceAreaIdentity(), 10415, false, false);
 
     // [ LCS-Service-Type-ID ]
-    long lscServiceTypeId = getLSCServiceTypeId();
-    if (lscServiceTypeId != -1){
-      reqSet.addAvp(Avp.LCS_SERVICE_TYPE_ID, lscServiceTypeId, 10415, false, false, true);
-    }
+    if (getLSCServiceTypeId() != -1)
+      reqSet.addAvp(Avp.LCS_SERVICE_TYPE_ID, getLSCServiceTypeId(), 10415, false, false, true);
 
     // [ Pseudonym-Indicator ]
-    int pseudonymIndicator = getPseudonymIndicator();
-    if (pseudonymIndicator != -1){
-      reqSet.addAvp(Avp.PSEUDONYM_INDICATOR, pseudonymIndicator, 10415, false, false);
-    }
+    if (getPseudonymIndicator() != -1)
+      reqSet.addAvp(Avp.PSEUDONYM_INDICATOR, getPseudonymIndicator(), 10415, false, false);
 
     // [ LCS-QoS-Class ]
-    int lcsQoSClass = getLCSQoSClass();
-    if (lcsQoSClass != -1){
-      reqSet.addAvp(Avp.LCS_QOS_CLASS, lcsQoSClass, 10415, false, false);
-    }
+    if (getLCSQoSClass() != -1)
+      reqSet.addAvp(Avp.LCS_QOS_CLASS, getLCSQoSClass(), 10415, false, false);
 
     // [ Serving-Node ] IE: Target Serving Node Identity
-/*
-  Serving-Node ::= <AVP header: 2401 10415>
-    [ SGSN-Number ]
-    [ SGSN-Name ]
-    [ SGSN-Realm ]
-    [ MME-Name ]
-    [ MME-Realm ]
-    [ MSC-Number ]
-    [ 3GPP-AAA-Server-Name ]
-    [ LCS-Capabilities-Sets ]
-    [ GMLC-Address ]
-    *[AVP]
-
-*/
     AvpSet servingNode = reqSet.addGroupedAvp(Avp.SERVING_NODE, 10415, true, false);
-    byte[] sgsnNumber = getSGSNNumber();
-    String sgsnName= getSGSNName();
-    String sgsnRealm = getSGSNRealm();
-    String mmeName = getMMEName();
-    String mmeRealm = getMMERealm();
-    byte[] mscNumber = getMSCNumber();
-    String tgppAAAServerName= get3GPPAAAServerName();
-    long lcsCapabilitiesSet = getLCSCapabilitiesSets();
-    java.net.InetAddress gmlcAddress = getGMLCAddress();
-
-    if (sgsnNumber != null){
-      servingNode.addAvp(Avp.SGSN_NUMBER, sgsnNumber, 10415, false, false);
-    }
-    if (sgsnName != null){
-      servingNode.addAvp(Avp.SGSN_NAME, sgsnName, 10415, false, false, false);
-    }
-    if (sgsnRealm != null){
-      servingNode.addAvp(Avp.SGSN_REALM, sgsnRealm, 10415, false, false, false);
-    }
-    if (mmeName != null){
-      servingNode.addAvp(Avp.MME_NAME, mmeName, 10415, false, false, false);
-    }
-    if (mmeRealm != null){
-      servingNode.addAvp(Avp.MME_REALM, mmeRealm, 10415, false, false, false);
-    }
-    if (mscNumber != null){
-      servingNode.addAvp(Avp.MSC_NUMBER, mscNumber, 10415, false, false);
-    }
-    if (tgppAAAServerName != null){
-      servingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, tgppAAAServerName, 10415, false, false, false);
-    }
-    if (lcsCapabilitiesSet != -1){
-      servingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, lcsCapabilitiesSet, 10415, false, false, true);
-    }
-    if (gmlcAddress != null){
-      servingNode.addAvp(Avp.GMLC_ADDRESS, gmlcAddress, 10415, false, false);
-    }
+    if (getSGSNNumber() != null)
+      servingNode.addAvp(Avp.SGSN_NUMBER, getSGSNNumber(), 10415, false, false);
+    if (getSGSNName() != null)
+      servingNode.addAvp(Avp.SGSN_NAME, getSGSNName(), 10415, false, false, false);
+    if (getSGSNRealm() != null)
+      servingNode.addAvp(Avp.SGSN_REALM, getSGSNRealm(), 10415, false, false, false);
+    if (getMMEName() != null)
+      servingNode.addAvp(Avp.MME_NAME, getMMEName(), 10415, false, false, false);
+    if (getMMERealm() != null)
+      servingNode.addAvp(Avp.MME_REALM, getMMERealm(), 10415, false, false, false);
+    if (getMSCNumber() != null)
+      servingNode.addAvp(Avp.MSC_NUMBER, getMSCNumber(), 10415, false, false);
+    if (get3GPPAAAServerName() != null)
+      servingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, get3GPPAAAServerName(), 10415, false, false, false);
+    if (getLCSCapabilitiesSets() != -1)
+      servingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, getLCSCapabilitiesSets(), 10415, false, false, true);
+    if (getGMLCAddress() != null)
+      servingNode.addAvp(Avp.GMLC_ADDRESS, getGMLCAddress(), 10415, false, false);
 
     // [ LRR-Flags ]
-    long lrrFlags = getLRRFLags();
-    if (lrrFlags != -1){
-      reqSet.addAvp(Avp.LRR_FLAGS, lrrFlags, 10415, false, false, true);
-    }
+    if (getLRRFLags() != -1)
+      reqSet.addAvp(Avp.LRR_FLAGS, getLRRFLags(), 10415, false, false, true);
 
     // [ LCS-Reference-Number ]
-    byte[] lcsReferenceNumber = getLCSReferenceNumber();
-    if (lcsReferenceNumber != null){
-      reqSet.addAvp(Avp.LCS_REFERENCE_NUMBER, lcsReferenceNumber, 10415, true, false);
-    }
+    if (getLCSReferenceNumber() != null)
+      reqSet.addAvp(Avp.LCS_REFERENCE_NUMBER, getLCSReferenceNumber(), 10415, true, false);
 
     // [ Deferred-MT-LR-Data]
     AvpSet deferredMTLRData = reqSet.addGroupedAvp(Avp.DEFERRED_MT_LR_DATA, 10415, false, false);
-    long deferredLocationType = getDeferredLocationType();
-    long terminationCause = getTerminationCause();
-
-    if (deferredLocationType != -1){
-      deferredMTLRData.addAvp(Avp.DEFERRED_LOCATION_TYPE, deferredLocationType, 10415, false, false, true);
-    }
-    if (terminationCause != -1){
-      deferredMTLRData.addAvp(Avp.TERMINATION_CAUSE_LCS, terminationCause, 10415, false, false, true);
-    }
+    if (getDeferredLocationType() != -1)
+      deferredMTLRData.addAvp(Avp.DEFERRED_LOCATION_TYPE, getDeferredLocationType() , 10415, false, false, true);
+    if (getTerminationCause() != -1)
+      deferredMTLRData.addAvp(Avp.TERMINATION_CAUSE_3GPP, getTerminationCause(), 10415, false, false, true);
+    AvpSet deferredMTLRDataServingNode = deferredMTLRData.addGroupedAvp(Avp.SERVING_NODE, 10415, true, false);
+    if (getSGSNNumber() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.SGSN_NUMBER, getSGSNNumber(), 10415, false, false);
+    if (getSGSNName() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.SGSN_NAME, getSGSNName(), 10415, false, false, false);
+    if (getSGSNRealm() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.SGSN_REALM, getSGSNRealm(), 10415, false, false, false);
+    if (getMMEName() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.MME_NAME, getMMEName(), 10415, false, false, false);
+    if (getMMERealm() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.MME_REALM, getMMERealm(), 10415, false, false, false);
+    if (getMSCNumber() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.MSC_NUMBER, getMSCNumber(), 10415, false, false);
+    if (get3GPPAAAServerName() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, get3GPPAAAServerName(), 10415, false, false, false);
+    if (getLCSCapabilitiesSets() != -1)
+      deferredMTLRDataServingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, getLCSCapabilitiesSets(), 10415, false, false, true);
+    if (getGMLCAddress() != null)
+      deferredMTLRDataServingNode.addAvp(Avp.GMLC_ADDRESS, getGMLCAddress(), 10415, false, false);
 
     // [ GMLC-Address ]
-    // attribute already defined for grouped AVP Serving Node
-    if (gmlcAddress != null){
-      reqSet.addAvp(Avp.GMLC_ADDRESS, gmlcAddress, 10415, false, false);
-    }
+    if (getGMLCAddress() != null)
+      reqSet.addAvp(Avp.GMLC_ADDRESS, getGMLCAddress(), 10415, false, false);
 
-    //[ Periodic-LDR-Information ]
-/*
-Periodic-LDR-Info ::= <AVP header: 2540 10415>
-  { Reporting-Amount }
-  { Reporting-Interval }
-  *[ AVP ]
-Reporting-Interval x Rreporting-Amount shall not exceed 8639999 (99 days, 23 hours, 59 minutes and 59 seconds)
-for compatibility with OMA MLP and RLP.
-*/
+    // [ Reporting-Amount ]
+    if (getReportingAmount() > -1)
+      reqSet.addAvp(Avp.REPORTING_AMOUNT, getReportingAmount(), 10415, false, false, true);
+
+    // [ Periodic-LDR-Information ]
     AvpSet periodicLDRInfo = reqSet.addGroupedAvp(Avp.PERIODIC_LDR_INFORMATION, 10415, false, false);
-    long reportingAmount = getReportingAmount();
-    long reportingInterval = getReportingInterval();
-
-    if (reportingAmount != -1){
-      periodicLDRInfo.addAvp(Avp.REPORTING_AMOUNT, reportingAmount, 10415, false, false, true);
-    }
-    if (reportingInterval != -1){
-      periodicLDRInfo.addAvp(Avp.REPORTING_INTERVAL, reportingInterval, 10415, false, false, true);
-    }
+    if (getReportingAmount() != -1)
+      periodicLDRInfo.addAvp(Avp.REPORTING_AMOUNT, getReportingAmount(), 10415, false, false, true);
+    if (getReportingInterval() != -1)
+      periodicLDRInfo.addAvp(Avp.REPORTING_INTERVAL, getReportingInterval(), 10415, false, false, true);
 
     // [ ESMLC-Cell-Info ]
-/*
-  ESMLC-Cell-Info ::= <AVP header: 2552 10415>
-    [ ECGI ]
-    [ Cell-Portion-ID ]
-    *[ AVP ]
-*/
     AvpSet esmlcCellInfo = reqSet.addGroupedAvp(Avp.ESMLC_CELL_INFO, 10415, false, false);
-    // ECGI attribute already defined
-    long cellPortionId = getCellPortionId();
-
-    if (ecgi != null){
-      esmlcCellInfo.addAvp(Avp.ECGI, ecgi, 10415, false, false);
-    }
-    if (cellPortionId != -1){
-      esmlcCellInfo.addAvp(Avp.CELL_PORTION_ID, cellPortionId, 10415, false, false, true);
-    }
+    if (getECGI() != null)
+      esmlcCellInfo.addAvp(Avp.ECGI, getECGI(), 10415, false, false);
+    if (getCellPortionId() != -1)
+      esmlcCellInfo.addAvp(Avp.CELL_PORTION_ID, getCellPortionId(), 10415, false, false, true);
 
     // [ 1xRTT-RCID ]
-    byte[] onexRTTRCID = get1xRTTRCID();
-    if (onexRTTRCID != null){
-      reqSet.addAvp(Avp.ONEXRTT_RCID, onexRTTRCID, 10415, false, false);
-    }
+    if (get1xRTTRCID() != null)
+      reqSet.addAvp(Avp.ONE_X_RTT_RCID, get1xRTTRCID(), 10415, false, false);
+
+    // [ Delayed-Location-Reporting-Data ]
+    AvpSet delayedLocationReportingData = reqSet.addGroupedAvp(Avp.DELAYED_LOCATION_REPORTING_DATA, 10415, false, false);
+    if (getTerminationCause() != -1)
+      delayedLocationReportingData.addAvp(Avp.TERMINATION_CAUSE_3GPP, getTerminationCause(), 10415, false, false, true);
+    AvpSet delayedLocationReportingDataServingNode = delayedLocationReportingData.addGroupedAvp(Avp.SERVING_NODE, 10415, true, false);
+    if (getSGSNNumber() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.SGSN_NUMBER, getSGSNNumber(), 10415, false, false);
+    if (getSGSNName() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.SGSN_NAME, getSGSNName(), 10415, false, false, false);
+    if (getSGSNRealm() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.SGSN_REALM, getSGSNRealm(), 10415, false, false, false);
+    if (getMMEName() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.MME_NAME, getMMEName(), 10415, false, false, false);
+    if (getMMERealm() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.MME_REALM, getMMERealm(), 10415, false, false, false);
+    if (getMSCNumber() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.MSC_NUMBER, getMSCNumber(), 10415, false, false);
+    if (get3GPPAAAServerName() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.TGPP_AAA_SERVER_NAME, get3GPPAAAServerName(), 10415, false, false, false);
+    if (getLCSCapabilitiesSets() != -1)
+      delayedLocationReportingDataServingNode.addAvp(Avp.LCS_CAPABILITIES_SETS, getLCSCapabilitiesSets(), 10415, false, false, true);
+    if (getGMLCAddress() != null)
+      delayedLocationReportingDataServingNode.addAvp(Avp.GMLC_ADDRESS, getGMLCAddress(), 10415, false, false);
 
     // [ Civic-Address ]
-    String civicAddress = getCivicAddress();
-    if (civicAddress != null){
-      reqSet.addAvp(Avp.CIVIC_ADDRESS, civicAddress, 10415, false, false, false);
-    }
+    if (getCivicAddress() != null)
+      reqSet.addAvp(Avp.CIVIC_ADDRESS, getCivicAddress(), 10415, false, false, false);
 
     // [ Barometric-Pressure ]
-    long barometricPressure = getBarometricPressure();
-    if (barometricPressure != -1){
-      reqSet.addAvp(Avp.BAROMETRIC_PRESSURE, barometricPressure, 10415, false, false, true);
-    }
+    if (getBarometricPressure() != -1)
+      reqSet.addAvp(Avp.BAROMETRIC_PRESSURE, getBarometricPressure(), 10415, false, false, true);
 
     return lrr;
   }

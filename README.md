@@ -59,9 +59,9 @@ Adaptors), statistics gathering for monitoring the stack health, overload monito
 
 Naikeri Diameter also includes integration interfaces for [SIP Servlets](https://github.com/RestComm/sip-servlets) and [JAIN SLEE Resource Adaptors](https://github.com/RestComm/jain-slee.diameter).
 
-## Changelog by August 2022
+## Changelog by June 2026
 
-* Upgraded Naikeri-jSS7 to run over JDK 11.
+* Upgraded to run over JDK 11.
 
 *	Implemented a Diameter Simulator for LTE Location Services for the Naikeri-GMLC according to 3GPP TS 23.271 and SLh-SLG reference points (3GPP TS 29.172/29.173). The Diameter Location Simulator then processes SLh Routing-Information-Request command and answers back with configured data for the targeted subscriber identity (acting as an HSS) and following SLg EPC Location Protocol (ELP) Provide-Location-Request and answering back to the Naikeri-GMLC with configured data for the targeted subscriber identity (acting as the MME). It also acts as an HTTP-Diameter Server, as it processes HTTP requests for generating SLg EPC Location Protocol (ELP) Location-Report-Requests commands to be sent to the Naikeri-GMLC (again, acting as an MME that has received location information from an E-SMLC from a previous Provide-Location-Request command requesting periodic location reports or after geographical area or motion events) and process the Location-Report-Answers.
 
@@ -107,18 +107,25 @@ Naikeri Diameter also includes integration interfaces for [SIP Servlets](https:/
 o	extraHostAddresseSize parameter is now properly renamed as extraHostAddressesSize.
 o	assoctype parameter is now renamed as associationType.
 
-*	Updated several dependencies to latest versions such as Netty
+*	Updated several dependencies to latest versions such as Netty.
 
+* Update to latest 3GPP releases (19) of S6a/S6d, S6c, Sh, SLh, SLg, SGd (and related reference points).
+
+* Addition of S6c and SGd interfaces for SMS over 4G LTE networks.
+
+* Enhancement of aforementioned interfaces testsuites.
 
 ## Stay in Touch
 Email me: [fernando.mendioroz@naikeri.com](fernando.mendioroz@gmail.com).
 
 ## Contribution
 Thank you to the [RestComm](https://github.com/RestComm) community over which shoulders we stand.
-Main contributors of all the additions, fixes and enhancements detailed at the changelog between July 2018 and August 2022:
+Main contributors of all the additions, fixes and enhancements detailed at the changelog between July 2018 and July 2026:
 - Fernando Mendioroz
 - Joram Herrera
 - Alejandro Ferreira
+- Enmanuel Calero
+- Kenny Mendieta
 
 
 ## LICENSE

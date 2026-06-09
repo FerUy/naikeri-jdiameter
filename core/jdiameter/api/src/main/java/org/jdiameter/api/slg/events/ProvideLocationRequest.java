@@ -1,41 +1,29 @@
-/*
- *
- * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2017, Telestax Inc and individual contributors
- * by the @authors tag.
- *
- * This program is free software: you can redistribute it and/or modify
- * under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation; either version 3 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
- */
-
 package org.jdiameter.api.slg.events;
 
 import org.jdiameter.api.app.AppRequestEvent;
 
 /**
  * @author <a href="mailto:fernando.mendioroz@gmail.com"> Fernando Mendioroz </a>
- *
  */
 
 /*
- * As for 3GPP TS 29.172 v13.0.0, the Provide Subscriber Location operation is used by a GMLC to request the location of a
- * target UE from the MME or SGSN at any time, as part of EPC-MT-LR (Evolved Packet Core Mobile Terminated Location Request) or
- * PS-MT-LR (Packet Switched Mobile Terminated Location Request) positioning procedures. The response contains a location
- * estimate of the target UE and other additional information. This operation is also used by a GMLC to request the location of
- * the target UE from the SGSN at any time, as part of deferred MT-LR procedure. The response contains the acknowledgment of the
- * receipt of the request and other additional information.
+ * As for 3GPP TS 29.172 v13.0.0, the Provide Subscriber Location operation is used by a GMLC
+ * to request the location of a target UE from the MME or SGSN at any time, as part of EPC-MT-LR or PS-MT-LR positioning procedures.
+ * The response contains a location estimate of the target UE and other additional information.
  *
+ * The Provide Subscriber Location operation is also used by a GMLC to request the location of the target UE from the SGSN or MME at any time,
+ * as part of deferred MT-LR procedure. The response contains the acknowledgment of the receipt of the request and other additional information.
+ *
+ * The GMLC initiates the procedure by sending a PROVIDE SUBSCRIBER LOCATION REQUEST message to the MME or SGSN.
+ * This message carries the type of location information requested (e.g. current location and optionally, velocity),
+ * the UE subscriber's IMSI, LCS QoS information (e.g. accuracy, response time),
+ * an indication of whether the LCS client has the override capability,
+ * and an indication of whether delayed location reporting for UEs transiently not reachable
+ * (e.g. UEs in extended idle mode DRX or Power Saving Mode) is supported as specified in clauses 9.1.6 and 9.1.15 of 3GPP TS 23.271 [2].
+ * The message also carries an LCS reference number, if delayed location reporting is supported.
+ * For deferred MT-LR procedure, additionally, the message carries Deferred location type, LCS reference number,
+ * H-GMLC address, periodic LDR info, triggered LDR info, etc.
+
  * The Provide-Location-Request (PLR) command, indicated by the Command-Code field set to 8388620 and the "R" bit set in the
  * Command Flags field, is sent by the GMLC in order to request subscriber location to the MME or SGSN (Provide Subscriber
  * Location operation request)
