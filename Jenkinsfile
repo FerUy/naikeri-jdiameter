@@ -1,95 +1,55 @@
 pipeline {
-	agent any
+    agent any
 
-	tools {
-	    jdk 'jdk-11'
+    tools {
+        jdk 'jdk-11'
         maven 'maven-3.9.12'
-	}
+    }
 
-	options {
-    	buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '10'))
-  	}
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '30', numToKeepStr: '10'))
+    }
 
+    parameters {
+        string(name: 'JDIAMETER_MAJOR_VERSION_NUMBER', defaultValue: '2.0.0', description: 'The major version for Naikeri-jDiameter')
+    }
 
-	parameters { string(name: 'JDIAMETER_MAJOR_VERSION_NUMBER', defaultValue: '2.0.0', description: 'The major version for Naikeri-jDiameter') }
+    stages {
+        stage('Set Version') {
+            steps {
+                script {
+                    if (BUILD_NUMBER == "1") {
+                        error "Building for the first time"
+                    }
+                }
+                sh "mvn versions:set -DnewVersion=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
+                echo "Set version to ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
+            }
+        }
 
-	stages {
-
-		stage("Build") {
-			steps {
-				echo "Building application..."
-				script {
+        stage('Build') {
+            steps {
+                script {
                     currentBuild.displayName = "#${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
                     currentBuild.description = "Naikeri-jDiameter"
                 }
-				sh "mvn clean install -DskipTests"
-				echo "Maven build completed."
-			}
-		}
-    	stage('Set Version') {
-      		steps{
-				sh "mvn versions:set -DnewVersion=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER} clean install -DskipTests"
-      		}
-    	}
-		stage("Release") {
-			steps {
-				echo "Building a release version of #${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
-        		withAnt(installation: 'Ant_1.10.15') {
-          			dir('release') {
-          			    //sh "rm -rf restcomm-diameter*.zip"
-            			sh "ant -f build.xml -Ddiameter.release.version=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
- 					}
-				}
-				echo "Building a release version completed."
-			}
-		}
-
-		stage('Save Artifacts') {
-			//when { anyOf { branch 'master'; branch 'release' } }
-        	steps {
-          		echo "Archiving Naikeri-jDiameter version ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
-            	archiveArtifacts artifacts: "release/*.zip", followSymlinks: false, onlyIfSuccessful: true
-        	}
-    	}
-
-    	stage('Push Artifacts') {
-            when{ anyOf { branch 'master'; branch 'release' }}
-            steps {
-                /*script {
-                    ROOT_PATH = "/var/www/html/RestComm/restcomm_jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
-                }*/
-                sh "mkdir -p /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
-                sh "cp release/*.zip /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
-                /*sshagent(['ssh_grafana']) {
-                    sh "cp release/Naikeri-jDiameter-${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}.zip /var/www/html/NAIKERI/jdiameter/"
-                    sh "ssh root@127.0.0.1 \"mkdir -p ${ROOT_PATH}\""
-                    sh "scp -r release/*.zip root@127.0.0.1:${ROOT_PATH}"
-                }*/
-            }
-    	}
-
-        stage('Push to jFrog') {
-            when {anyOf {branch 'master'; branch 'release'}}
-            steps {
-                sh 'mvn deploy -DskipTests'
+                echo "Building Naikeri-jDiameter ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
+                sh "mvn clean install -DskipTests"
+                echo "Maven build completed."
             }
         }
-  	}
 
-	post {
-		success {
-			echo "Successfully built"
-		}
-		failure {
-			echo "Building Naikeri-jDiameter failed."
-		}
-		always {
-			echo "This will be called always. After testing do clean up."
-			sh 'rm -rf release/diameter'
-			sh 'rm -rf release/checkout'
-      	    sh 'rm -rf release/target'
-      	    sh 'rm -rf release/*.zip'
-      	    sh 'rm -rf release/*.zip*'
-		}
-	}
+        stage('Push to jFrog') {
+            when { anyOf { branch 'master'; branch 'release' } }
+            steps {
+                sh "mvn deploy -DskipTests"
+            }
+        }
+    }
+
+    post {
+        success { echo "Successfully built Naikeri-jDiameter" }
+        failure { echo "Building Naikeri-jDiameter failed." }
+        always  { echo "Build complete." }
+    }
 }
