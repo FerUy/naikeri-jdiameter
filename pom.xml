@@ -50,6 +50,7 @@
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-scm-plugin.version>2.0.0-M2</maven-scm-plugin.version>
+    <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
     <sctp.version>2.1.0-35</sctp.version>
@@ -297,6 +298,11 @@
           <source>${compile.source}</source>
           <target>${compile.source}</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin.version}</version>
       </plugin>
     </plugins>
   </build>
