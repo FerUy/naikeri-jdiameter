@@ -3,12 +3,11 @@ package org.mobicents.diameter.dictionary;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdiameter.client.impl.DictionarySingleton;
 import org.jdiameter.common.impl.validation.AvpRepresentationImpl;
 import org.jdiameter.common.impl.validation.DictionaryImpl;
@@ -23,16 +22,16 @@ import org.jdiameter.common.impl.validation.DictionaryImpl;
  */
 public class AvpDictionary {
 
-  private static transient Logger logger = Logger.getLogger(AvpDictionary.class);
+  private static final Logger logger = LoggerFactory.getLogger(AvpDictionary.class);
 
   public static final AvpDictionary INSTANCE = new AvpDictionary();
 
   //dont like that, this is not the same instance as in AvpUtils... ech.
   private DictionaryImpl stackDictionary;
 
-  private HashMap<AvpRepresentation, AvpRepresentation> avpMap = new HashMap<AvpRepresentation, AvpRepresentation>();
+  private HashMap<AvpRepresentation, AvpRepresentation> avpMap = new HashMap<>();
 
-  private Map<String, AvpRepresentation> nameToCodeMap = new HashMap<String, AvpRepresentation>();
+  private Map<String, AvpRepresentation> nameToCodeMap = new HashMap<>();
 
   private AvpDictionary() {
     // Exists only to defeat instantiation.
@@ -78,7 +77,7 @@ public class AvpDictionary {
     AvpRepresentation avp = avpMap.get(getMapKey(code, vendorId));
 
     if (avp == null) {
-      logger.warn("AVP with code " + code + " and Vendor-Id " + vendorId + " not present in dictionary!");
+        logger.warn("AVP with code {} and Vendor-Id {} not present in dictionary!", code, vendorId);
     }
 
     return avp;

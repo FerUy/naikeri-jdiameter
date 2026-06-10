@@ -1,6 +1,7 @@
 package org.jdiameter.server.impl.agent;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.Request;
 import org.jdiameter.client.api.IContainer;
@@ -16,7 +17,7 @@ import org.jdiameter.server.api.agent.IProxy;
  */
 public class ProxyAgentImpl extends AgentImpl implements IProxy {
 
-  private static Logger logger = Logger.getLogger(ProxyAgentImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(ProxyAgentImpl.class);
 
   /**
    * @param container
