@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<connectdelay value="5000"/>
-<servers>
-	<server name="localhost:13868" started="false" hostAddress="127.0.0.1" hostPort="13868" ipChannelType="0" acceptAnonymousConnections="true" maxConcurrentConnectionsCount="10" maxInputStreams="32" maxOutputStreams="32" extraHostAddressesSize="0">
-		<associations/>
-	</server>
-</servers>
-<associations/>

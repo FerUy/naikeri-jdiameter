@@ -190,3 +190,7 @@ xerces/
 xml-apis/
 xmlpull/
 xpp3/
+
+# testsuite runtime-generated SCTP peer-state files
+testsuite/tests/*_sctp.xml
+testsuite/tests/server-management-*_sctp.xml
