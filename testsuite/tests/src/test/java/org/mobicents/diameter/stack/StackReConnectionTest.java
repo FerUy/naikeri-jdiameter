@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
@@ -31,7 +33,7 @@ import org.junit.Test;
  */
 public class StackReConnectionTest {
 
-  private static Logger logger = Logger.getLogger(StackReConnectionTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(StackReConnectionTest.class);
 
   // 1. start server
   // 2. start client + wait for connection

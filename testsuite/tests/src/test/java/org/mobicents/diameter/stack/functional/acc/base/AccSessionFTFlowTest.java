@@ -10,7 +10,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.DisconnectCause;
 import org.jdiameter.api.Mode;
 import org.jdiameter.api.Peer;
@@ -44,7 +46,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class AccSessionFTFlowTest {
 
-  private static Logger logger = Logger.getLogger(AccSessionFTFlowTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(AccSessionFTFlowTest.class);
 
   private Client clientNode;
   private Server serverNode1;

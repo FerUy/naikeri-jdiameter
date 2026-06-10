@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
@@ -24,7 +26,7 @@ import org.jdiameter.server.impl.helpers.XMLConfiguration;
  */
 public class StackCreator extends StackImpl {
 
-  private static Logger logger = Logger.getLogger(StackCreator.class);
+  private static final Logger logger = LoggerFactory.getLogger(StackCreator.class);
 
   public StackCreator() {
     super();

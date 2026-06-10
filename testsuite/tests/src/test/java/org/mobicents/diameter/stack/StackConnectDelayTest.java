@@ -10,7 +10,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
@@ -39,7 +41,7 @@ import org.mobicents.diameter.stack.functional.acc.base.AccSessionFTFlowTest;
 @RunWith(Parameterized.class)
 public class StackConnectDelayTest {
 
-  private static Logger logger = Logger.getLogger(StackConnectDelayTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(StackConnectDelayTest.class);
 
   // 1. start server
   // 2. start client + wait for connection

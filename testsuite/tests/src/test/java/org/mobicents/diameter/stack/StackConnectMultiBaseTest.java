@@ -7,8 +7,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Configuration;
@@ -30,7 +31,7 @@ import org.jdiameter.server.impl.StackImpl;
  */
 public abstract class StackConnectMultiBaseTest {
 
-  private static Logger logger = Logger.getLogger(StackConnectMultiBaseTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(StackConnectMultiBaseTest.class);
 
   public abstract String getServerConfigName();
   public abstract String getClient1ConfigName();
@@ -40,7 +41,6 @@ public abstract class StackConnectMultiBaseTest {
   // 2. start client1 + wait for connection
   // 3. start client2 + wait for connection
   public void testConnectUndefined() throws Exception {
-    Logger.getLogger("org.jdiameter").setLevel(Level.DEBUG);
     StackImpl server = new StackImpl();
     StackImpl client1 = new StackImpl();
     StackImpl client2 = new StackImpl();

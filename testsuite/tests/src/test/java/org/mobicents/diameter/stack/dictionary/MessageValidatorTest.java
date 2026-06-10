@@ -4,7 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -26,7 +28,7 @@ import org.junit.Test;
  */
 public class MessageValidatorTest {
 
-  private static Logger logger = Logger.getLogger(MessageValidatorTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(MessageValidatorTest.class);
 
   private DictionaryImpl instance = null;
 
