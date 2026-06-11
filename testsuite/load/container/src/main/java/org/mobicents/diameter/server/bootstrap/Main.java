@@ -4,15 +4,11 @@ import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.xml.DOMConfigurator;
-import org.jboss.dependency.spi.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.bootstrap.basic.BasicBootstrap;
@@ -37,7 +33,7 @@ public class Main {
   private Kernel kernel;
   private BasicXMLDeployer kernelDeployer;
   private Controller controller;
-  private static Logger logger = Logger.getLogger(Main.class);
+  private static Logger logger = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) throws Throwable {
     String homeDir = getHomeDir(args);
@@ -116,37 +112,16 @@ public class Main {
   }
 
   private static boolean initLOG4JProperties(String homeDir) {
-    String Log4jURL = homeDir + LOG4J_URL;
-
-    try {
-      URL log4jurl = getURL(Log4jURL);
-      InputStream inStreamLog4j = log4jurl.openStream();
-      Properties propertiesLog4j = new Properties();
-      try {
-        propertiesLog4j.load(inStreamLog4j);
-        PropertyConfigurator.configure(propertiesLog4j);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    } catch (Exception e) {
-      // e.printStackTrace();
-      logger.info("Failed to initialize LOG4J with properties file.");
-      return false;
-    }
+    // log4j2 auto-discovers log4j2.xml from the classpath; legacy
+    // PropertyConfigurator init removed during log4j1->log4j2 migration.
+    logger.info("LOG4J init skipped (log4j2 classpath auto-configuration).");
     return true;
   }
 
   private static boolean initLOG4JXml(String homeDir) {
-    String Log4jURL = homeDir + LOG4J_URL_XML;
-
-    try {
-      URL log4jurl = getURL(Log4jURL);
-      DOMConfigurator.configure(log4jurl);
-    } catch (Exception e) {
-      // e.printStackTrace();
-      logger.info("Failed to initialize LOG4J with xml file.");
-      return false;
-    }
+    // log4j2 auto-discovers log4j2.xml from the classpath; legacy
+    // DOMConfigurator init removed during log4j1->log4j2 migration.
+    logger.info("LOG4J init skipped (log4j2 classpath auto-configuration).");
     return true;
   }
 

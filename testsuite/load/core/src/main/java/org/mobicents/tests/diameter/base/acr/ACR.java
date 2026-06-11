@@ -7,7 +7,6 @@ import static org.jdiameter.common.api.app.acc.ServerAccSessionState.IDLE;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Level;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.AvpDataException;
@@ -63,7 +62,7 @@ public class ACR extends AbstractStackRunner implements ServerAccSessionListener
     // here we should get ACR, and respond with ACA
 
     if (request.getCommandCode() != 271) {
-      if (super.log.isEnabledFor(Level.ERROR)) {
+      if (super.log.isErrorEnabled()) {
         super.log.error("Received non ACR message, discarding.");
         dumpMessage(request, false);
       }
@@ -94,7 +93,7 @@ public class ACR extends AbstractStackRunner implements ServerAccSessionListener
 
   public void receivedSuccessMessage(Request arg0, Answer arg1) {
     // we should not do that
-    if (super.log.isEnabledFor(Level.ERROR)) {
+    if (super.log.isErrorEnabled()) {
       super.log.error("Received answer");
       dumpMessage(arg1, false);
     }

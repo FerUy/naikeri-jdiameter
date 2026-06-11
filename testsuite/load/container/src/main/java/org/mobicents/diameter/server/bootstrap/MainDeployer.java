@@ -14,7 +14,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.deployment.xml.BasicXMLDeployer;
 
@@ -51,7 +52,7 @@ public class MainDeployer implements ContainerOperations{
 
 
   /** Logger instance */
-  private Logger logger = Logger.getLogger(MainDeployer.class);
+  private Logger logger = LoggerFactory.getLogger(MainDeployer.class);
 
   /**
    * Creates new instance of deployer.

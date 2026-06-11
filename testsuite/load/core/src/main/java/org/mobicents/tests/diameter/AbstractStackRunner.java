@@ -7,7 +7,8 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
@@ -40,7 +41,7 @@ import org.mobicents.diameter.dictionary.AvpRepresentation;
  */
 public abstract class AbstractStackRunner implements NetworkReqListener, EventListener<Request, Answer> {
 
-  protected final Logger log = Logger.getLogger(getClass());
+  protected final Logger log = LoggerFactory.getLogger(getClass());
   // protected static String clientHost = "uac.mobicents.org";
   // protected static String clientPort = "13868";
   // protected static String clientURI = "aaa://" + clientHost + ":" +
@@ -136,7 +137,7 @@ public abstract class AbstractStackRunner implements NetworkReqListener, EventLi
     MetaData metaData = stack.getMetaData();
     if (metaData.getStackType() != StackType.TYPE_SERVER || metaData.getMinorVersion() <= 0) {
       stack.destroy();
-      if (log.isEnabledFor(org.apache.log4j.Level.ERROR)) {
+      if (log.isErrorEnabled()) {
         log.error("Incorrect driver");
       }
       return;

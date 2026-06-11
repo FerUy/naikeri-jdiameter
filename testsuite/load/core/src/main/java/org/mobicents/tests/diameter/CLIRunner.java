@@ -3,10 +3,9 @@ package org.mobicents.tests.diameter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
@@ -21,7 +20,7 @@ import gnu.getopt.LongOpt;
 public class CLIRunner {
   private static final LongOpt[] _LONG_OPTS = new LongOpt[18];
   private static final String _GETOPT_PARAMS_STRING = "h:q:w";
-  private static final Logger log = Logger.getLogger(CLIRunner.class);
+  private static final Logger log = LoggerFactory.getLogger(CLIRunner.class);
   private static final String _DIA_HOME_DIR = "dia.home.dir";
 
   static {
@@ -35,7 +34,6 @@ public class CLIRunner {
     if (System.getenv(_DIA_HOME_DIR) == null && System.getProperty(_DIA_HOME_DIR) == null) {
       // this is for cli mode, if we are here, it means we are not run by
       // micocontainer
-      configLog4j();
     }
   }
 
@@ -113,23 +111,7 @@ public class CLIRunner {
   }
 
   private boolean isConfigured() {
-
     return this.configured;
-  }
-
-  private static void configLog4j() {
-    InputStream inStreamLog4j = CLIRunner.class.getClassLoader().getResourceAsStream("log4j.properties");
-    Properties propertiesLog4j = new Properties();
-    try {
-      propertiesLog4j.load(inStreamLog4j);
-      PropertyConfigurator.configure(propertiesLog4j);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    log.debug("log4j configured");
-
   }
 
   // Bean methods and fields for MC runn

@@ -2,7 +2,6 @@ package org.mobicents.tests.diameter.sh;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Level;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
@@ -75,7 +74,7 @@ public class SH extends AbstractStackRunner
 
     int commandCode = request.getCommandCode();
     if (commandCode != 308 && commandCode != 306 && commandCode != 309) {
-      if (log.isEnabledFor(Level.ERROR)) {
+      if (log.isErrorEnabled()) {
         log.error("Received command with wrong code: " + commandCode);
         super.dumpMessage(request, false);
       }
@@ -114,7 +113,7 @@ public class SH extends AbstractStackRunner
 
   public void receivedSuccessMessage(Request arg0, Answer arg1) {
     // we should not do that
-    if (super.log.isEnabledFor(Level.ERROR)) {
+    if (super.log.isErrorEnabled()) {
       super.log.error("Received answer");
       dumpMessage(arg1, false);
       new Exception().printStackTrace();
@@ -146,7 +145,7 @@ public class SH extends AbstractStackRunner
       PushNotificationAnswer arg2)
           throws InternalException, IllegalDiameterStateException, RouteException, OverloadException {
 
-    if (log.isEnabledFor(Level.DEBUG)) {
+    if (log.isDebugEnabled()) {
       log.error("Received PNA");
       super.dumpMessage(arg1.getMessage(), false);
     }
@@ -177,7 +176,7 @@ public class SH extends AbstractStackRunner
       set = request.getMessage().getAvps();
       Avp a = set.getAvp(705, 10415L);
       if (a == null) {
-        if (log.isEnabledFor(Level.ERROR)) {
+        if (log.isErrorEnabled()) {
           log.error("No subs req type!!");
         }
         return;

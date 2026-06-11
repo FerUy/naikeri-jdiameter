@@ -3,7 +3,6 @@ package org.mobicents.tests.diameter.cca;
 import java.io.InputStream;
 import java.util.concurrent.ScheduledFuture;
 
-import org.apache.log4j.Level;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.AvpDataException;
@@ -245,7 +244,7 @@ public class CCR extends AbstractStackRunner implements NetworkReqListener, Even
           break;
 
         default:
-          if (log.isEnabledFor(Level.ERROR)) {
+          if (log.isErrorEnabled()) {
 
             log.error("No REQ type present?: " + request.getRequestTypeAVPValue());
 
@@ -284,7 +283,7 @@ public class CCR extends AbstractStackRunner implements NetworkReqListener, Even
   public Answer processRequest(Request request) {
 
     if (request.getCommandCode() != 272) {
-      if (super.log.isEnabledFor(Level.ERROR)) {
+      if (super.log.isErrorEnabled()) {
         // super.log.error("Received non CCR message, discarding: " +
         // toString(request));
         super.dumpMessage(request, false);

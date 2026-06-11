@@ -2,7 +2,6 @@ package org.mobicents.tests.diameter.cxdx;
 
 import java.io.InputStream;
 
-import org.apache.log4j.Level;
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.AvpSet;
@@ -115,7 +114,7 @@ public class CXDX extends AbstractStackRunner implements ServerCxDxSessionListen
 
   public void receivedSuccessMessage(Request arg0, Answer arg1) {
     // we should not do that
-    if (super.log.isEnabledFor(Level.ERROR)) {
+    if (super.log.isErrorEnabled()) {
       super.log.error("Received answer");
       dumpMessage(arg1, false);
     }
