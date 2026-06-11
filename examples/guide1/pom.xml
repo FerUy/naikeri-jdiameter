@@ -20,7 +20,7 @@
     <restcomm.diameter.mux.version>2.0.0-SNAPSHOT</restcomm.diameter.mux.version>
     <get.opt.version>1.0.9</get.opt.version>
     <picocontainer.version>1.2</picocontainer.version>
-    <slf4j.version>1.7.13</slf4j.version>
+    <slf4j.version>2.0.17</slf4j.version>
     <compiler.plugin.version>3.8.1</compiler.plugin.version>
     <compile.source>11</compile.source>
     <!--compile.source>1.8</compile.source-->
@@ -60,53 +60,55 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
     </dependency>
   </dependencies>
 
 
-      <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin.version}</version>
-                <configuration>
-                    <source>${compile.source}</source>
-                    <target>${compile.source}</target>
-                    <debug>${compile.debug}</debug>
-                </configuration>
-            </plugin>
-            <!--Maven assembly plugin -->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.example.client.ExampleClient</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <!-- bind assembly:single to the package phase so this happens automatically on "mvn package" command -->
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-      </build>
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${compiler.plugin.version}</version>
+            <configuration>
+                <source>${compile.source}</source>
+                <target>${compile.source}</target>
+                <debug>${compile.debug}</debug>
+            </configuration>
+        </plugin>
+        <!--Maven assembly plugin -->
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+                <archive>
+                    <manifest>
+                        <mainClass>org.example.client.ExampleClient</mainClass>
+                    </manifest>
+                </archive>
+            </configuration>
+            <!-- bind assembly:single to the package phase so this happens automatically on "mvn package" command -->
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+  </build>
 
 
   <profiles>

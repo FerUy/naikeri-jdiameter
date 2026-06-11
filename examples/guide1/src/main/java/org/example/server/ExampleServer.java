@@ -3,11 +3,11 @@ package org.example.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
@@ -34,7 +34,7 @@ import org.mobicents.diameter.dictionary.AvpRepresentation;
  *
  */
 public class ExampleServer implements NetworkReqListener {
-  private static final Logger log = Logger.getLogger(ExampleServer.class);
+  private static final Logger log = LoggerFactory.getLogger(ExampleServer.class);
   static {
 
     configLog4j();
@@ -42,18 +42,11 @@ public class ExampleServer implements NetworkReqListener {
   }
 
   private static void configLog4j() {
-    InputStream inStreamLog4j = ExampleServer.class.getClassLoader().getResourceAsStream("log4j.properties");
-    Properties propertiesLog4j = new Properties();
-    try {
-      propertiesLog4j.load(inStreamLog4j);
-      PropertyConfigurator.configure(propertiesLog4j);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    log.debug("log4j configured");
-
+    // log4j2 auto-discovers log4j2.xml from the classpath; legacy
+    // PropertyConfigurator init removed during log4j1->log4j2 migration.
+    log.debug("log4j2 configured (classpath auto-configuration)");
   }
+
   private static final String configFile = "org/example/server/server-jdiameter-config.xml";
   private static final String dictionaryFile = "org/example/client/dictionary.xml";
   private static final String realmName = "exchange.example.org";
@@ -128,7 +121,7 @@ public class ExampleServer implements NetworkReqListener {
     MetaData metaData = stack.getMetaData();
     if (metaData.getStackType() != StackType.TYPE_SERVER || metaData.getMinorVersion() <= 0) {
       stack.destroy();
-      if (log.isEnabledFor(org.apache.log4j.Level.ERROR)) {
+      if (log.isErrorEnabled()) {
         log.error("Incorrect driver");
       }
       return;

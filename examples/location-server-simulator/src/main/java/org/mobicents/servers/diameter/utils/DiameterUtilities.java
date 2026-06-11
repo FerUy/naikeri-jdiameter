@@ -1,6 +1,8 @@
 package org.mobicents.servers.diameter.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Avp;
 import org.jdiameter.api.AvpDataException;
 import org.jdiameter.api.AvpSet;
@@ -14,7 +16,7 @@ import org.jdiameter.common.impl.validation.DictionaryImpl;
  */
 public class DiameterUtilities {
 
-  private static Logger logger = Logger.getLogger(DiameterUtilities.class);
+  private static Logger logger = LoggerFactory.getLogger(DiameterUtilities.class);
 
   public static Dictionary AVP_DICTIONARY = DictionaryImpl.INSTANCE;
 

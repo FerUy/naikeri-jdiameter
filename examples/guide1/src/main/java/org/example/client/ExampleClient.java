@@ -3,11 +3,11 @@ package org.example.client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jdiameter.api.Answer;
 import org.jdiameter.api.ApplicationId;
 import org.jdiameter.api.Avp;
@@ -35,31 +35,16 @@ import org.mobicents.diameter.dictionary.AvpRepresentation;
 
 public class ExampleClient implements EventListener<Request, Answer> {
 
-  private static final Logger log = Logger.getLogger(ExampleClient.class);
+  private static final Logger log = LoggerFactory.getLogger(ExampleClient.class);
   static {
       //configure logging.
     configLog4j();
   }
 
   private static void configLog4j() {
-    InputStream inStreamLog4j = ExampleClient.class.getClassLoader().getResourceAsStream("log4j.properties");
-    Properties propertiesLog4j = new Properties();
-    try {
-      propertiesLog4j.load(inStreamLog4j);
-      PropertyConfigurator.configure(propertiesLog4j);
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      if (inStreamLog4j != null) {
-        try {
-          inStreamLog4j.close();
-        } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    }
-    log.debug("log4j configured");
+    // log4j2 auto-discovers log4j2.xml from the classpath; legacy
+    // PropertyConfigurator init removed during log4j1->log4j2 migration.
+    log.debug("log4j2 configured (classpath auto-configuration)");
   }
 
   //configuration files
@@ -156,7 +141,7 @@ public class ExampleClient implements EventListener<Request, Answer> {
     //ignore for now.
     if (metaData.getStackType() != StackType.TYPE_SERVER || metaData.getMinorVersion() <= 0) {
       stack.destroy();
-      if (log.isEnabledFor(org.apache.log4j.Level.ERROR)) {
+      if (log.isErrorEnabled()) {
         log.error("Incorrect driver");
       }
       return;

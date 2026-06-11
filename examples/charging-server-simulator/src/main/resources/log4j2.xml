@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="A1" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5level %logger{1} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.mobicents.tests.diameter" level="debug"/>
+        <Logger name="org.jdiameter" level="info"/>
+        <Logger name="jdiameter.statistic" level="info"/>
+        <Logger name="org.jdiameter.common.impl.validation" level="info"/>
+        <Root level="debug">
+            <AppenderRef ref="A1"/>
+        </Root>
+    </Loggers>
+</Configuration>
