@@ -40,7 +40,7 @@ pipeline {
         }
 
         stage('Testsuite') {
-            when { anyOf { branch 'master'; branch 'release'; branch 'fix/testsuite-infinispan-tree' } }
+            when { anyOf { branch 'master'; branch 'release' } }
             steps {
                 echo "Running HA testsuite for ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
                 dir('testsuite/tests') {
