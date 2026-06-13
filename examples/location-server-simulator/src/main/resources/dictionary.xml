@@ -5639,7 +5639,7 @@
       <avp name="3GPP-SGSN-MCC-MNC" code="18" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="3GPP-SGSN-Address" code="6" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="3GPP-SGSN-IPv6-Address" code="15" vendor="10415" multiplicity="0-1" index="-1" />
-      <avp name="Called-Station-ID" code="30" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Called-Station-Id" code="30" vendor="0" multiplicity="0-1" index="-1" />
       <avp name="Bearer-Usage" code="1000" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="PDP-Session-Operation" code="1015" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="TFT-Packet-Filter-Information" code="1013" vendor="10415" multiplicity="0+" index="-1" />
