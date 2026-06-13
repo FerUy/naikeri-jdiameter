@@ -22,7 +22,7 @@ pipeline {
                         error "Building for the first time"
                     }
                 }
-                sh "mvn versions:set -DnewVersion=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
+                sh "mvn versions:set -DnewVersion=${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER} -Ptestsuite"
                 echo "Set version to ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
             }
         }
@@ -36,6 +36,16 @@ pipeline {
                 echo "Building Naikeri-jDiameter ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
                 sh "mvn clean install -DskipTests"
                 echo "Maven build completed."
+            }
+        }
+
+        stage('Testsuite') {
+            when { anyOf { branch 'master'; branch 'release'; branch 'fix/testsuite-infinispan-tree' } }
+            steps {
+                echo "Running HA testsuite for ${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}"
+                dir('testsuite/tests') {
+                    sh "mvn clean test -Ptestsuite"
+                }
             }
         }
 
