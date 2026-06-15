@@ -5679,73 +5679,73 @@
 
     <!-- 3GPP Gx Application -->
     <command name="Re-Auth-Answer"  code="258" vendor-id="TGPP" request="false">
-      <avp name="Session-Id" code="263" vendor="0" multiplicity="1" index="0" />
-      <avp name="Origin-Host" code="264" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Result-Code" code="268" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Access-Network-Charging-Address" code="501" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Access-Network-Charging-Identifier-Gx" code="1022" vendor="10415" multiplicity="1" index="-1" />
+      <avp name="Session-Id" code="263" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Origin-Host" code="264" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Result-Code" code="268" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Access-Network-Charging-Address" code="501" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Access-Network-Charging-Identifier-Gx" code="1022" vendor="10415" multiplicity="0-1" index="-1" />
     </command>
 
     <command name="Re-Auth-Request"  code="258" vendor-id="TGPP" request="true">
-      <avp name="Session-Id" code="263" vendor="0" multiplicity="1" index="0" />
-      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="1" index="0" />
-      <avp name="Origin-Host" code="264" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Destination-Realm" code="283" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Re-Auth-Request-Type" code="285" vendor="0" multiplicity="1" index="-1" />
+      <avp name="Session-Id" code="263" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Origin-Host" code="264" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Destination-Realm" code="283" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Re-Auth-Request-Type" code="285" vendor="0" multiplicity="0-1" index="-1" />
       <avp name="Session-Release-Cause" code="1045" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="Event-Trigger" code="1006" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="Charging-Rule-Install" code="1001" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="Charging-Rule-Remove" code="1002" vendor="10415" multiplicity="0-1" index="-1" />
-      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Route-Record" code="282" vendor="0" multiplicity="1" index="-1" />
+      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Route-Record" code="282" vendor="0" multiplicity="0-1" index="-1" />
     </command>
 
     <command name="Credit-Control-Answer"  code="272" vendor-id="TGPP" request="false">
-      <avp name="Session-Id" code="263" vendor="0" multiplicity="1" index="0" />
-      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="1" index="0" />
-      <avp name="Origin-Host" code="264" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Result-Code" code="268" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="CC-Request-Type" code="416" vendor="0" multiplicity="1" index="-1" />
-      <avp name="CC-Request-Number" code="415" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Bearer-Control-Mode" code="1023" vendor="10415" multiplicity="1" index="-1" />
+      <avp name="Session-Id" code="263" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Origin-Host" code="264" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Result-Code" code="268" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="CC-Request-Type" code="416" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="CC-Request-Number" code="415" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Bearer-Control-Mode" code="1023" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="Event-Trigger" code="1006" vendor="10415" multiplicity="0-1" index="-1" />
-      <avp name="QoS-Information" code="1016" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Default-EPS-Bearer-QoS" code="1049" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Route-Record" code="282" vendor="0" multiplicity="1" index="-1" />
+      <avp name="QoS-Information" code="1016" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Default-EPS-Bearer-QoS" code="1049" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Route-Record" code="282" vendor="0" multiplicity="0-1" index="-1" />
     </command>
 
     <command name="Credit-Control-Request"  code="272" vendor-id="TGPP" request="true">
-      <avp name="Session-Id" code="263" vendor="0" multiplicity="1" index="0" />
-      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="1" index="0" />
-      <avp name="Origin-Host" code="264" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Destination-Realm" code="283" vendor="0" multiplicity="1" index="-1" />
-      <avp name="CC-Request-Type" code="416" vendor="0" multiplicity="1" index="-1" />
-      <avp name="CC-Request-Number" code="415" vendor="0" multiplicity="1" index="-1" />
-      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="1" index="-1" />
+      <avp name="Session-Id" code="263" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Auth-Application-Id" code="258" vendor="0" multiplicity="0-1" index="0" />
+      <avp name="Origin-Host" code="264" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Origin-Realm" code="296" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Destination-Realm" code="283" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="CC-Request-Type" code="416" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="CC-Request-Number" code="415" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="Origin-State-Id" code="278" vendor="0" multiplicity="0-1" index="-1" />
       <avp name="Subscription-Id" code="443" vendor="0" multiplicity="0-1" index="-1" />
-      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Network-Request-Support" code="1024" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Framed-IP-Address" code="8" vendor="0" multiplicity="1" index="-1" />
-      <avp name="IP-CAN-Type" code="1027" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="RAT-Type" code="1032" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="QoS-Information" code="1016" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Default-EPS-Bearer-QoS" code="1049" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="AN-GW-Address" code="1050" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Called-Station-Id" code="30" vendor="0" multiplicity="1" index="-1" />
-      <avp name="3GPP-User-Location-Info" code="22" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="3GPP-MS-TimeZone" code="23" vendor="10415" multiplicity="1" index="-1" />
+      <avp name="Supported-Features" code="628" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Network-Request-Support" code="1024" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Framed-IP-Address" code="8" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="IP-CAN-Type" code="1027" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="RAT-Type" code="1032" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="QoS-Information" code="1016" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Default-EPS-Bearer-QoS" code="1049" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="AN-GW-Address" code="1050" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Called-Station-Id" code="30" vendor="0" multiplicity="0-1" index="-1" />
+      <avp name="3GPP-User-Location-Info" code="22" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="3GPP-MS-TimeZone" code="23" vendor="10415" multiplicity="0-1" index="-1" />
       <avp name="Event-Trigger" code="1006" vendor="10415" multiplicity="0-1" index="-1" />
-      <avp name="Access-Network-Charging-Address" code="501" vendor="10415" multiplicity="1" index="-1" />
-      <avp name="Access-Network-Charging-Identifier-Gx" code="1022" vendor="10415" multiplicity="1" index="-1" />
+      <avp name="Access-Network-Charging-Address" code="501" vendor="10415" multiplicity="0-1" index="-1" />
+      <avp name="Access-Network-Charging-Identifier-Gx" code="1022" vendor="10415" multiplicity="0-1" index="-1" />
     </command>
   </application>
 
