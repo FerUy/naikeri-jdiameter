@@ -11,23 +11,19 @@ import org.junit.Ignore;
 
 public class StackConnectMultiSCTPTest extends StackConnectMultiBaseTest {
 
-  private String serverConfigName = "multi-sctp-jdiameter-server-two.xml";
-  private String clientConfigName1 = "multi-sctp-jdiameter-client-one.xml";
-  private String clientConfigName2 = "multi-sctp-jdiameter-client-two.xml";
-
   @Override
   public String getServerConfigName() {
-    return serverConfigName;
+    return "multi-sctp-jdiameter-server-two.xml";
   }
 
   @Override
   public String getClient1ConfigName() {
-    return clientConfigName1;
+    return "multi-sctp-jdiameter-client-one.xml";
   }
 
   @Override
   public String getClient2ConfigName() {
-    return clientConfigName2;
+    return "multi-sctp-jdiameter-client-two.xml";
   }
 
   // 1. start server
