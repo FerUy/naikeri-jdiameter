@@ -53,7 +53,7 @@
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <!-- restcomm but not strictly jdiameter -->
-    <sctp.version>2.1.0-35</sctp.version>
+    <sctp.version>2.1.0-39</sctp.version>
     <netty-all.version>4.1.66.Final</netty-all.version>
     <slf4j.version>2.0.17</slf4j.version>
     <log4j.version>2.26.0</log4j.version>
