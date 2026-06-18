@@ -194,3 +194,6 @@ xpp3/
 # testsuite runtime-generated SCTP peer-state files
 testsuite/tests/*_sctp.xml
 testsuite/tests/server-management-*_sctp.xml
+release/*.zip
+release/*.asc
+release/diameter/

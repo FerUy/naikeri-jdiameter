@@ -8,7 +8,7 @@
     <format property="time.stamp" pattern="yyyyMMddHHmmss"/>
   </tstamp>
 
-  <property name="diameter.release.version" value="2.0.0-SNAPSHOT-${time.stamp}" />
+  <property name="diameter.release.version" value="2.2.0-SNAPSHOT-${time.stamp}" />
   <property name="release.build.goals" value="clean install dependency:tree"/>
 
   <property name="SLEE_RAS_MASTER_VERSION" value="2.7.1.FINAL" />
@@ -485,10 +485,11 @@
   </target>
 
   <target name="build-and-package-mux-wildfly" description="Create zip file: ${basedir}/${alt_mux_zip_file_name}">
-    <exec executable="${mvn.executable}" dir="../core/mux">
+    <exec executable="${mvn.executable}" dir="../core/mux" failonerror="true">
       <arg line="-f pom.xml ${release.build.goals} -Pwildfly" />
     </exec>
 
+    <delete dir="${alt_mux_zip_dir}" failonerror="false" />
     <mkdir dir="${alt_mux_zip_dir}" />
 
     <!-- TODO: Uncomment mux README.TXT after changing it -->
