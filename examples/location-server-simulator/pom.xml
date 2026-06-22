@@ -19,8 +19,8 @@
     <!-- Restcomm properties -->
     <jss7.restcomm.version>9.0.0-304</jss7.restcomm.version>
     <!-- Restcomm jDiameter components versions -->
-    <restcomm.diameter.jdiameter.version>2.0.0-SNAPSHOT</restcomm.diameter.jdiameter.version>
-    <restcomm.diameter.mux.version>2.0.0-SNAPSHOT</restcomm.diameter.mux.version>
+    <restcomm.diameter.jdiameter.version>2.2.0-SNAPSHOT</restcomm.diameter.jdiameter.version>
+    <restcomm.diameter.mux.version>2.2.0-SNAPSHOT</restcomm.diameter.mux.version>
     <!-- Third party dependencies versions -->
     <slf4j.version>1.7.13</slf4j.version>
     <jbosscache.version>3.2.5.GA</jbosscache.version>
