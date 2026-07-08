@@ -25,7 +25,7 @@
     <resource-root path="."/>
 
     <resource-root path="slf4j-api-@SLF4J_VERSION@.jar"/>
-    <resource-root path="slf4j-log4j12-@SLF4J_VERSION@.jar"/>
+    <resource-root path="slf4j-reload4j-@SLF4J_VERSION@.jar"/>
 
     <resource-root path="picocontainer-@PICOCONTAINER_VERSION@.jar"/>
 
@@ -80,6 +80,7 @@
     </system>
     <module name="sun.jdk"/>
     <module name="org.apache.log4j"/>
+    <module name="org.apache.logging.log4j.api"/>
     <module name="org.restcomm.ss7.modules" export="true"/>
     <module name="org.restcomm.ss7.commons" export="true"/>
     <module name="javax.annotation.api" export="true"/>
