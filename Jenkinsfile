@@ -68,6 +68,14 @@ pipeline {
             }
         }
 
+        stage('Push to Repo') {
+            when { anyOf { branch 'master'; branch 'release' } }
+            steps {
+                sh "mkdir -p /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
+                sh "cp release/restcomm-diameter-mux-wildfly-${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}.zip /var/www/html/NAIKERI/jdiameter/${params.JDIAMETER_MAJOR_VERSION_NUMBER}-${BUILD_NUMBER}/"
+            }
+        }
+
         stage('Push Zip to Artifactory') {
             when { anyOf { branch 'master'; branch 'release' } }
             steps {
