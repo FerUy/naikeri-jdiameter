@@ -71,6 +71,103 @@
       "amfInstanceId": "amf301-c0-a1"
     },
     {
+      "imsi": "748026871012300",
+      "msisdn": "59891077900",
+      "lmsi": "4294967292",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "gmlcAddress": "200.123.0.10"
+      },
+      "additionalServingNode": {
+        "mscNumber": "5989900008",
+        "lcsCapabilitySets": 4
+      },
+      "gmlcAddress": "200.123.0.10",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 10,
+        "latitude": -34.909743,
+        "longitude": -56.146316,
+        "uncertainty": -1,
+        "confidence": 15,
+        "uncertaintySemiMajorAxis": -1,
+        "uncertaintySemiMinorAxis": -1,
+        "angleOfMajorAxis": -1,
+        "altitude": -1,
+        "uncertaintyAltitude": -1,
+        "innerRadius": 28,
+        "uncertaintyInnerRadius": 3.0,
+        "offsetAngle": 12.0,
+        "includedAngle": 16.3
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranPositioningData": "440112234408",
+      "eutranCellGlobalIdentity": "748-1-518658",
+      "plaFlags": 0,
+      "barometricPressure": 1013,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 2,
+      "imei": "01171400466105",
+      "lcsEpsClientNameString": "gmlc.client@domain.com",
+      "lcsEpsClientNameFormatInd": 1,
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 0,
+      "lcsQosClass": 1,
+      "reportingAmount": 5,
+      "reportingInterval": 30,
+      "oneXRttRcid": "7",
+      "amfInstanceId": "amf301-c0-a1"
+    },
+    {
+      "imsi": "748026871012301",
+      "msisdn": "59891077901",
+      "lmsi": "4294967295",
+      "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 3,
+        "gmlcAddress": "200.123.44.109"
+      },
+      "additionalServingNode": {
+        "sgsnNumber": "5989900023",
+        "sgsnName": "dra.simulator",
+        "sgsnRealm": "epc.mnc000.mcc000.3gppnetwork.org",
+        "lcsCapabilitySets": 2
+      },
+      "gmlcAddress": "200.123.0.10",
+      "riaFlags": 0,
+      "locationResult": 2001,
+      "locationEstimate": {
+        "typeOfShape": 5,
+        "latitude1": -34.909743,
+        "longitude1": -56.146316,
+        "latitude2": -34.909740,
+        "longitude2": -56.146321,
+        "latitude3": -34.909741,
+        "longitude3": -56.146325,
+        "latitude4": -34.909749,
+        "longitude4": -56.146329
+      },
+      "accuracyFulfilmentIndicator": 0,
+      "ageOfLocationEstimate": 0,
+      "eutranPositioningData": "440112234408",
+      "eutranCellGlobalIdentity": "748-1-518658",
+      "plaFlags": 0,
+      "barometricPressure": 1010,
+      "lrrFlags": 0,
+      "deferredMtLrDataLocationType": 3,
+      "imei": "01171400466104",
+      "lcsEpsClientNameString": "Fmcgmlc",
+      "lcsEpsClientNameFormatInd": "0",
+      "pseudonymIndicator": 0,
+      "lcsServiceTypeId": 2,
+      "lcsQosClass": 0,
+      "amfInstanceId": "amf301-c0-a1"
+    },
+    {
       "imsi": "748016871012347",
       "msisdn": "59898077937",
       "lmsi": "4294967299",
@@ -157,7 +254,6 @@
         "uncertaintyInnerRadius": -1,
         "offsetAngle": -1,
         "includedAngle": -1
-
       },
       "accuracyFulfilmentIndicator": 0,
       "ageOfLocationEstimate": 0,
@@ -641,7 +737,7 @@
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
       "locationResult": 2001,
-      "addLocationEstimate": {
+      "locationEstimate": {
         "typeOfShape": 5,
         "latitude1": 6.646513,
         "longitude1": -75.492076,
@@ -697,7 +793,7 @@
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
       "locationResult": 2001,
-      "addLocationEstimate": {
+      "locationEstimate": {
         "typeOfShape": 5,
         "latitude1": 6.646513,
         "longitude1": -75.492076,
@@ -745,7 +841,7 @@
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
       "locationResult": 2001,
-      "addLocationEstimate": {
+      "locationEstimate": {
         "typeOfShape": 5,
         "latitude1": 6.646513,
         "longitude1": -75.492076,
@@ -797,7 +893,7 @@
       "pprAddress": "192.168.1.20",
       "riaFlags": 0,
       "locationResult": 2001,
-      "addLocationEstimate": {
+      "locationEstimate": {
         "typeOfShape": 5,
         "latitude1": 6.646513,
         "longitude1": -75.492076,

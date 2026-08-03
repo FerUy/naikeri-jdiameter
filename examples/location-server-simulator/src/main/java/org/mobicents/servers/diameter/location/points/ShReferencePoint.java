@@ -200,7 +200,7 @@ public class ShReferencePoint extends ShSessionFactoryImpl implements NetworkReq
                 logger.info(">> Sending [RIA] Routing-Info-Answer to {}@{} with experimental result code:{} ({})\n",
                     udr.getOriginHost(), udr.getOriginRealm(), resultCode, getShExperimentalResultString(resultCode));
             } catch (AvpDataException e) {
-                e.printStackTrace();
+                logger.error("Failed to send routing-info-answer", e);
             }
         } else if (resultCode == ResultCode.SUCCESS) {
             if (!nullShUserData) {
@@ -208,7 +208,7 @@ public class ShReferencePoint extends ShSessionFactoryImpl implements NetworkReq
                     udaAvpSet.addAvp(Avp.USER_DATA_SH, userData, 10415, true, false, true);
                     logger.info(">> Sending [UDA] User-Data-Answer to {}@{} with result code:{} (SUCCESS)\n", udr.getOriginHost(), udr.getOriginRealm(), resultCode);
                 } catch (AvpDataException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to send user-data-answer", e);
                 } catch (Exception e) {
                     logger.info(">< Error generating UDA] User-Data-Answer", e);
                 }
@@ -217,7 +217,7 @@ public class ShReferencePoint extends ShSessionFactoryImpl implements NetworkReq
                     logger.info(">> Sending [UDA] User-Data-Answer with NULL to AVP Sh-User-Data to {}@{} with result code:{} (SUCCESS)\n",
                         udr.getOriginHost(), udr.getOriginRealm(), resultCode);
                 } catch (AvpDataException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to send user-data-answer", e);
                 } catch (Exception e) {
                     logger.info(">< Error generating UDA] User-Data-Answer", e);
                 }
@@ -226,7 +226,7 @@ public class ShReferencePoint extends ShSessionFactoryImpl implements NetworkReq
             try {
                 logger.warn(">> Sending [UDA] User-Data-Answer to {}@{} with result code:{}\n", udr.getOriginHost(), udr.getOriginRealm(), resultCode);
             } catch (AvpDataException e) {
-                e.printStackTrace();
+                logger.error("Failed to send user-data-answer", e);
             }
         }
         session.sendUserDataAnswer(uda);

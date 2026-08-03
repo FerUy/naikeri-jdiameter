@@ -1,6 +1,5 @@
 package org.mobicents.servers.diameter.location.data;
 
-import org.mobicents.servers.diameter.location.data.elements.AdditionalLocationEstimate;
 import org.mobicents.servers.diameter.location.data.elements.AdditionalServingNode;
 import org.mobicents.servers.diameter.location.data.elements.LocationEstimate;
 import org.mobicents.servers.diameter.location.data.elements.VelocityEstimate;
@@ -24,7 +23,6 @@ public class SubscriberElement {
     public Integer locationResult = 2001;
 
     public LocationEstimate locationEstimate;
-    public AdditionalLocationEstimate addLocationEstimate;
     public Integer accuracyFulfilmentIndicator;
     public Long ageOfLocationEstimate;
     public VelocityEstimate velocityEstimate;

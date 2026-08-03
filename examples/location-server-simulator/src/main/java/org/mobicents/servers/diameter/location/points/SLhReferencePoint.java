@@ -99,7 +99,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
             try {
                 imsi = rirAvpSet.getAvp(Avp.USER_NAME).getUTF8String();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("<> Error getting IMSI for [{}]", imsi, e);
             }
         }
 
@@ -108,7 +108,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                 byte[] msisdnByteArray = rirAvpSet.getAvp(Avp.MSISDN).getOctetString();
                 msisdn = toTBCDString(msisdnByteArray);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("<> Error getting MSISDN for [{}]", imsi, e);
             }
         }
 
@@ -117,7 +117,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                 byte[] gmlcNumberOctet = rirAvpSet.getAvp(Avp.GMLC_NUMBER).getOctetString();
                 gmlcNumber = Long.valueOf(toTBCDString(gmlcNumberOctet));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("<> Error getting GMLC Number for [{}]", imsi, e);
             }
         }
 
@@ -195,7 +195,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                         try {
                             servingNodeGmlcAddress = InetAddress.getByName(subscriberElement.servingNode.gmlcAddress);
                         } catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            logger.error("Unknown host exception when trying to get gmlc address", e);
                         }
                         servingNode.addAvp(Avp.GMLC_ADDRESS, servingNodeGmlcAddress, 10415, true, false);
                     }
@@ -225,7 +225,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                         try {
                             additionalServingNodeGmlcAddress = InetAddress.getByName(subscriberElement.additionalServingNode.gmlcAddress);
                         } catch (UnknownHostException e) {
-                            e.printStackTrace();
+                            logger.error("Unknown host exception when trying to get gmlc address", e);
                         }
                         additionalServingNode.addAvp(Avp.GMLC_ADDRESS, additionalServingNodeGmlcAddress, 10415, true, false);
                     }
@@ -236,7 +236,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                     try {
                         gmlcAddress = InetAddress.getByName(subscriberElement.gmlcAddress);
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error("Unknown host exception when trying to get gmlc address", e);
                     }
                     riaAvpSet.addAvp(Avp.GMLC_ADDRESS, gmlcAddress, 10415, true, false);
                 }
@@ -246,7 +246,7 @@ public class SLhReferencePoint extends SLhSessionFactoryImpl implements NetworkR
                     try {
                         pprAddress = InetAddress.getByName(subscriberElement.pprAddress);
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error("Unknown host exception when trying to get gmlc address", e);
                     }
                     riaAvpSet.addAvp(Avp.PPR_ADDRESS, pprAddress, 10415, true, false);
                 }
