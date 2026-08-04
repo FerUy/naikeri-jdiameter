@@ -109,7 +109,7 @@ public class LocationServerSimulator {
             get("/lrr", new RouteImpl("/lrr") {
                 @Override
                 public Object handle(Request request, Response response) {
-                    Boolean isImsi = false;
+                    boolean isImsi = false;
                     String subscriberIdentity = request.queryParams("msisdn");
                     if (subscriberIdentity == null) {
                         subscriberIdentity = request.queryParams("imsi");
@@ -117,13 +117,19 @@ public class LocationServerSimulator {
                     }
                     String locationEvent = request.queryParams("locationEvent");
                     String lcsReferenceNumber = request.queryParams("lcsReferenceNumber");
-                    if (lcsReferenceNumber != null) {
-                        if (Integer.parseInt(lcsReferenceNumber) >= 0)
-                            return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent, lcsReferenceNumber, isImsi);
-                        else
-                            return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent, null, isImsi);
-                    } else
-                        return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent, null, isImsi);
+
+                    // Optional overrides. Absent means the subscriber's configured value
+                    // is used, so every existing invocation behaves as it did before.
+                    // terminationCause=none sends no termination cause at all, which is
+                    // what a serving node does while a deferred series is still running.
+                    String deferredLocationType = request.queryParams("deferredLocationType");
+                    String terminationCause = request.queryParams("terminationCause");
+
+                    if (lcsReferenceNumber != null && Integer.parseInt(lcsReferenceNumber) < 0) {
+                        lcsReferenceNumber = null;
+                    }
+                    return locationServerSimulator.sendLocationReportRequest(subscriberIdentity, locationEvent,
+                        lcsReferenceNumber, isImsi, deferredLocationType, terminationCause);
                 }
             });
 
@@ -212,17 +218,46 @@ public class LocationServerSimulator {
         Integer locationEventType = Integer.parseInt(commandParameter[2]);    // MO_LR(2)
         Integer lcsReferenceNumber = Integer.parseInt(commandParameter[3]);
 
-        this.slgMobilityManagementEntity.sendLocationReportRequest(subscriberIdentity, locationEventType, lcsReferenceNumber, false);
+        this.slgMobilityManagementEntity.sendLocationReportRequest(subscriberIdentity, locationEventType,
+            lcsReferenceNumber, false, null, null, false);
     }
 
-    public String sendLocationReportRequest(String subscriberIdentity, String locationEvent, String lcsReferenceNumber, Boolean isImsi) {
+    public String sendLocationReportRequest(String subscriberIdentity, String locationEvent, String lcsReferenceNumber,
+                                            Boolean isImsi) {
+        return sendLocationReportRequest(subscriberIdentity, locationEvent, lcsReferenceNumber, isImsi, null, null);
+    }
+
+    /**
+     * @param deferredLocationType overrides the subscriber's configured deferred location
+     *        type when not null. The value is the bit mask of 3GPP TS 29.172 clause
+     *        7.4.36, so 1 is UE-Available, 2 Entering-Into-Area, 4 Leaving-From-Area, 8
+     *        Being-Inside-Area, 16 Periodic-LDR, 32 Motion-Event, 64 LDR-Activated and
+     *        128 Maximum-Interval-Expiration. Bits may be combined.
+     * @param terminationCause overrides the subscriber's configured termination cause when
+     *        not null. The literal "none" suppresses it, so that a report can be sent for
+     *        a series that has not finished.
+     */
+    public String sendLocationReportRequest(String subscriberIdentity, String locationEvent, String lcsReferenceNumber,
+                                            Boolean isImsi, String deferredLocationType, String terminationCause) {
         String result = "\nLRR sent successfully!\n";
         try {
             Integer locationEventType = Integer.parseInt(locationEvent);
             Integer referenceNumber = null;
             if (lcsReferenceNumber != null)
                 referenceNumber = Integer.parseInt(lcsReferenceNumber);
-            this.slgMobilityManagementEntity.sendLocationReportRequest(subscriberIdentity, locationEventType, referenceNumber, isImsi);
+
+            Long deferredLocationTypeOverride = null;
+            if (deferredLocationType != null && !deferredLocationType.isEmpty())
+                deferredLocationTypeOverride = Long.parseLong(deferredLocationType);
+
+            boolean suppressTerminationCause = "none".equalsIgnoreCase(terminationCause);
+            Long terminationCauseOverride = null;
+            if (!suppressTerminationCause && terminationCause != null && !terminationCause.isEmpty())
+                terminationCauseOverride = Long.parseLong(terminationCause);
+
+            this.slgMobilityManagementEntity.sendLocationReportRequest(subscriberIdentity, locationEventType,
+                referenceNumber, isImsi, deferredLocationTypeOverride, terminationCauseOverride,
+                suppressTerminationCause);
         } catch (Exception e) {
             result = String.format("\nLRR caused an exception '%s' - not sent!\n", e.getMessage());
         }
