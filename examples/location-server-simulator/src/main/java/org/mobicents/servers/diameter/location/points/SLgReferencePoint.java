@@ -170,39 +170,37 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
             resultCode == DIAMETER_ERROR_POSITIONING_DENIED || resultCode == DIAMETER_ERROR_UNREACHABLE_USER) {
             try {
                 if (subscriberElement != null) {
-                    if (subscriberElement.locationEstimate != null || subscriberElement.addLocationEstimate !=null) {
-                        if (subscriberElement.locationEstimate != null &&
-                                TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) != TypeOfShape.Polygon) {
+                    if (subscriberElement.locationEstimate != null) {
+                        if (TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) != TypeOfShape.Polygon) {
                             plaAvpSet.addAvp(Avp.LOCATION_ESTIMATE,
-                                    new ExtGeographicalInformationImpl(TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape),
-                                            subscriberElement.locationEstimate.latitude,
-                                            subscriberElement.locationEstimate.longitude,
-                                            subscriberElement.locationEstimate.uncertainty,
-                                            subscriberElement.locationEstimate.uncertaintySemiMajorAxis,
-                                            subscriberElement.locationEstimate.uncertaintySemiMinorAxis,
-                                            subscriberElement.locationEstimate.angleOfMajorAxis,
-                                            subscriberElement.locationEstimate.confidence,
-                                            subscriberElement.locationEstimate.altitude,
-                                            subscriberElement.locationEstimate.uncertaintyAltitude,
-                                            subscriberElement.locationEstimate.innerRadius,
-                                            subscriberElement.locationEstimate.uncertaintyInnerRadius,
-                                            subscriberElement.locationEstimate.offsetAngle,
-                                            subscriberElement.locationEstimate.includedAngle).getData(),10415, true, false);
-                        } else if (subscriberElement.addLocationEstimate != null &&
-                                TypeOfShape.getInstance(subscriberElement.addLocationEstimate.typeOfShape) == TypeOfShape.Polygon) {
-                            EllipsoidPoint ellipsoidPoint1 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude1,
-                                    subscriberElement.addLocationEstimate.longitude1);
-                            EllipsoidPoint ellipsoidPoint2 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude2,
-                                    subscriberElement.addLocationEstimate.longitude2);
-                            EllipsoidPoint ellipsoidPoint3 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude3,
-                                    subscriberElement.addLocationEstimate.longitude3);
-                            EllipsoidPoint ellipsoidPoint4 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude4,
-                                    subscriberElement.addLocationEstimate.longitude4);
+                                new ExtGeographicalInformationImpl(TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape),
+                                    subscriberElement.locationEstimate.latitude,
+                                    subscriberElement.locationEstimate.longitude,
+                                    subscriberElement.locationEstimate.uncertainty,
+                                    subscriberElement.locationEstimate.uncertaintySemiMajorAxis,
+                                    subscriberElement.locationEstimate.uncertaintySemiMinorAxis,
+                                    subscriberElement.locationEstimate.angleOfMajorAxis,
+                                    subscriberElement.locationEstimate.confidence,
+                                    subscriberElement.locationEstimate.altitude,
+                                    subscriberElement.locationEstimate.uncertaintyAltitude,
+                                    subscriberElement.locationEstimate.innerRadius,
+                                    subscriberElement.locationEstimate.uncertaintyInnerRadius,
+                                    subscriberElement.locationEstimate.offsetAngle,
+                                    subscriberElement.locationEstimate.includedAngle).getData(),10415, true, false);
+                        } else if (TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) == TypeOfShape.Polygon) {
+                            EllipsoidPoint ellipsoidPoint1 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude1,
+                                subscriberElement.locationEstimate.longitude1);
+                            EllipsoidPoint ellipsoidPoint2 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude2,
+                                subscriberElement.locationEstimate.longitude2);
+                            EllipsoidPoint ellipsoidPoint3 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude3,
+                                subscriberElement.locationEstimate.longitude3);
+                            EllipsoidPoint ellipsoidPoint4 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude4,
+                                subscriberElement.locationEstimate.longitude4);
                             EllipsoidPoint[] ellipsoidPoints = {ellipsoidPoint1, ellipsoidPoint2, ellipsoidPoint3, ellipsoidPoint4};
                             PolygonImpl polygon = new PolygonImpl();
                             polygon.setData(ellipsoidPoints);
-                            AddGeographicalInformation additionalLocationEstimate = new AddGeographicalInformationImpl(polygon.getData());
-                            plaAvpSet.addAvp(Avp.LOCATION_ESTIMATE, additionalLocationEstimate.getData(),10415, true, false);
+                            AddGeographicalInformation locationEstimate = new AddGeographicalInformationImpl(polygon.getData());
+                            plaAvpSet.addAvp(Avp.LOCATION_ESTIMATE, locationEstimate.getData(),10415, true, false);
                         }
                     }
 
@@ -214,12 +212,12 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
 
                     if (subscriberElement.velocityEstimate != null) {
                         plaAvpSet.addAvp(Avp.VELOCITY_ESTIMATE,
-                                new VelocityEstimateImpl(VelocityType.getInstance(subscriberElement.velocityEstimate.velocityType),
-                                        subscriberElement.velocityEstimate.horizontalSpeed,
-                                        subscriberElement.velocityEstimate.bearing,
-                                        subscriberElement.velocityEstimate.verticalSpeed,
-                                        subscriberElement.velocityEstimate.uncertaintyHorizontalSpeed,
-                                        subscriberElement.velocityEstimate.uncertaintyVerticalSpeed).getData(), 10415, true, false);
+                            new VelocityEstimateImpl(VelocityType.getInstance(subscriberElement.velocityEstimate.velocityType),
+                                subscriberElement.velocityEstimate.horizontalSpeed,
+                                subscriberElement.velocityEstimate.bearing,
+                                subscriberElement.velocityEstimate.verticalSpeed,
+                                subscriberElement.velocityEstimate.uncertaintyHorizontalSpeed,
+                                subscriberElement.velocityEstimate.uncertaintyVerticalSpeed).getData(), 10415, true, false);
                     }
 
                     if (subscriberElement.eutranPositioningData != null) {
@@ -276,7 +274,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                     }
 
                     if (subscriberElement.utranPositioningData != null || subscriberElement.utranGanssPositioningData != null ||
-                            subscriberElement.utranAdditionalPositioningData != null) {
+                        subscriberElement.utranAdditionalPositioningData != null) {
                         AvpSet utranPositioningInfo = plaAvpSet.addGroupedAvp(Avp.UTRAN_POSITIONING_INFO,10415, false, false);
                         if (subscriberElement.utranPositioningData != null) {
                             UtranPositioningDataInfo utranPositioningDataInfo = new UtranPositioningDataInfoImpl(hexStringToByteArray(subscriberElement.utranPositioningData));
@@ -325,7 +323,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                             try {
                                 servingNodeGmlcAddress = InetAddress.getByName(subscriberElement.targetServingNodeForHandover.gmlcAddress);
                             } catch (UnknownHostException e) {
-                                e.printStackTrace();
+                                logger.error("Unknown host exception when trying to get gmlc address", e);
                             }
                             targetServingNodeForHandover.addAvp(Avp.GMLC_ADDRESS, servingNodeGmlcAddress, 10415, true, false);
                         }
@@ -396,7 +394,18 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
         session.sendProvideLocationAnswer(pla);
     }
 
-    public void sendLocationReportRequest(String subscriberIdentity, Integer locationEventType, Integer lcsReferenceNumber, Boolean isImsi) {
+    /**
+     * Sends a Location-Report-Request for a configured subscriber.
+     *
+     * <p>The deferred location type and termination cause may be overridden per request
+     * so that a single subscriber can exercise every combination without a JSON entry
+     * for each. A null override means the subscriber's configured value is used;
+     * suppressTerminationCause sends no termination cause at all, which is what a
+     * serving node does while a deferred series is still running.
+     */
+    public void sendLocationReportRequest(String subscriberIdentity, Integer locationEventType, Integer lcsReferenceNumber,
+                                          Boolean isImsi, Long deferredLocationTypeOverride,
+                                          Long terminationCauseOverride, boolean suppressTerminationCause) {
 
         if (logger.isInfoEnabled()) {
             logger.info("<< Received HTTP request for sending SLg [LRR] Location-Report-Request to GMLC");
@@ -413,10 +422,10 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
 
             String sessionId = UUID.randomUUID().toString();
             ServerSLgSession session = (this.sessionFactory).getNewAppSession(sessionId,
-                   ApplicationId.createByAuthAppId(10415, 16777255), ServerSLgSession.class, (Object) null);
+                ApplicationId.createByAuthAppId(10415, 16777255), ServerSLgSession.class, (Object) null);
 
             LocationReportRequest lrr = new LocationReportRequestImpl(session.getSessions().get(0).createRequest(LocationReportRequest.code,
-                    ApplicationId.createByAuthAppId(10415, 16777255), "restcomm.org"));
+                ApplicationId.createByAuthAppId(10415, 16777255), "restcomm.org"));
 
             AvpSet lrrAvpSet = lrr.getMessage().getAvps();
 
@@ -438,9 +447,8 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                 lcsEpsClientName.addAvp(Avp.LCS_FORMAT_INDICATOR, subscriberElement.lcsEpsClientNameFormatInd, 10415, true, false, true);
             }
 
-            if (subscriberElement.locationEstimate != null  || subscriberElement.addLocationEstimate !=null) {
-                if (subscriberElement.locationEstimate != null &&
-                    TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) != TypeOfShape.Polygon) {
+            if (subscriberElement.locationEstimate != null) {
+                if (TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) != TypeOfShape.Polygon) {
                     lrrAvpSet.addAvp(Avp.LOCATION_ESTIMATE,
                         new ExtGeographicalInformationImpl(TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape),
                             subscriberElement.locationEstimate.latitude,
@@ -456,21 +464,20 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                             subscriberElement.locationEstimate.uncertaintyInnerRadius,
                             subscriberElement.locationEstimate.offsetAngle,
                             subscriberElement.locationEstimate.includedAngle).getData(), 10415, true, false);
-                }  else if (subscriberElement.addLocationEstimate !=null &&
-                    TypeOfShape.getInstance(subscriberElement.addLocationEstimate.typeOfShape) == TypeOfShape.Polygon) {
-                        EllipsoidPoint ellipsoidPoint1 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude1,
-                            subscriberElement.addLocationEstimate.longitude1);
-                        EllipsoidPoint ellipsoidPoint2 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude2,
-                            subscriberElement.addLocationEstimate.longitude2);
-                        EllipsoidPoint ellipsoidPoint3 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude3,
-                            subscriberElement.addLocationEstimate.longitude3);
-                        EllipsoidPoint ellipsoidPoint4 = new EllipsoidPoint(subscriberElement.addLocationEstimate.latitude4,
-                            subscriberElement.addLocationEstimate.longitude4);
-                        EllipsoidPoint[] ellipsoidPoints = {ellipsoidPoint1, ellipsoidPoint2, ellipsoidPoint3, ellipsoidPoint4};
-                        PolygonImpl polygon = new PolygonImpl();
-                        polygon.setData(ellipsoidPoints);
-                        AddGeographicalInformation additionalLocationEstimate = new AddGeographicalInformationImpl(polygon.getData());
-                        lrrAvpSet.addAvp(Avp.LOCATION_ESTIMATE, additionalLocationEstimate.getData(),10415, true, false);
+                }  else if (TypeOfShape.getInstance(subscriberElement.locationEstimate.typeOfShape) == TypeOfShape.Polygon) {
+                    EllipsoidPoint ellipsoidPoint1 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude1,
+                        subscriberElement.locationEstimate.longitude1);
+                    EllipsoidPoint ellipsoidPoint2 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude2,
+                        subscriberElement.locationEstimate.longitude2);
+                    EllipsoidPoint ellipsoidPoint3 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude3,
+                        subscriberElement.locationEstimate.longitude3);
+                    EllipsoidPoint ellipsoidPoint4 = new EllipsoidPoint(subscriberElement.locationEstimate.latitude4,
+                        subscriberElement.locationEstimate.longitude4);
+                    EllipsoidPoint[] ellipsoidPoints = {ellipsoidPoint1, ellipsoidPoint2, ellipsoidPoint3, ellipsoidPoint4};
+                    PolygonImpl polygon = new PolygonImpl();
+                    polygon.setData(ellipsoidPoints);
+                    AddGeographicalInformation additionalLocationEstimate = new AddGeographicalInformationImpl(polygon.getData());
+                    lrrAvpSet.addAvp(Avp.LOCATION_ESTIMATE, additionalLocationEstimate.getData(),10415, true, false);
                 }
             }
 
@@ -544,7 +551,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
             }
 
             if (subscriberElement.utranPositioningData != null || subscriberElement.utranGanssPositioningData != null ||
-                    subscriberElement.utranAdditionalPositioningData != null) {
+                subscriberElement.utranAdditionalPositioningData != null) {
                 AvpSet utranPositioningInfo = lrrAvpSet.addGroupedAvp(Avp.UTRAN_POSITIONING_INFO,10415, false, false);
                 if (subscriberElement.utranPositioningData != null) {
                     UtranPositioningDataInfo utranPositioningDataInfo = new UtranPositioningDataInfoImpl(hexStringToByteArray(subscriberElement.utranPositioningData));
@@ -596,7 +603,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                     try {
                         servingNodeGmlcAddress = InetAddress.getByName(subscriberElement.targetServingNodeForHandover.gmlcAddress);
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        logger.error("Unknown host exception when trying to get gmlc address", e);
                     }
                     targetServingNodeForHandover.addAvp(Avp.GMLC_ADDRESS, servingNodeGmlcAddress, 10415, true, false);
                 }
@@ -608,12 +615,27 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
             if (lcsReferenceNumber != null) {
                 if (lcsReferenceNumber >= 0) {
                     lrrAvpSet.addAvp(Avp.LCS_REFERENCE_NUMBER, lcsReferenceNumber, 10415, false, false, true);
-                    if (subscriberElement.deferredMtLrDataServingNode != null) {
+                    // A per-request override takes precedence over the configured value.
+                    Long effectiveDeferredLocationType = deferredLocationTypeOverride;
+                    if (effectiveDeferredLocationType == null && subscriberElement.deferredMtLrDataLocationType != null) {
+                        effectiveDeferredLocationType = subscriberElement.deferredMtLrDataLocationType.longValue();
+                    }
+                    Long effectiveTerminationCause = suppressTerminationCause ? null
+                        : (terminationCauseOverride != null
+                        ? terminationCauseOverride : subscriberElement.deferredMtLrDataTerminationCause);
+
+                    // The group is built whenever any of its members is present.
+                    // 3GPP TS 29.172 § 7.4.54 makes Deferred-Location-Type the mandatory
+                    // member and the serving node conditional on the termination cause,
+                    // so keying the whole group on the serving node was too strict.
+                    if (effectiveDeferredLocationType != null || effectiveTerminationCause != null) {
                         AvpSet deferredMtLrData = lrrAvpSet.addGroupedAvp(Avp.DEFERRED_MT_LR_DATA, 10415, false, false);
-                        if (subscriberElement.deferredMtLrDataLocationType != null && subscriberElement.deferredMtLrDataTerminationCause != null) {
-                            deferredMtLrData.addAvp(Avp.DEFERRED_LOCATION_TYPE, subscriberElement.deferredMtLrDataLocationType,10415, false, false, true);
-                            deferredMtLrData.addAvp(Avp.TERMINATION_CAUSE_3GPP, subscriberElement.deferredMtLrDataTerminationCause, 10415,false, false, true);
-                            if (subscriberElement.deferredMtLrDataTerminationCause == 4) {
+                        if (effectiveDeferredLocationType != null) {
+                            deferredMtLrData.addAvp(Avp.DEFERRED_LOCATION_TYPE, effectiveDeferredLocationType, 10415, false, false, true);
+                        }
+                        if (effectiveTerminationCause != null) {
+                            deferredMtLrData.addAvp(Avp.TERMINATION_CAUSE_3GPP, effectiveTerminationCause, 10415, false, false, true);
+                            if (effectiveTerminationCause == 4 && subscriberElement.deferredMtLrDataServingNode != null) {
                                 AvpSet deferredMtLrDataServingNode = deferredMtLrData.addGroupedAvp(Avp.SERVING_NODE, 10415, true, false);
                                 if (subscriberElement.deferredMtLrDataServingNode.sgsnNumber != null)
                                     deferredMtLrDataServingNode.addAvp(Avp.SGSN_NUMBER, parseTBCD(subscriberElement.deferredMtLrDataServingNode.sgsnNumber), 10415, false, false);
@@ -637,7 +659,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                                     try {
                                         defMtLrpDataServingNodeGmlcAddress = InetAddress.getByName(subscriberElement.deferredMtLrDataServingNode.gmlcAddress);
                                     } catch (UnknownHostException e) {
-                                        e.printStackTrace();
+                                        logger.error("Unknown host exception when trying to get gmlc address", e);
                                     }
                                     deferredMtLrDataServingNode.addAvp(Avp.GMLC_ADDRESS, defMtLrpDataServingNodeGmlcAddress, 10415, true, false);
                                 }
@@ -679,13 +701,14 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                                     try {
                                         delLocRepDataServingNodeGmlcAddress = InetAddress.getByName(subscriberElement.delayedLocationDataServingNode.gmlcAddress);
                                     } catch (UnknownHostException e) {
-                                        e.printStackTrace();
+                                        logger.error("Unknown host exception when trying to get gmlc address", e);
                                     }
                                     delayedLocationReportedDataServingNode.addAvp(Avp.GMLC_ADDRESS, delLocRepDataServingNodeGmlcAddress, 10415, true, false);
                                 }
                             }
                         }
                     }
+
 
                     if (subscriberElement.pseudonymIndicator != null)
                         lrrAvpSet.addAvp(Avp.PSEUDONYM_INDICATOR, subscriberElement.pseudonymIndicator, 10415, false, false,true);
@@ -701,7 +724,7 @@ public class SLgReferencePoint extends SLgSessionFactoryImpl implements NetworkR
                 try {
                     gmlcAddress = InetAddress.getByName(subscriberElement.gmlcAddress);
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();
+                    logger.error("Unknown host exception when trying to get gmlc address", e);
                 }
                 lrrAvpSet.addAvp(Avp.GMLC_ADDRESS, gmlcAddress, 10415, true, false);
             }
