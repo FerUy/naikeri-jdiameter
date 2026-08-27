@@ -1072,6 +1072,8 @@
       "msisdn": "59894455666",
       "lmsi": "4294967206",
       "servingNode": {
+        "mmeName": "dra.simulator",
+        "mmeRealm": "epc.mnc000.mcc000.3gppnetwork.org",
         "mscNumber": "5730100003",
         "lcsCapabilitySets": 1,
         "gmlcAddress": "191.42.21.204"
@@ -1080,7 +1082,7 @@
       "pprAddress": "10.1.1.57",
       "riaFlags": 0,
       "esmlcCellInfoEcgi": "732-123-2829314",
-      "locationResult": "4225"
+      "locationResult": "4224"
     },
     {
       "imsi": "748026871012331",
