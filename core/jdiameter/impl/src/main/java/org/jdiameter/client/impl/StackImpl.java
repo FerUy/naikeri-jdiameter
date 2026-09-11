@@ -219,10 +219,39 @@ public class StackImpl implements IContainer, StackImplMBean {
         for (Peer p : peerTable) {
           ((IPeer) p).remStateChangeListener(listener);
         }
+        if (state != StackState.STARTED) {
+          rollbackStart();
+        }
       }
     }
     finally {
       lock.unlock();
+    }
+  }
+
+  /**
+   * Undoes a start that did not reach STARTED. The state never changed, so stop() and destroy() treat the
+   * stack as not running and would leave the network guard, schedulers and peer state machines created by
+   * startPeerManager() alive: the local port would stay bound and peers would keep reconnecting.
+   * Failures here are logged, not thrown, so the caller still receives the original start exception.
+   */
+  private void rollbackStart() {
+    log.warn("Stack did not reach STARTED within the timeout; stopping what start() had started (state remains {})", state);
+    try {
+      if (peerManager != null) {
+        peerManager.stopping(DisconnectCause.REBOOTING);
+      }
+      assembler.getComponentInstance(ISessionDatasource.class).stop();
+      assembler.getComponentInstance(IStatisticProcessor.class).stop();
+      if (peerManager != null) {
+        peerManager.stopped();
+      }
+      if (scheduledFacility != null) {
+        concurrentFactory.shutdownNow(scheduledFacility);
+      }
+    }
+    catch (Exception e) {
+      log.warn("Failure rolling back an incomplete start", e);
     }
   }
 
