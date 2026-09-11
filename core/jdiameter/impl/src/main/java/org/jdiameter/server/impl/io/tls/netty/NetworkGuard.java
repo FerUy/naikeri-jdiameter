@@ -6,8 +6,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.jdiameter.api.Configuration;
@@ -40,6 +40,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class NetworkGuard implements INetworkGuard {
   private static final Logger logger = LoggerFactory.getLogger(NetworkGuard.class);
+  private static final long BINDER_SHUTDOWN_TIMEOUT_SECONDS = 5;
 
   protected CopyOnWriteArrayList<INetworkConnectionListener> listeners = new CopyOnWriteArrayList<INetworkConnectionListener>();
 
@@ -54,7 +55,7 @@ public class NetworkGuard implements INetworkGuard {
   protected final EventLoopGroup workerGroup = new NioEventLoopGroup();
   protected List<Channel> channels = new CopyOnWriteArrayList<Channel>();
 
-  protected final ScheduledExecutorService binderExecutor = Executors.newSingleThreadScheduledExecutor();
+  protected final ScheduledExecutorService binderExecutor = newBinderExecutor();
 
   Runnable binderTask = new Runnable() {
     public void run() {
@@ -83,7 +84,11 @@ public class NetworkGuard implements INetworkGuard {
       channels.add(bootstrap.bind(localAddress).sync().channel());
       logger.debug("Bound to socket [{}]", localAddress);
     } catch (InterruptedException e) {
-      logger.error("Failed to bind to socket " + localAddress, e);
+      Thread.currentThread().interrupt();
+      logger.error("Interrupted while binding to socket " + localAddress, e);
+    } catch (Exception e) {
+      // sync() rethrows the bind failure (e.g. BindException); uncaught it would be lost in the executor's future
+      logger.error("Failed to bind to socket " + localAddress + "; no incoming connections will be accepted on it", e);
     }
   }
 
@@ -159,10 +164,30 @@ public class NetworkGuard implements INetworkGuard {
 
   public void destroy() {
     logger.debug("Destroying network guard");
+    // stop binding first, so no channel can be bound after closeChannels() has run
+    stopBinder();
     closeChannels();
     closeWorkerGroup();
     closeBossGroup();
+  }
+
+  private static ScheduledExecutorService newBinderExecutor() {
+    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    // a bind still waiting out its delay must not run once the guard has been destroyed
+    executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+    return executor;
+  }
+
+  private void stopBinder() {
     binderExecutor.shutdown();
+    try {
+      if (!binderExecutor.awaitTermination(BINDER_SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+        logger.warn("Bind still in progress after {}s; its channel is closed when the event loop groups shut down", BINDER_SHUTDOWN_TIMEOUT_SECONDS);
+      }
+    } catch (InterruptedException e) {
+      // not re-interrupting: the channel and event loop cleanup below must still run
+      logger.debug("Interrupted while waiting for the binder to stop", e);
+    }
   }
 
   private void closeWorkerGroup() {

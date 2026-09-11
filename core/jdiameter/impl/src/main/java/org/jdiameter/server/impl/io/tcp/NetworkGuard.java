@@ -3,6 +3,7 @@ package org.jdiameter.server.impl.io.tcp;
 
 import static org.jdiameter.server.impl.helpers.Parameters.BindDelay;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -16,8 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.jdiameter.client.api.parser.IMessageParser;
@@ -45,7 +46,7 @@ public class NetworkGuard implements INetworkGuard {
   protected int port;
   protected long bindDelay;
   protected CopyOnWriteArrayList<INetworkConnectionListener> listeners = new CopyOnWriteArrayList<INetworkConnectionListener>();
-  protected boolean isWork = false;
+  protected volatile boolean isWork = false;
   //  protected Selector selector;
   //  protected ServerSocket serverSocket;
 
@@ -121,12 +122,32 @@ public class NetworkGuard implements INetworkGuard {
     }
   }
 
+  private static ScheduledExecutorService newBinderExecutor() {
+    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    // a bind still waiting out its delay must not run once the guard has been destroyed
+    executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+    return executor;
+  }
+
+  private static void closeQuietly(Closeable closeable) {
+    if (closeable != null) {
+      try {
+        closeable.close();
+      }
+      catch (Exception e) {
+        // ignore
+      }
+    }
+  }
+
   private class GuardTask implements Runnable {
     private Thread thread;
-    private Selector selector;
-    private ServerSocket serverSocket;
+    private volatile Selector selector;
+    private volatile ServerSocket serverSocket;
+    // guarded by this: set by cleanTask() so a bind that has not run yet never opens a socket
+    private boolean closed = false;
 
-    private final ScheduledExecutorService binder = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService binder = newBinderExecutor();
 
     GuardTask(final InetSocketAddress addr) throws IOException {
       if (bindDelay > 0) {
@@ -136,23 +157,37 @@ public class NetworkGuard implements INetworkGuard {
       Runnable task = new Runnable() {
         @Override
         public void run() {
-          try {
-            logger.debug("Binding {} after delaying {}ms...", addr, bindDelay);
-            final ServerSocketChannel ssc = ServerSocketChannel.open();
-            ssc.configureBlocking(false);
-            serverSocket = ssc.socket();
-            serverSocket.bind(addr);
-
-            selector = Selector.open();
-            ssc.register(selector, SelectionKey.OP_ACCEPT, addr);
-            logger.info("Open server socket {} ", serverSocket);
-          }
-          catch (IOException e) {
-            throw new RuntimeException(e);
-          }
+          bind(addr);
         }
       };
       binder.schedule(task, bindDelay, TimeUnit.MILLISECONDS);
+    }
+
+    private synchronized void bind(InetSocketAddress addr) {
+      if (closed) {
+        logger.debug("Not binding {}: the network guard was destroyed before the bind ran", addr);
+        return;
+      }
+      logger.debug("Binding {} after delaying {}ms...", addr, bindDelay);
+      ServerSocketChannel ssc = null;
+      Selector sel = null;
+      try {
+        ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);
+        ssc.socket().bind(addr);
+
+        sel = Selector.open();
+        ssc.register(sel, SelectionKey.OP_ACCEPT, addr);
+        // serverSocket first: run() starts accepting as soon as selector is non-null
+        serverSocket = ssc.socket();
+        selector = sel;
+        logger.info("Open server socket {} ", serverSocket);
+      }
+      catch (IOException e) {
+        logger.error("Unable to open server socket on {}; no incoming connections will be accepted on it", addr, e);
+        closeQuietly(sel);
+        closeQuietly(ssc);
+      }
     }
 
     public void start() {
@@ -221,27 +256,14 @@ public class NetworkGuard implements INetworkGuard {
       catch (InterruptedException e) {
         logger.debug("Can not stop thread", e);
       }
-      if (selector != null) {
-        try {
-          selector.close();
-        }
-        catch (Exception e) {
-          // ignore
-        }
+      synchronized (this) {
+        closed = true;
+        closeQuietly(selector);
         selector = null;
-      }
-      if (serverSocket != null) {
-        try {
-          serverSocket.close();
-        }
-        catch (Exception e) {
-          // ignore
-        }
+        closeQuietly(serverSocket);
         serverSocket = null;
       }
-      if (binder != null) {
-        binder.shutdown();
-      }
+      binder.shutdown();
     }
 
     @Override
