@@ -190,3 +190,7 @@ xerces/
 xml-apis/
 xmlpull/
 xpp3/
+
+# Keep every directory inside a source tree visible: the bare directory names above
+# (io/, javax/, log4j/...) otherwise also hide Java packages with the same name.
+!**/src/**/
