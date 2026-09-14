@@ -2191,6 +2191,17 @@
     </type>
   </avpdefn>
 
+  <avpdefn name="PDN-Connection-ID" code="2050" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes" vendor-bit="must" >
+    <type type-name="Unsigned32" />
+  </avpdefn>
+
+  <avpdefn name="Dynamic-Address-Flag" code="2051" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes" vendor-bit="must" >
+    <type type-name="Enumerated">
+      <enum code="0" name="STATIC" />
+      <enum code="1" name="DYNAMIC" />
+    </type>
+  </avpdefn>
+
   <avpdefn name="PS-Information" code="874" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="no" vendor-bit="must" >
     <grouped>
       <avp name="3GPP-Charging-Id" />
@@ -8250,6 +8261,14 @@
     <type type-name="Enumerated">
       <enum code="0" name="NOT_CSG_MEMBER" />
       <enum code="1" name="CSG_MEMBER" />
+    </type>
+  </avpdefn>
+
+
+  <avpdefn name="IMSI-Unauthenticated-Flag" code="2308" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="no" vendor-bit="must" >
+    <type type-name="Enumerated">
+      <enum code="0" name="AUTHENTICATED" />
+      <enum code="1" name="UNAUTHENTICATED" />
     </type>
   </avpdefn>
 

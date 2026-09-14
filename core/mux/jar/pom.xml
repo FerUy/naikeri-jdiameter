@@ -64,6 +64,19 @@
 
   <build>
     <finalName>restcomm-diameter-mux-${project.version}</finalName>
+    <resources>
+      <!-- The canonical dictionary lives in ../common/config, which is not a Maven module: sar-wildfly
+           copies it into the WildFly module directory, while standalone consumers had to keep their own
+           copy and drifted. Shipping it here puts it on every consumer's classpath, which is where
+           DictionaryImpl and DiameterStackMultiplexer already look for "dictionary.xml". -->
+      <resource>
+        <directory>../common/config</directory>
+        <includes>
+          <include>dictionary.xml</include>
+          <include>dictionary.xsd</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 
 </project>
