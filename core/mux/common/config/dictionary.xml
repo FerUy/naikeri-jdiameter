@@ -8273,6 +8273,15 @@
   </avpdefn>
 
 
+  <!-- Naikeri experimental AVP. RFC 6733 section 11.1.1 reserves codes 16777214 and 16777215 for
+       experimental use, so they can never be allocated to anything else; 16777215 is left free for a
+       second one. Codes in the IETF-managed range (256-16777213) are not ours to take, and a
+       vendor-specific code needs an SMI Private Enterprise Number, which Naikeri does not yet have.
+       Move this to code + vendor-id once a PEN is registered. -->
+  <avpdefn name="Naikeri-Routed-Host" code="16777214" mandatory="mustnot" protected="may" may-encrypt="no" vendor-bit="mustnot" >
+    <type type-name="DiameterIdentity" />
+  </avpdefn>
+
   <avpdefn name="BSSID" code="2716" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="no" vendor-bit="must" >
     <type type-name="UTF8String" />
   </avpdefn>
