@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.mobicents.diameter</groupId>
+    <artifactId>restcomm-diameter-mux-parent</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>restcomm-diameter-dictionary</artifactId>
+
+  <name>Restcomm :: Diameter Dictionary :: ${project.artifactId}</name>
+
+  <packaging>jar</packaging>
+
+  <build>
+    <resources>
+      <!-- Only the dictionary and its schema: this artifact goes on the classpath of everything that speaks
+           Diameter, where DictionaryImpl and AvpDictionary look for "dictionary.xml". The other files in
+           config/ are WildFly module templates, which sar-wildfly and sar-jboss-5 copy from the directory
+           itself and which have no business on a consumer's classpath. -->
+      <resource>
+        <directory>config</directory>
+        <includes>
+          <include>dictionary.xml</include>
+          <include>dictionary.xsd</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+</project>

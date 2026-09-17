@@ -27,6 +27,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>common</module>
     <module>jar</module>
     <!--<module>sar-wildfly</module> -->
   </modules>
@@ -63,6 +64,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>restcomm-diameter-dictionary</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>jdiameter-api</artifactId>

@@ -48,7 +48,7 @@ public class ExampleServer implements NetworkReqListener {
   }
 
   private static final String configFile = "org/example/server/server-jdiameter-config.xml";
-  private static final String dictionaryFile = "org/example/client/dictionary.xml";
+  private static final String dictionaryFile = "dictionary.xml";
   private static final String realmName = "exchange.example.org";
   // Defs for our app
   private static final int commandCode = 686;

@@ -49,7 +49,7 @@ public class ExampleClient implements EventListener<Request, Answer> {
 
   //configuration files
   private static final String configFile = "org/example/client/client-jdiameter-config.xml";
-  private static final String dictionaryFile = "org/example/client/dictionary.xml";
+  private static final String dictionaryFile = "dictionary.xml";
   //our destination
   private static final String serverHost = "127.0.0.1";
   private static final String serverPort = "3868";
