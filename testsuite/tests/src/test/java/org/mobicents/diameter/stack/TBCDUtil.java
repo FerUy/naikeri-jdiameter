@@ -15,7 +15,7 @@ public class TBCDUtil {
    * This method converts a character string to a TBCD string.
    */
   public static byte[] parseTBCD(String tbcd) {
-    int length = (tbcd == null ? 0:tbcd.length());
+    int length = (tbcd == null ? 0 : tbcd.length());
     int size = (length + 1)/2;
     byte[] buffer = new byte[size];
 
